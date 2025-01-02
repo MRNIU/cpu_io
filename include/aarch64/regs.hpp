@@ -17,6 +17,7 @@
 #ifndef CPU_IO_INCLUDE_AARCH64_REGS_HPP_
 #define CPU_IO_INCLUDE_AARCH64_REGS_HPP_
 
+#include <cstddef>
 #include <cstdint>
 #include <cstdlib>
 #include <type_traits>

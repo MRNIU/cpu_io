@@ -20,6 +20,7 @@
 #include <sys/cdefs.h>
 
 #include <array>
+#include <cstddef>
 #include <cstdint>
 #include <cstdlib>
 #include <type_traits>
