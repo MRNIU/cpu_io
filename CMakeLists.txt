@@ -18,6 +18,9 @@ IF(${PROJECT_SOURCE_DIR} STREQUAL ${PROJECT_BINARY_DIR})
             "and run CMake from there.")
 ENDIF()
 
+ADD_LIBRARY (${PROJECT_NAME} INTERFACE)
+TARGET_INCLUDE_DIRECTORIES (${PROJECT_NAME} INTERFACE include)
+
 CONFIGURE_FILE (${CMAKE_SOURCE_DIR}/.pre-commit-config.yaml.in
                 ${CMAKE_SOURCE_DIR}/.pre-commit-config.yaml @ONLY)
 
@@ -48,3 +51,4 @@ ADD_EXECUTABLE (
     test.cpp)
 
 TARGET_COMPILE_OPTIONS (cpu_io_test PRIVATE ${CROSS_INCLUDE_PATHS})
+TARGET_LINK_LIBRARIES (cpu_io_test PRIVATE ${PROJECT_NAME})

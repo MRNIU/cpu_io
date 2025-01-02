@@ -454,8 +454,7 @@ class ReadOnlyRegBase {
                                         register_info::csr::StimecmpInfo>) {
       __asm__ volatile("csrr %0, stimecmp" : "=r"(value) : :);
     } else {
-      static_assert(false, "No Type\n");
-      throw;
+      static_assert(sizeof(RegInfo) == 0);
     }
     return value;
   }
@@ -518,8 +517,7 @@ class WriteOnlyRegBase {
                                         register_info::csr::SatpInfo>) {
       __asm__ volatile("csrw satp, %0" : : "r"(value) :);
     } else {
-      static_assert(false, "No Type\n");
-      throw;
+      static_assert(sizeof(RegInfo) == 0);
     }
   }
 
@@ -554,8 +552,7 @@ class WriteOnlyRegBase {
                                         register_info::csr::SatpInfo>) {
       __asm__ volatile("csrwi satp, %0" : : "i"(value) :);
     } else {
-      static_assert(false, "No Type\n");
-      throw;
+      static_assert(sizeof(RegInfo) == 0);
     }
   }
 
@@ -589,8 +586,7 @@ class WriteOnlyRegBase {
                                         register_info::csr::SatpInfo>) {
       __asm__ volatile("csrrs zero, satp, %0" : : "r"(mask) :);
     } else {
-      static_assert(false, "No Type\n");
-      throw;
+      static_assert(sizeof(RegInfo) == 0);
     }
   }
 
@@ -624,8 +620,7 @@ class WriteOnlyRegBase {
                                         register_info::csr::SatpInfo>) {
       __asm__ volatile("csrrc zero, satp, %0" : : "r"(mask) :);
     } else {
-      static_assert(false, "No Type\n");
-      throw;
+      static_assert(sizeof(RegInfo) == 0);
     }
   }
 
@@ -660,8 +655,7 @@ class WriteOnlyRegBase {
                                         register_info::csr::SatpInfo>) {
       __asm__ volatile("csrrsi zero, satp, %0" : : "i"(mask) :);
     } else {
-      static_assert(false, "No Type\n");
-      throw;
+      static_assert(sizeof(RegInfo) == 0);
     }
   }
 
@@ -696,8 +690,7 @@ class WriteOnlyRegBase {
                                         register_info::csr::SatpInfo>) {
       __asm__ volatile("csrrci zero, satp, %0" : : "i"(mask) :);
     } else {
-      static_assert(false, "No Type\n");
-      throw;
+      static_assert(sizeof(RegInfo) == 0);
     }
   }
 
@@ -803,8 +796,7 @@ class ReadWriteRegBase : public ReadOnlyRegBase<RegInfo>,
                                         register_info::csr::SatpInfo>) {
       __asm__ volatile("csrrw %0, satp, %1" : "=r"(old_value) : "r"(value) :);
     } else {
-      static_assert(false, "No Type\n");
-      throw;
+      static_assert(sizeof(RegInfo) == 0);
     }
     return old_value;
   }
@@ -852,8 +844,7 @@ class ReadWriteRegBase : public ReadOnlyRegBase<RegInfo>,
                                         register_info::csr::SatpInfo>) {
       __asm__ volatile("csrrwi %0, satp, %1" : "=r"(old_value) : "i"(value) :);
     } else {
-      static_assert(false, "No Type\n");
-      throw;
+      static_assert(sizeof(RegInfo) == 0);
     }
     return old_value;
   }
@@ -905,8 +896,7 @@ class ReadWriteRegBase : public ReadOnlyRegBase<RegInfo>,
                                         register_info::csr::SatpInfo>) {
       __asm__ volatile("csrrs %0, satp, %1" : "=r"(value) : "r"(mask) :);
     } else {
-      static_assert(false, "No Type\n");
-      throw;
+      static_assert(sizeof(RegInfo) == 0);
     }
     return value;
   }
@@ -944,8 +934,7 @@ class ReadWriteRegBase : public ReadOnlyRegBase<RegInfo>,
                                         register_info::csr::SatpInfo>) {
       __asm__ volatile("csrrsi %0, satp, %1" : "=r"(value) : "i"(mask) :);
     } else {
-      static_assert(false, "No Type\n");
-      throw;
+      static_assert(sizeof(RegInfo) == 0);
     }
     return value;
   }
@@ -997,8 +986,7 @@ class ReadWriteRegBase : public ReadOnlyRegBase<RegInfo>,
                                         register_info::csr::SatpInfo>) {
       __asm__ volatile("csrrc %0, satp, %1" : "=r"(value) : "r"(mask) :);
     } else {
-      static_assert(false, "No Type\n");
-      throw;
+      static_assert(sizeof(RegInfo) == 0);
     }
     return value;
   }
@@ -1036,8 +1024,7 @@ class ReadWriteRegBase : public ReadOnlyRegBase<RegInfo>,
                                         register_info::csr::SatpInfo>) {
       __asm__ volatile("csrrci %0, satp, %1" : "=r"(value) : "i"(mask) :);
     } else {
-      static_assert(false, "No Type\n");
-      throw;
+      static_assert(sizeof(RegInfo) == 0);
     }
     return value;
   }
