@@ -21,8 +21,8 @@ ENDIF()
 ADD_LIBRARY (${PROJECT_NAME} INTERFACE)
 TARGET_INCLUDE_DIRECTORIES (${PROJECT_NAME} INTERFACE include)
 
-CONFIGURE_FILE (${PROJECT_SOURCE_DIR}/.pre-commit-config.yaml.in
-                ${PROJECT_SOURCE_DIR}/.pre-commit-config.yaml @ONLY)
+# CONFIGURE_FILE (${PROJECT_SOURCE_DIR}/.pre-commit-config.yaml.in
+# ${PROJECT_SOURCE_DIR}/.pre-commit-config.yaml @ONLY)
 
 # 获取 gcc 的 include 路径
 EXECUTE_PROCESS (
