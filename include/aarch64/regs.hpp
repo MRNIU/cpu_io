@@ -14,17 +14,13 @@
  * </table>
  */
 
-#ifndef SIMPLEKERNEL_SRC_KERNEL_ARCH_AARCH64_INCLUDE_CPU_REGS_HPP_
-#define SIMPLEKERNEL_SRC_KERNEL_ARCH_AARCH64_INCLUDE_CPU_REGS_HPP_
+#ifndef CPU_IO_INCLUDE_AARCH64_REGS_HPP_
+#define CPU_IO_INCLUDE_AARCH64_REGS_HPP_
 
 #include <cstdint>
 #include <cstdlib>
 #include <type_traits>
 #include <typeinfo>
-
-#include "kernel_log.hpp"
-#include "sk_cstdio"
-#include "sk_iostream"
 
 /**
  * aarch64 cpu Control and Status Registers 相关定义
@@ -83,8 +79,7 @@ class ReadOnlyRegBase {
     if constexpr (std::is_same_v<RegInfo, register_info::X29Info>) {
       __asm__ volatile("mov %0, x29" : "=r"(value) : :);
     } else {
-      CPU_IO_ERROR("No Type\n");
-      throw;
+      static_assert(sizeof(RegInfo) == 0);
     }
     return value;
   }
@@ -122,8 +117,7 @@ class WriteOnlyRegBase {
     if constexpr (std::is_same_v<RegInfo, register_info::X29Info>) {
       __asm__ volatile("mov x29, %0" : : "r"(value) :);
     } else {
-      CPU_IO_ERROR("No Type\n");
-      throw;
+      static_assert(sizeof(RegInfo) == 0);
     }
   }
 };
@@ -153,11 +147,6 @@ class ReadWriteRegBase : public ReadOnlyRegBase<RegInfo>,
 namespace regs {
 class X29 : public read_write::ReadWriteRegBase<register_info::X29Info> {
  public:
-  friend auto operator<<(sk_std::ostream &os, [[maybe_unused]] const X29 &x29)
-      -> sk_std::ostream & {
-    CPU_IO_PRINTF("val: 0x%p", regs::X29::Read());
-    return os;
-  }
 };
 
 /// 通用寄存器
@@ -172,4 +161,4 @@ struct AllXreg {
 
 };  // namespace cpu
 
-#endif  // SIMPLEKERNEL_SRC_KERNEL_ARCH_AARCH64_INCLUDE_CPU_REGS_HPP_
+#endif  // CPU_IO_INCLUDE_AARCH64_REGS_HPP_

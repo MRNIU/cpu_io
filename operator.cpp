@@ -434,4 +434,9 @@ auto operator<<(std::ostream &ostream, const Stimecmp &) -> std::ostream & {
   return ostream;
 }
 #elif __aarch64__
+friend auto operator<<(sk_std::ostream &os, [[maybe_unused]] const X29 &x29)
+    -> sk_std::ostream & {
+  CPU_IO_PRINTF("val: 0x%p", regs::X29::Read());
+  return os;
+}
 #endif

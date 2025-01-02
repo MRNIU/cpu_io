@@ -14,18 +14,15 @@
  * </table>
  */
 
-#ifndef SIMPLEKERNEL_SRC_KERNEL_ARCH_AARCH64_INCLUDE_CPU_CPU_HPP_
-#define SIMPLEKERNEL_SRC_KERNEL_ARCH_AARCH64_INCLUDE_CPU_CPU_HPP_
+#ifndef CPU_IO_INCLUDE_AARCH64_CPU_HPP_
+#define CPU_IO_INCLUDE_AARCH64_CPU_HPP_
 
 #include <cstdint>
 #include <cstdlib>
 #include <type_traits>
 #include <typeinfo>
 
-#include "kernel_log.hpp"
 #include "regs.hpp"
-#include "sk_cstdio"
-#include "sk_iostream"
 
 /**
  * aarch64 cpu 相关定义
@@ -45,4 +42,4 @@ static __always_inline void SetupFpu() {
 
 }  // namespace cpu
 
-#endif  // SIMPLEKERNEL_SRC_KERNEL_ARCH_AARCH64_INCLUDE_CPU_CPU_HPP_
+#endif  // CPU_IO_INCLUDE_AARCH64_CPU_HPP_
