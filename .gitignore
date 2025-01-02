@@ -57,4 +57,4 @@ build_aarch64
 build_riscv64
 build_x86_64
 .idea
-.pre-commit-config.yaml
+./.pre-commit-config.yaml
