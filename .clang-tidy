@@ -23,5 +23,6 @@ Checks: >
   -readability-magic-numbers,
   -performance-no-int-to-ptr,
   -modernize-use-std-print
+  -bugprone-easily-swappable-parameters
 FormatStyle: google
 ...
