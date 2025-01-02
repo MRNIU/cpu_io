@@ -25,7 +25,7 @@ repos:
       - id: clang-tidy
         args:
           - --checks=.clang-tidy
-          - -p=/home/ubuntu/github/MRNIU/cpu_io/build_riscv64/compiler_commands.json
+          - -p=/home/ubuntu/github/MRNIU/cpu_io/build_x86_64/compiler_commands.json
           - -extra-arg=--std=c++2b
           - --fix
           - --header-filter=.*
