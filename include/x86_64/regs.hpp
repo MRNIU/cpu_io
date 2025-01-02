@@ -752,12 +752,10 @@ class ReadOnlyRegBase {
       __asm__ volatile("sgdt %0" : "=m"(value) : :);
     } else if constexpr (std::is_same_v<RegInfo, register_info::LdtrInfo>) {
       static_assert(sizeof(RegInfo) == 0);
-
     } else if constexpr (std::is_same_v<RegInfo, register_info::IdtrInfo>) {
       __asm__ volatile("sidt %0" : "=m"(value) : :);
     } else if constexpr (std::is_same_v<RegInfo, register_info::TrInfo>) {
       static_assert(sizeof(RegInfo) == 0);
-
     } else if constexpr (std::is_same_v<RegInfo, register_info::cr::Cr0Info>) {
       __asm__ volatile("mov %%cr0, %0" : "=r"(value) : :);
     } else if constexpr (std::is_same_v<RegInfo, register_info::cr::Cr2Info>) {
@@ -772,7 +770,6 @@ class ReadOnlyRegBase {
       __asm__ volatile("mov %%rbp, %0" : "=r"(value) : :);
     } else if constexpr (std::is_same_v<RegInfo, register_info::Xcr0Info>) {
       static_assert(sizeof(RegInfo) == 0);
-
     } else if constexpr (std::is_same_v<
                              RegInfo,
                              register_info::segment_register::CsInfo>) {
@@ -847,12 +844,10 @@ class WriteOnlyRegBase {
       __asm__ volatile("lgdt %0" : : "m"(value) :);
     } else if constexpr (std::is_same_v<RegInfo, register_info::LdtrInfo>) {
       static_assert(sizeof(RegInfo) == 0);
-
     } else if constexpr (std::is_same_v<RegInfo, register_info::IdtrInfo>) {
       __asm__ volatile("lidt %0" : : "m"(value) :);
     } else if constexpr (std::is_same_v<RegInfo, register_info::TrInfo>) {
       static_assert(sizeof(RegInfo) == 0);
-
     } else if constexpr (std::is_same_v<RegInfo, register_info::cr::Cr0Info>) {
       __asm__ volatile("mov %0, %%cr0" : : "r"(value) :);
     } else if constexpr (std::is_same_v<RegInfo, register_info::cr::Cr2Info>) {
@@ -865,7 +860,6 @@ class WriteOnlyRegBase {
       __asm__ volatile("mov %0, %%cr8" : : "r"(value) :);
     } else if constexpr (std::is_same_v<RegInfo, register_info::Xcr0Info>) {
       static_assert(sizeof(RegInfo) == 0);
-
     } else if constexpr (std::is_same_v<
                              RegInfo,
                              register_info::segment_register::CsInfo>) {
@@ -932,16 +926,12 @@ class WriteOnlyRegBase {
       }
     } else if constexpr (std::is_same_v<RegInfo, register_info::GdtrInfo>) {
       static_assert(sizeof(RegInfo) == 0);
-
     } else if constexpr (std::is_same_v<RegInfo, register_info::LdtrInfo>) {
       static_assert(sizeof(RegInfo) == 0);
-
     } else if constexpr (std::is_same_v<RegInfo, register_info::IdtrInfo>) {
       static_assert(sizeof(RegInfo) == 0);
-
     } else if constexpr (std::is_same_v<RegInfo, register_info::TrInfo>) {
       static_assert(sizeof(RegInfo) == 0);
-
     } else if constexpr (std::is_same_v<RegInfo, register_info::cr::Cr0Info>) {
       __asm__ volatile("bts %%cr0, %0" : : "r"(offset) :);
     } else if constexpr (std::is_same_v<RegInfo, register_info::cr::Cr2Info>) {
@@ -954,7 +944,6 @@ class WriteOnlyRegBase {
       __asm__ volatile("bts %%cr8, %0" : : "r"(offset) :);
     } else if constexpr (std::is_same_v<RegInfo, register_info::Xcr0Info>) {
       static_assert(sizeof(RegInfo) == 0);
-
     } else {
       static_assert(sizeof(RegInfo) == 0);
 
@@ -987,16 +976,12 @@ class WriteOnlyRegBase {
       }
     } else if constexpr (std::is_same_v<RegInfo, register_info::GdtrInfo>) {
       static_assert(sizeof(RegInfo) == 0);
-
     } else if constexpr (std::is_same_v<RegInfo, register_info::LdtrInfo>) {
       static_assert(sizeof(RegInfo) == 0);
-
     } else if constexpr (std::is_same_v<RegInfo, register_info::IdtrInfo>) {
       static_assert(sizeof(RegInfo) == 0);
-
     } else if constexpr (std::is_same_v<RegInfo, register_info::TrInfo>) {
       static_assert(sizeof(RegInfo) == 0);
-
     } else if constexpr (std::is_same_v<RegInfo, register_info::cr::Cr0Info>) {
       __asm__ volatile("btr %%cr0, %0" : : "r"(offset) :);
     } else if constexpr (std::is_same_v<RegInfo, register_info::cr::Cr2Info>) {
@@ -1009,7 +994,6 @@ class WriteOnlyRegBase {
       __asm__ volatile("btr %%cr8, %0" : : "r"(offset) :);
     } else if constexpr (std::is_same_v<RegInfo, register_info::Xcr0Info>) {
       static_assert(sizeof(RegInfo) == 0);
-
     } else {
       static_assert(sizeof(RegInfo) == 0);
 

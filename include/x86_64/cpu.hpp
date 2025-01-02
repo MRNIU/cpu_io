@@ -51,8 +51,7 @@ static __always_inline auto In(const uint32_t port) -> T {
   } else if constexpr (std::is_same_v<T, uint32_t>) {
     __asm__ volatile("inl %1, %0" : "=a"(data) : "dN"(port));
   } else {
-    static_assert(false, "No Type\n");
-    throw;
+    static_assert(sizeof(T) == 0);
   }
   return data;
 }
@@ -72,8 +71,7 @@ static __always_inline void Out(const uint32_t port, const T data) {
   } else if constexpr (std::is_same_v<T, uint32_t>) {
     __asm__ volatile("outl %1, %0" : : "dN"(port), "a"(data));
   } else {
-    static_assert(false, "No Type\n");
-    throw;
+    static_assert(sizeof(T) == 0);
   }
 }
 
@@ -184,27 +182,27 @@ class Pic {
   explicit Pic(uint8_t offset1, uint8_t offset2)
       : offset1_(offset1), offset2_(offset2) {
     // 0001 0001
-    Out<uint8_t>(kMasterCommand, kIcw1Init | kIcw1Icw4);
+    Out<uint8_t>(kMasterCommandPort, kIcw1Init | kIcw1Icw4);
     // 设置主片 IRQ 从 offset1_ 号中断开始
-    Out<uint8_t>(kMasterData, offset1_);
+    Out<uint8_t>(kMasterDataPort, offset1_);
     // 设置主片 IR2 引脚连接从片
     // 4: 0000 0100
-    Out<uint8_t>(kMasterData, 4);
+    Out<uint8_t>(kMasterDataPort, 4);
     // 设置主片按照 8086 的方式工作
-    Out<uint8_t>(kMasterData, kIcw48086);
+    Out<uint8_t>(kMasterDataPort, kIcw48086);
 
-    Out<uint8_t>(kSlaveCommand, kIcw1Init | kIcw1Icw4);
+    Out<uint8_t>(kSlaveCommandPort, kIcw1Init | kIcw1Icw4);
     // 设置从片 IRQ 从 offset2_ 号中断开始
-    Out<uint8_t>(kPic2Data, offset2_);
+    Out<uint8_t>(kPic2DataPort, offset2_);
     // 告诉从片输出引脚和主片 IR2 号相连
     // 2: 0000 0010
-    Out<uint8_t>(kPic2Data, 2);
+    Out<uint8_t>(kPic2DataPort, 2);
     // 设置从片按照 8086 的方式工作
-    Out<uint8_t>(kPic2Data, kIcw48086);
+    Out<uint8_t>(kPic2DataPort, kIcw48086);
 
     // 关闭所有中断
-    Out<uint8_t>(kMasterData, 0xFF);
-    Out<uint8_t>(kPic2Data, 0xFF);
+    Out<uint8_t>(kMasterDataPort, 0xFF);
+    Out<uint8_t>(kPic2DataPort, 0xFF);
   }
 
   /// @name 构造/析构函数
@@ -221,38 +219,38 @@ class Pic {
    * 开启 pic 的 no 中断
    * @param no 中断号
    */
-  void Enable(uint8_t no) {
+  void Enable(uint8_t no) const {
     uint8_t mask = 0;
     if (no >= offset2_) {
-      mask = ((In<uint8_t>(kPic2Data)) & (~(1 << (no % 8))));
-      Out<uint8_t>(kPic2Data, mask);
+      mask = ((In<uint8_t>(kPic2DataPort)) & (~(1 << (no % 8))));
+      Out<uint8_t>(kPic2DataPort, mask);
     } else {
-      mask = ((In<uint8_t>(kMasterData)) & (~(1 << (no % 8))));
-      Out<uint8_t>(kMasterData, mask);
+      mask = ((In<uint8_t>(kMasterDataPort)) & (~(1 << (no % 8))));
+      Out<uint8_t>(kMasterDataPort, mask);
     }
   }
 
   /**
    * 关闭 8259A 芯片的所有中断
    */
-  void Disable() {
+  static void Disable() {
     // 屏蔽所有中断
-    Out<uint8_t>(kMasterData, 0xFF);
-    Out<uint8_t>(kPic2Data, 0xFF);
+    Out<uint8_t>(kMasterDataPort, 0xFF);
+    Out<uint8_t>(kPic2DataPort, 0xFF);
   }
 
   /**
    * 关闭 pic 的 no 中断
    * @param no 中断号
    */
-  void Disable(uint8_t no) {
+  void Disable(uint8_t no) const {
     uint8_t mask = 0;
     if (no >= offset2_) {
-      mask = ((In<uint8_t>(kPic2Data)) | (1 << (no % 8)));
-      Out<uint8_t>(kPic2Data, mask);
+      mask = ((In<uint8_t>(kPic2DataPort)) | (1 << (no % 8)));
+      Out<uint8_t>(kPic2DataPort, mask);
     } else {
-      mask = ((In<uint8_t>(kMasterData)) | (1 << (no % 8)));
-      Out<uint8_t>(kMasterData, mask);
+      mask = ((In<uint8_t>(kMasterDataPort)) | (1 << (no % 8)));
+      Out<uint8_t>(kMasterDataPort, mask);
     }
   }
 
@@ -260,16 +258,16 @@ class Pic {
    * 通知 pic no 中断处理完毕
    * @param no 中断号
    */
-  void Clear(uint8_t no) {
+  void Clear(uint8_t no) const {
     // 按照我们的设置，从 offset1_ 号中断起为用户自定义中断
     // 因为单片的 Intel 8259A 芯片只能处理 8 级中断
     // 故大于等于 offset2_ 的中断号是由从片处理的
     if (no >= offset2_) {
       // 发送重设信号给从片
-      Out<uint8_t>(kSlaveCommand, kEoi);
+      Out<uint8_t>(kSlaveCommandPort, kEoi);
     } else {
       // 发送重设信号给主片
-      Out<uint8_t>(kMasterCommand, kEoi);
+      Out<uint8_t>(kMasterCommandPort, kEoi);
     }
   }
 
@@ -277,13 +275,13 @@ class Pic {
    * Returns the combined value of the cascaded PICs irq request register
    * @return uint16_t 值
    */
-  uint16_t GetIrr() { return GetIrqReg(kOcw3ReadIrr); }
+  static auto GetIrr() -> uint16_t { return GetIrqReg(kOcw3ReadIrr); }
 
   /**
    * Returns the combined value of the cascaded PICs in-service register
    * @return uint16_t 值
    */
-  uint16_t GetIsr() { return GetIrqReg(kOcw3ReadIsr); }
+  static auto GetIsr() -> uint16_t { return GetIrqReg(kOcw3ReadIsr); }
 
  private:
   uint8_t offset1_;
@@ -293,10 +291,10 @@ class Pic {
   static constexpr const uint8_t kMaster = 0x20;
   /// Slave  (IRQs 8-15)
   static constexpr const uint8_t kSlave = 0xA0;
-  static constexpr const uint8_t kMasterCommand = kMaster;
-  static constexpr const uint8_t kMasterData = kMaster + 1;
-  static constexpr const uint8_t kSlaveCommand = kSlave;
-  static constexpr const uint8_t kPic2Data = kSlave + 1;
+  static constexpr const uint8_t kMasterCommandPort = kMaster;
+  static constexpr const uint8_t kMasterDataPort = kMaster + 1;
+  static constexpr const uint8_t kSlaveCommandPort = kSlave;
+  static constexpr const uint8_t kPic2DataPort = kSlave + 1;
   /// End-of-interrupt command code
   static constexpr const uint8_t kEoi = 0x20;
 
@@ -334,10 +332,11 @@ class Pic {
    * @param ocw3 OCW3
    * @return uint16_t 值
    */
-  uint16_t GetIrqReg(uint8_t ocw3) {
-    Out<uint8_t>(kMasterCommand, ocw3);
-    Out<uint8_t>(kSlaveCommand, ocw3);
-    return (In<uint8_t>(kSlaveCommand) << 8) | In<uint8_t>(kMasterCommand);
+  static auto GetIrqReg(uint8_t ocw3) -> uint16_t {
+    Out<uint8_t>(kMasterCommandPort, ocw3);
+    Out<uint8_t>(kSlaveCommandPort, ocw3);
+    return (In<uint8_t>(kSlaveCommandPort) << 8) |
+           In<uint8_t>(kMasterCommandPort);
   }
 };
 
@@ -356,8 +355,9 @@ class Pit {
     uint16_t divisor = kMaxFrequency / frequency;
 
     // 设置 8253/8254 芯片工作在模式 3 下
-    Out<uint8_t>(kCommand, (uint8_t)kChannel0 | (uint8_t)kHighAndLow |
-                               (uint8_t)kSquareWaveGenerator);
+    Out<uint8_t>(kCommand, static_cast<uint8_t>(kChannel0) |
+                               static_cast<uint8_t>(kHighAndLow) |
+                               static_cast<uint8_t>(kSquareWaveGenerator));
 
     // 分别写入低字节和高字节
     Out<uint8_t>(kChannel0Data, divisor & 0xFF);
@@ -383,7 +383,7 @@ class Pit {
    * 获取时钟中断次数
    * @return size_t 时钟中断次数
    */
-  size_t GetTicks() const { return ticks_; }
+  [[nodiscard]] auto GetTicks() const -> size_t { return ticks_; }
 
  private:
   /// 最大频率
