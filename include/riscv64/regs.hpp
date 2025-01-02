@@ -14,8 +14,8 @@
  * </table>
  */
 
-#ifndef SIMPLEKERNEL_SRC_KERNEL_ARCH_RISCV64_INCLUDE_CPU_REGS_HPP_
-#define SIMPLEKERNEL_SRC_KERNEL_ARCH_RISCV64_INCLUDE_CPU_REGS_HPP_
+#ifndef CPU_IO_INCLUDE_RISCV64_REGS_HPP_
+#define CPU_IO_INCLUDE_RISCV64_REGS_HPP_
 
 #include <sys/cdefs.h>
 
@@ -23,8 +23,6 @@
 #include <cstdint>
 #include <cstdlib>
 #include <type_traits>
-
-#include "kernel_log.hpp"
 
 /**
  * riscv64 cpu Control and Status Registers 相关定义
@@ -456,7 +454,7 @@ class ReadOnlyRegBase {
                                         register_info::csr::StimecmpInfo>) {
       __asm__ volatile("csrr %0, stimecmp" : "=r"(value) : :);
     } else {
-      CPU_IO_ERROR("No Type\n");
+      static_assert(false, "No Type\n");
       throw;
     }
     return value;
@@ -520,7 +518,7 @@ class WriteOnlyRegBase {
                                         register_info::csr::SatpInfo>) {
       __asm__ volatile("csrw satp, %0" : : "r"(value) :);
     } else {
-      CPU_IO_ERROR("No Type\n");
+      static_assert(false, "No Type\n");
       throw;
     }
   }
@@ -556,7 +554,7 @@ class WriteOnlyRegBase {
                                         register_info::csr::SatpInfo>) {
       __asm__ volatile("csrwi satp, %0" : : "i"(value) :);
     } else {
-      CPU_IO_ERROR("No Type\n");
+      static_assert(false, "No Type\n");
       throw;
     }
   }
@@ -591,7 +589,7 @@ class WriteOnlyRegBase {
                                         register_info::csr::SatpInfo>) {
       __asm__ volatile("csrrs zero, satp, %0" : : "r"(mask) :);
     } else {
-      CPU_IO_ERROR("No Type\n");
+      static_assert(false, "No Type\n");
       throw;
     }
   }
@@ -626,7 +624,7 @@ class WriteOnlyRegBase {
                                         register_info::csr::SatpInfo>) {
       __asm__ volatile("csrrc zero, satp, %0" : : "r"(mask) :);
     } else {
-      CPU_IO_ERROR("No Type\n");
+      static_assert(false, "No Type\n");
       throw;
     }
   }
@@ -662,7 +660,7 @@ class WriteOnlyRegBase {
                                         register_info::csr::SatpInfo>) {
       __asm__ volatile("csrrsi zero, satp, %0" : : "i"(mask) :);
     } else {
-      CPU_IO_ERROR("No Type\n");
+      static_assert(false, "No Type\n");
       throw;
     }
   }
@@ -698,7 +696,7 @@ class WriteOnlyRegBase {
                                         register_info::csr::SatpInfo>) {
       __asm__ volatile("csrrci zero, satp, %0" : : "i"(mask) :);
     } else {
-      CPU_IO_ERROR("No Type\n");
+      static_assert(false, "No Type\n");
       throw;
     }
   }
@@ -805,7 +803,7 @@ class ReadWriteRegBase : public ReadOnlyRegBase<RegInfo>,
                                         register_info::csr::SatpInfo>) {
       __asm__ volatile("csrrw %0, satp, %1" : "=r"(old_value) : "r"(value) :);
     } else {
-      CPU_IO_ERROR("No Type\n");
+      static_assert(false, "No Type\n");
       throw;
     }
     return old_value;
@@ -854,7 +852,7 @@ class ReadWriteRegBase : public ReadOnlyRegBase<RegInfo>,
                                         register_info::csr::SatpInfo>) {
       __asm__ volatile("csrrwi %0, satp, %1" : "=r"(old_value) : "i"(value) :);
     } else {
-      CPU_IO_ERROR("No Type\n");
+      static_assert(false, "No Type\n");
       throw;
     }
     return old_value;
@@ -907,7 +905,7 @@ class ReadWriteRegBase : public ReadOnlyRegBase<RegInfo>,
                                         register_info::csr::SatpInfo>) {
       __asm__ volatile("csrrs %0, satp, %1" : "=r"(value) : "r"(mask) :);
     } else {
-      CPU_IO_ERROR("No Type\n");
+      static_assert(false, "No Type\n");
       throw;
     }
     return value;
@@ -946,7 +944,7 @@ class ReadWriteRegBase : public ReadOnlyRegBase<RegInfo>,
                                         register_info::csr::SatpInfo>) {
       __asm__ volatile("csrrsi %0, satp, %1" : "=r"(value) : "i"(mask) :);
     } else {
-      CPU_IO_ERROR("No Type\n");
+      static_assert(false, "No Type\n");
       throw;
     }
     return value;
@@ -999,7 +997,7 @@ class ReadWriteRegBase : public ReadOnlyRegBase<RegInfo>,
                                         register_info::csr::SatpInfo>) {
       __asm__ volatile("csrrc %0, satp, %1" : "=r"(value) : "r"(mask) :);
     } else {
-      CPU_IO_ERROR("No Type\n");
+      static_assert(false, "No Type\n");
       throw;
     }
     return value;
@@ -1038,7 +1036,7 @@ class ReadWriteRegBase : public ReadOnlyRegBase<RegInfo>,
                                         register_info::csr::SatpInfo>) {
       __asm__ volatile("csrrci %0, satp, %1" : "=r"(value) : "i"(mask) :);
     } else {
-      CPU_IO_ERROR("No Type\n");
+      static_assert(false, "No Type\n");
       throw;
     }
     return value;
@@ -1197,12 +1195,6 @@ class ReadWriteField : public ReadOnlyField<Reg, RegInfo>,
 namespace regs {
 class Fp : public read_write::ReadWriteRegBase<register_info::FpInfo> {
  public:
-  friend auto operator<<(sk_std::ostream &ostream,
-                         [[maybe_unused]] const Fp &fp_reg)
-      -> sk_std::ostream & {
-    CPU_IO_PRINTF("val: 0x%p", regs::Fp::Read());
-    return ostream;
-  }
 };
 
 /// 通用寄存器
@@ -1237,26 +1229,6 @@ class Sstatus
   auto operator=(Sstatus &&) -> Sstatus & = delete;
   virtual ~Sstatus() = default;
   /// @}
-
-  friend auto operator<<(sk_std::ostream &ostream, const Sstatus &)
-      -> sk_std::ostream & {
-    auto sie = read_write::ReadWriteField<
-        read_write::ReadWriteRegBase<register_info::csr::SstatusInfo>,
-        register_info::csr::SstatusInfo::Sie>::Get();
-    auto spie = read_write::ReadWriteField<
-        read_write::ReadWriteRegBase<register_info::csr::SstatusInfo>,
-        register_info::csr::SstatusInfo::Spie>::Get();
-    auto spp = read_write::ReadWriteField<
-        read_write::ReadWriteRegBase<register_info::csr::SstatusInfo>,
-        register_info::csr::SstatusInfo::Spp>::Get();
-    CPU_IO_PRINTF("val: 0x%p, sie: %s, spie: %s, spp: %s",
-                  reinterpret_cast<void *>(cpu::regs::csr::Sstatus::Read()),
-                  (sie ? "Enable" : "Disable"), (spie ? "Enable" : "Disable"),
-                  (spp ? "S Mode" : "U Mode")
-
-    );
-    return ostream;
-  }
 };
 
 class Stvec
@@ -1290,22 +1262,6 @@ class Stvec
   auto operator=(Stvec &&) -> Stvec & = delete;
   virtual ~Stvec() = default;
   /// @}
-
-  friend auto operator<<(sk_std::ostream &ostream, const Stvec &)
-      -> sk_std::ostream & {
-    auto mode = read_write::ReadWriteField<
-        read_write::ReadWriteRegBase<register_info::csr::StvecInfo>,
-        register_info::csr::StvecInfo::Mode>::Get();
-    auto base = read_write::ReadWriteField<
-        read_write::ReadWriteRegBase<register_info::csr::StvecInfo>,
-        register_info::csr::StvecInfo::Base>::Get();
-    CPU_IO_PRINTF("val: 0x%p, mode: %s, base: 0x%lX",
-                  reinterpret_cast<void *>(cpu::regs::csr::Stvec::Read()),
-                  (mode == register_info::csr::StvecInfo::kDirect ? "Direct"
-                                                                  : "Vectored"),
-                  base);
-    return ostream;
-  }
 };
 
 class Sip : public read_write::ReadWriteRegBase<register_info::csr::SipInfo> {
@@ -1332,24 +1288,6 @@ class Sip : public read_write::ReadWriteRegBase<register_info::csr::SipInfo> {
   auto operator=(Sip &&) -> Sip & = delete;
   virtual ~Sip() = default;
   /// @}
-
-  friend auto operator<<(sk_std::ostream &ostream, const Sip &)
-      -> sk_std::ostream & {
-    auto ssip = read_write::ReadWriteField<
-        read_write::ReadWriteRegBase<register_info::csr::SipInfo>,
-        register_info::csr::SipInfo::Ssip>::Get();
-    auto stip = read_write::ReadWriteField<
-        read_write::ReadWriteRegBase<register_info::csr::SipInfo>,
-        register_info::csr::SipInfo::Stip>::Get();
-    auto seip = read_write::ReadWriteField<
-        read_write::ReadWriteRegBase<register_info::csr::SipInfo>,
-        register_info::csr::SipInfo::Seip>::Get();
-    CPU_IO_PRINTF("val: 0x%p, ssie: %s, stie: %s, seie: %s",
-                  reinterpret_cast<void *>(cpu::regs::csr::Sip::Read()),
-                  (ssip ? "Enable" : "Disable"), (stip ? "Enable" : "Disable"),
-                  (seip ? "Enable" : "Disable"));
-    return ostream;
-  }
 };
 
 class Sie : public read_write::ReadWriteRegBase<register_info::csr::SieInfo> {
@@ -1376,24 +1314,6 @@ class Sie : public read_write::ReadWriteRegBase<register_info::csr::SieInfo> {
   auto operator=(Sie &&) -> Sie & = delete;
   virtual ~Sie() = default;
   /// @}
-
-  friend auto operator<<(sk_std::ostream &ostream, const Sie &)
-      -> sk_std::ostream & {
-    auto ssie = read_write::ReadWriteField<
-        read_write::ReadWriteRegBase<register_info::csr::SieInfo>,
-        register_info::csr::SieInfo::Ssie>::Get();
-    auto stie = read_write::ReadWriteField<
-        read_write::ReadWriteRegBase<register_info::csr::SieInfo>,
-        register_info::csr::SieInfo::Stie>::Get();
-    auto seie = read_write::ReadWriteField<
-        read_write::ReadWriteRegBase<register_info::csr::SieInfo>,
-        register_info::csr::SieInfo::Seie>::Get();
-    CPU_IO_PRINTF("val: 0x%p, ssie: %s, stie: %s, seie: %s",
-                  reinterpret_cast<void *>(cpu::regs::csr::Sie::Read()),
-                  (ssie ? "Enable" : "Disable"), (stie ? "Enable" : "Disable"),
-                  (seie ? "Enable" : "Disable"));
-    return ostream;
-  }
 };
 
 class Time : public read_write::ReadOnlyRegBase<register_info::csr::TimeInfo> {
@@ -1407,13 +1327,6 @@ class Time : public read_write::ReadOnlyRegBase<register_info::csr::TimeInfo> {
   auto operator=(Time &&) -> Time & = delete;
   virtual ~Time() = default;
   /// @}
-
-  friend auto operator<<(sk_std::ostream &ostream, const Time &)
-      -> sk_std::ostream & {
-    CPU_IO_PRINTF("val: 0x%p",
-                  reinterpret_cast<void *>(cpu::regs::csr::Time::Read()));
-    return ostream;
-  }
 };
 
 class Cycle
@@ -1428,13 +1341,6 @@ class Cycle
   auto operator=(Cycle &&) -> Cycle & = delete;
   virtual ~Cycle() = default;
   /// @}
-
-  friend auto operator<<(sk_std::ostream &ostream, const Cycle &)
-      -> sk_std::ostream & {
-    CPU_IO_PRINTF("val: 0x%p",
-                  reinterpret_cast<void *>(cpu::regs::csr::Cycle::Read()));
-    return ostream;
-  }
 };
 
 class Instret
@@ -1449,13 +1355,6 @@ class Instret
   auto operator=(Instret &&) -> Instret & = delete;
   virtual ~Instret() = default;
   /// @}
-
-  friend auto operator<<(sk_std::ostream &ostream, const Instret &)
-      -> sk_std::ostream & {
-    CPU_IO_PRINTF("val: 0x%p",
-                  reinterpret_cast<void *>(cpu::regs::csr::Instret::Read()));
-    return ostream;
-  }
 };
 
 class Sscratch
@@ -1470,13 +1369,6 @@ class Sscratch
   auto operator=(Sscratch &&) -> Sscratch & = delete;
   virtual ~Sscratch() = default;
   /// @}
-
-  friend auto operator<<(sk_std::ostream &ostream, const Sscratch &)
-      -> sk_std::ostream & {
-    CPU_IO_PRINTF("val: 0x%p",
-                  reinterpret_cast<void *>(cpu::regs::csr::Sscratch::Read()));
-    return ostream;
-  }
 };
 
 class Sepc : public read_write::ReadWriteRegBase<register_info::csr::SepcInfo> {
@@ -1490,13 +1382,6 @@ class Sepc : public read_write::ReadWriteRegBase<register_info::csr::SepcInfo> {
   auto operator=(Sepc &&) -> Sepc & = delete;
   virtual ~Sepc() = default;
   /// @}
-
-  friend auto operator<<(sk_std::ostream &ostream, const Sepc &)
-      -> sk_std::ostream & {
-    CPU_IO_PRINTF("val: 0x%p",
-                  reinterpret_cast<void *>(cpu::regs::csr::Sepc::Read()));
-    return ostream;
-  }
 };
 
 class Scause
@@ -1520,24 +1405,6 @@ class Scause
   auto operator=(Scause &&) -> Scause & = delete;
   virtual ~Scause() = default;
   /// @}
-
-  friend auto operator<<(sk_std::ostream &ostream, const Scause &)
-      -> sk_std::ostream & {
-    auto exception_code = read_write::ReadWriteField<
-        read_write::ReadWriteRegBase<register_info::csr::ScauseInfo>,
-        register_info::csr::ScauseInfo::ExceptionCode>::Get();
-    auto interrupt = read_write::ReadWriteField<
-        read_write::ReadWriteRegBase<register_info::csr::ScauseInfo>,
-        register_info::csr::ScauseInfo::Interrupt>::Get();
-    CPU_IO_PRINTF(
-        "val: 0x%p, exception_code: 0x%lX, interrupt: %s, name: %s",
-        reinterpret_cast<void *>(cpu::regs::csr::Scause::Read()),
-        exception_code, interrupt ? "Yes" : "No",
-        interrupt
-            ? register_info::csr::ScauseInfo::kInterruptNames[exception_code]
-            : register_info::csr::ScauseInfo::kExceptionNames[exception_code]);
-    return ostream;
-  }
 };
 
 class Stval
@@ -1552,13 +1419,6 @@ class Stval
   auto operator=(Stval &&) -> Stval & = delete;
   virtual ~Stval() = default;
   /// @}
-
-  friend auto operator<<(sk_std::ostream &ostream, const Stval &)
-      -> sk_std::ostream & {
-    CPU_IO_PRINTF("val: 0x%p",
-                  reinterpret_cast<void *>(cpu::regs::csr::Stval::Read()));
-    return ostream;
-  }
 };
 
 class Satp : public read_write::ReadWriteRegBase<register_info::csr::SatpInfo> {
@@ -1585,23 +1445,6 @@ class Satp : public read_write::ReadWriteRegBase<register_info::csr::SatpInfo> {
   auto operator=(Satp &&) -> Satp & = delete;
   virtual ~Satp() = default;
   /// @}
-
-  friend auto operator<<(sk_std::ostream &ostream, const Satp &)
-      -> sk_std::ostream & {
-    auto ppn = read_write::ReadWriteField<
-        read_write::ReadWriteRegBase<register_info::csr::SatpInfo>,
-        register_info::csr::SatpInfo::Ppn>::Get();
-    auto asid = read_write::ReadWriteField<
-        read_write::ReadWriteRegBase<register_info::csr::SatpInfo>,
-        register_info::csr::SatpInfo::Asid>::Get();
-    auto mode = read_write::ReadWriteField<
-        read_write::ReadWriteRegBase<register_info::csr::SatpInfo>,
-        register_info::csr::SatpInfo::Mode>::Get();
-    CPU_IO_PRINTF("val: 0x%p, ppn: 0x%lX, asid: 0x%X, mode: %s",
-                  reinterpret_cast<void *>(cpu::regs::csr::Satp::Read()), ppn,
-                  asid, register_info::csr::SatpInfo::kModeNames[mode]);
-    return ostream;
-  }
 };
 
 class Stimecmp
@@ -1616,13 +1459,6 @@ class Stimecmp
   auto operator=(Stimecmp &&) -> Stimecmp & = delete;
   virtual ~Stimecmp() = default;
   /// @}
-
-  friend auto operator<<(sk_std::ostream &ostream, const Stimecmp &)
-      -> sk_std::ostream & {
-    CPU_IO_PRINTF("val: 0x%p",
-                  reinterpret_cast<void *>(cpu::regs::csr::Stimecmp::Read()));
-    return ostream;
-  }
 };
 
 class AllCsr {
@@ -1662,4 +1498,4 @@ class AllCsr {
 
 };  // namespace cpu
 
-#endif  // SIMPLEKERNEL_SRC_KERNEL_ARCH_RISCV64_INCLUDE_CPU_REGS_HPP_
+#endif  // CPU_IO_INCLUDE_RISCV64_REGS_HPP_

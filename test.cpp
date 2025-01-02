@@ -19,13 +19,11 @@
 
 #include "include/cpu_io.h"
 
-int main(int, char **) {
-  auto aaa = cpu::kAllXreg.rbp.Read();
-  printf("%p\n", aaa);
-
-  auto bbb = cpu::kAllCr.gdtr.Read();
-
-  printf("%p\n", bbb);
+auto main(int, char **) -> int {
+  // auto aaa = cpu::kAllXreg.rbp.Read();
+  // printf("%p\n", aaa);
+  // auto bbb = cpu::kAllCr.gdtr.Read();
+  // printf("%p\n", bbb);
 
   return 0;
 }

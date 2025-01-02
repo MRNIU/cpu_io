@@ -28,7 +28,7 @@ repos:
           - -p=@CMAKE_BINARY_DIR@/compiler_commands.json
           - -extra-arg=--std=c++2b
           - --fix
-          - --header-filter=^(@CMAKE_BINARY_DIR@/src/).*
+          - --header-filter=.*
 
   - repo: https://github.com/koalaman/shellcheck-precommit
     rev: v0.10.0

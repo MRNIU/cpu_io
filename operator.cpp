@@ -18,8 +18,6 @@
 
 #include "include/cpu_io.h"
 
-using namespace cpu;
-
 #ifdef __x86_64__
 
 auto operator<<(std::ostream &ostream, const Cr8 &) -> std::ostream & {
@@ -303,5 +301,137 @@ std::ostream &operator<<(
 }
 
 #elif __riscv
+
+auto operator<<(std::ostream &ostream, [[maybe_unused]] const Fp &fp_reg)
+    -> std::ostream & {
+  printf("val: 0x%p", regs::Fp::Read());
+  return ostream;
+}
+
+auto operator<<(std::ostream &ostream, const Sstatus &) -> std::ostream & {
+  auto sie = read_write::ReadWriteField<
+      read_write::ReadWriteRegBase<register_info::csr::SstatusInfo>,
+      register_info::csr::SstatusInfo::Sie>::Get();
+  auto spie = read_write::ReadWriteField<
+      read_write::ReadWriteRegBase<register_info::csr::SstatusInfo>,
+      register_info::csr::SstatusInfo::Spie>::Get();
+  auto spp = read_write::ReadWriteField<
+      read_write::ReadWriteRegBase<register_info::csr::SstatusInfo>,
+      register_info::csr::SstatusInfo::Spp>::Get();
+  printf("val: 0x%p, sie: %s, spie: %s, spp: %s",
+         reinterpret_cast<void *>(cpu::regs::csr::Sstatus::Read()),
+         (sie ? "Enable" : "Disable"), (spie ? "Enable" : "Disable"),
+         (spp ? "S Mode" : "U Mode")
+
+  );
+  return ostream;
+}
+auto operator<<(std::ostream &ostream, const Stvec &) -> std::ostream & {
+  auto mode = read_write::ReadWriteField<
+      read_write::ReadWriteRegBase<register_info::csr::StvecInfo>,
+      register_info::csr::StvecInfo::Mode>::Get();
+  auto base = read_write::ReadWriteField<
+      read_write::ReadWriteRegBase<register_info::csr::StvecInfo>,
+      register_info::csr::StvecInfo::Base>::Get();
+  printf(
+      "val: 0x%p, mode: %s, base: 0x%lX",
+      reinterpret_cast<void *>(cpu::regs::csr::Stvec::Read()),
+      (mode == register_info::csr::StvecInfo::kDirect ? "Direct" : "Vectored"),
+      base);
+  return ostream;
+}
+auto operator<<(std::ostream &ostream, const Sip &) -> std::ostream & {
+  auto ssip = read_write::ReadWriteField<
+      read_write::ReadWriteRegBase<register_info::csr::SipInfo>,
+      register_info::csr::SipInfo::Ssip>::Get();
+  auto stip = read_write::ReadWriteField<
+      read_write::ReadWriteRegBase<register_info::csr::SipInfo>,
+      register_info::csr::SipInfo::Stip>::Get();
+  auto seip = read_write::ReadWriteField<
+      read_write::ReadWriteRegBase<register_info::csr::SipInfo>,
+      register_info::csr::SipInfo::Seip>::Get();
+  printf("val: 0x%p, ssie: %s, stie: %s, seie: %s",
+         reinterpret_cast<void *>(cpu::regs::csr::Sip::Read()),
+         (ssip ? "Enable" : "Disable"), (stip ? "Enable" : "Disable"),
+         (seip ? "Enable" : "Disable"));
+  return ostream;
+}
+auto operator<<(std::ostream &ostream, const Sie &) -> std::ostream & {
+  auto ssie = read_write::ReadWriteField<
+      read_write::ReadWriteRegBase<register_info::csr::SieInfo>,
+      register_info::csr::SieInfo::Ssie>::Get();
+  auto stie = read_write::ReadWriteField<
+      read_write::ReadWriteRegBase<register_info::csr::SieInfo>,
+      register_info::csr::SieInfo::Stie>::Get();
+  auto seie = read_write::ReadWriteField<
+      read_write::ReadWriteRegBase<register_info::csr::SieInfo>,
+      register_info::csr::SieInfo::Seie>::Get();
+  printf("val: 0x%p, ssie: %s, stie: %s, seie: %s",
+         reinterpret_cast<void *>(cpu::regs::csr::Sie::Read()),
+         (ssie ? "Enable" : "Disable"), (stie ? "Enable" : "Disable"),
+         (seie ? "Enable" : "Disable"));
+  return ostream;
+}
+auto operator<<(std::ostream &ostream, const Time &) -> std::ostream & {
+  printf("val: 0x%p", reinterpret_cast<void *>(cpu::regs::csr::Time::Read()));
+  return ostream;
+}
+auto operator<<(std::ostream &ostream, const Cycle &) -> std::ostream & {
+  printf("val: 0x%p", reinterpret_cast<void *>(cpu::regs::csr::Cycle::Read()));
+  return ostream;
+}
+auto operator<<(std::ostream &ostream, const Instret &) -> std::ostream & {
+  printf("val: 0x%p",
+         reinterpret_cast<void *>(cpu::regs::csr::Instret::Read()));
+  return ostream;
+}
+auto operator<<(std::ostream &ostream, const Sscratch &) -> std::ostream & {
+  printf("val: 0x%p",
+         reinterpret_cast<void *>(cpu::regs::csr::Sscratch::Read()));
+  return ostream;
+}
+auto operator<<(std::ostream &ostream, const Sepc &) -> std::ostream & {
+  printf("val: 0x%p", reinterpret_cast<void *>(cpu::regs::csr::Sepc::Read()));
+  return ostream;
+}
+auto operator<<(std::ostream &ostream, const Scause &) -> std::ostream & {
+  auto exception_code = read_write::ReadWriteField<
+      read_write::ReadWriteRegBase<register_info::csr::ScauseInfo>,
+      register_info::csr::ScauseInfo::ExceptionCode>::Get();
+  auto interrupt = read_write::ReadWriteField<
+      read_write::ReadWriteRegBase<register_info::csr::ScauseInfo>,
+      register_info::csr::ScauseInfo::Interrupt>::Get();
+  printf("val: 0x%p, exception_code: 0x%lX, interrupt: %s, name: %s",
+         reinterpret_cast<void *>(cpu::regs::csr::Scause::Read()),
+         exception_code, interrupt ? "Yes" : "No",
+         interrupt
+             ? register_info::csr::ScauseInfo::kInterruptNames[exception_code]
+             : register_info::csr::ScauseInfo::kExceptionNames[exception_code]);
+  return ostream;
+}
+auto operator<<(std::ostream &ostream, const Stval &) -> std::ostream & {
+  printf("val: 0x%p", reinterpret_cast<void *>(cpu::regs::csr::Stval::Read()));
+  return ostream;
+}
+auto operator<<(std::ostream &ostream, const Satp &) -> std::ostream & {
+  auto ppn = read_write::ReadWriteField<
+      read_write::ReadWriteRegBase<register_info::csr::SatpInfo>,
+      register_info::csr::SatpInfo::Ppn>::Get();
+  auto asid = read_write::ReadWriteField<
+      read_write::ReadWriteRegBase<register_info::csr::SatpInfo>,
+      register_info::csr::SatpInfo::Asid>::Get();
+  auto mode = read_write::ReadWriteField<
+      read_write::ReadWriteRegBase<register_info::csr::SatpInfo>,
+      register_info::csr::SatpInfo::Mode>::Get();
+  printf("val: 0x%p, ppn: 0x%lX, asid: 0x%X, mode: %s",
+         reinterpret_cast<void *>(cpu::regs::csr::Satp::Read()), ppn, asid,
+         register_info::csr::SatpInfo::kModeNames[mode]);
+  return ostream;
+}
+auto operator<<(std::ostream &ostream, const Stimecmp &) -> std::ostream & {
+  printf("val: 0x%p",
+         reinterpret_cast<void *>(cpu::regs::csr::Stimecmp::Read()));
+  return ostream;
+}
 #elif __aarch64__
 #endif
