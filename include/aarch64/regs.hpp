@@ -56,7 +56,7 @@ struct RegInfoBase {
 /// 通用寄存器
 struct X29Info : public RegInfoBase {};
 
-namespace csr {
+namespace system_reg {
 /**
  * @brief CPACR-EL1 寄存器定义
  * @see
@@ -74,7 +74,7 @@ struct CpacrEl1Info : public RegInfoBase {
   };
 };
 
-};  // namespace csr
+};  // namespace system_reg
 
 };  // namespace register_info
 
@@ -105,8 +105,9 @@ class ReadOnlyRegBase {
     typename RegInfo::DataType value{};
     if constexpr (std::is_same_v<RegInfo, register_info::X29Info>) {
       __asm__ volatile("mov %0, x29" : "=r"(value) : :);
-    } else if constexpr (std::is_same_v<RegInfo,
-                                        register_info::CPACR_EL1Info>) {
+    } else if constexpr (std::is_same_v<
+                             RegInfo,
+                             register_info::system_reg::CpacrEl1Info>) {
       __asm__ volatile("mrs %0, CPACR_EL1" : "=r"(value) : :);
     } else {
       static_assert(sizeof(RegInfo) == 0);
@@ -146,8 +147,9 @@ class WriteOnlyRegBase {
   static __always_inline void Write(typename RegInfo::DataType value) {
     if constexpr (std::is_same_v<RegInfo, register_info::X29Info>) {
       __asm__ volatile("mov x29, %0" : : "r"(value) :);
-    } else if constexpr (std::is_same_v<RegInfo,
-                                        register_info::CPACR_EL1Info>) {
+    } else if constexpr (std::is_same_v<
+                             RegInfo,
+                             register_info::system_reg::CpacrEl1Info>) {
       __asm__ volatile("msr CPACR_EL1, %0" : : "r"(value) :);
     } else {
       static_assert(sizeof(RegInfo) == 0);
@@ -159,8 +161,12 @@ class WriteOnlyRegBase {
    * @param mask 掩码
    */
   static __always_inline void SetBits(uint64_t mask) {
-    if constexpr (std::is_same_v<RegInfo, register_info::csr::SstatusInfo>) {
-      __asm__ volatile("csrrs zero, sstatus, %0" : : "r"(mask) :);
+    if constexpr (std::is_same_v<RegInfo,
+                                 register_info::system_reg::CpacrEl1Info>) {
+      typename RegInfo::DataType value = 0;
+      __asm__ volatile("mrs %0, CPACR_EL1" : "=r"(value)::);
+      value |= mask;
+      Write(value);
     } else {
       static_assert(sizeof(RegInfo) == 0);
     }
@@ -171,8 +177,12 @@ class WriteOnlyRegBase {
    * @param mask 掩码
    */
   static __always_inline void ClearBits(uint64_t mask) {
-    if constexpr (std::is_same_v<RegInfo, register_info::csr::SstatusInfo>) {
-      __asm__ volatile("csrrc zero, sstatus, %0" : : "r"(mask) :);
+    if constexpr (std::is_same_v<RegInfo,
+                                 register_info::system_reg::CpacrEl1Info>) {
+      typename RegInfo::DataType value = 0;
+      __asm__ volatile("mrs %0, CPACR_EL1" : "=r"(value)::);
+      value &= ~mask;
+      Write(value);
     } else {
       static_assert(sizeof(RegInfo) == 0);
     }
@@ -220,13 +230,9 @@ class ReadWriteRegBase : public ReadOnlyRegBase<RegInfo>,
    */
   static __always_inline auto ReadSetBits(uint64_t mask) ->
       typename RegInfo::DataType {
-    typename RegInfo::DataType value{};
-    if constexpr (std::is_same_v<RegInfo, register_info::csr::SstatusInfo>) {
-      __asm__ volatile("csrrs %0, sstatus, %1" : "=r"(value) : "r"(mask) :);
-    } else {
-      static_assert(sizeof(RegInfo) == 0);
-    }
-    return value;
+    auto old_value = ReadOnlyRegBase<RegInfo>::Read();
+    WriteOnlyRegBase<RegInfo>::SetBits(mask);
+    return old_value;
   }
 
   /**
@@ -237,7 +243,7 @@ class ReadWriteRegBase : public ReadOnlyRegBase<RegInfo>,
   static __always_inline auto ReadClearBits(uint64_t mask) ->
       typename RegInfo::DataType {
     auto old_value = ReadOnlyRegBase<RegInfo>::Read();
-    WriteOnlyRegBase<RegInfo>::ClearBits(offset);
+    WriteOnlyRegBase<RegInfo>::ClearBits(mask);
     return old_value;
   }
 };
@@ -364,16 +370,16 @@ class ReadWriteField : public ReadOnlyField<Reg, RegInfo>,
 namespace regs {
 struct X29 : public read_write::ReadWriteRegBase<register_info::X29Info> {};
 
-namespace csr {
+namespace system_reg {
 
-struct CpacrEl1
-    : public read_write::ReadWriteRegBase<register_info::csr::CpacrEl1Info> {
+struct CpacrEl1 : public read_write::ReadWriteRegBase<
+                      register_info::system_reg::CpacrEl1Info> {
   using Fpen = read_write::ReadWriteField<
-      read_write::ReadWriteRegBase<register_info::csr::CpacrEl1Info>,
-      register_info::csr::CpacrEl1Info::Fpen>;
+      read_write::ReadWriteRegBase<register_info::system_reg::CpacrEl1Info>,
+      register_info::system_reg::CpacrEl1Info::Fpen>;
 };
 
-};  // namespace csr
+};  // namespace system_reg
 
 };  // namespace regs
 
@@ -381,7 +387,7 @@ struct CpacrEl1
 
 // 第四部分：访问接口
 using X29 = detail::regs::X29;
-using CpacrEl1 = detail::regs::csr::CpacrEl1;
+using CpacrEl1 = detail::regs::system_reg::CpacrEl1;
 
 };  // namespace cpu_io
 
