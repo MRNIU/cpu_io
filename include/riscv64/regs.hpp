@@ -1183,266 +1183,105 @@ class ReadWriteField : public ReadOnlyField<Reg, RegInfo>,
 
 // 第三部分：寄存器实例
 namespace regs {
-class Fp : public read_write::ReadWriteRegBase<register_info::FpInfo> {};
+struct Fp : public read_write::ReadWriteRegBase<register_info::FpInfo> {};
 
 namespace csr {
 
-class Sstatus
+struct Sstatus
     : public read_write::ReadWriteRegBase<register_info::csr::SstatusInfo> {
- public:
-  read_write::ReadWriteField<
+  using Sie = read_write::ReadWriteField<
       read_write::ReadWriteRegBase<register_info::csr::SstatusInfo>,
-      register_info::csr::SstatusInfo::Sie>
-      sie;
-  read_write::ReadWriteField<
+      register_info::csr::SstatusInfo::Sie>;
+  using Spie = read_write::ReadWriteField<
       read_write::ReadWriteRegBase<register_info::csr::SstatusInfo>,
-      register_info::csr::SstatusInfo::Spie>
-      spie;
-  read_write::ReadWriteField<
+      register_info::csr::SstatusInfo::Spie>;
+  using Spp = read_write::ReadWriteField<
       read_write::ReadWriteRegBase<register_info::csr::SstatusInfo>,
-      register_info::csr::SstatusInfo::Spp>
-      spp;
-
-  /// @name 构造/析构函数
-  /// @{
-  Sstatus() = default;
-  Sstatus(const Sstatus &) = delete;
-  Sstatus(Sstatus &&) = delete;
-  auto operator=(const Sstatus &) -> Sstatus & = delete;
-  auto operator=(Sstatus &&) -> Sstatus & = delete;
-  virtual ~Sstatus() = default;
-  /// @}
+      register_info::csr::SstatusInfo::Spp>;
 };
 
-class Stvec
+struct Stvec
     : public read_write::ReadWriteRegBase<register_info::csr::StvecInfo> {
- public:
-  read_write::ReadWriteField<
+  using Base = read_write::ReadWriteField<
       read_write::ReadWriteRegBase<register_info::csr::StvecInfo>,
-      register_info::csr::StvecInfo::Base>
-      base;
-  read_write::ReadWriteField<
+      register_info::csr::StvecInfo::Base>;
+  using Mode = read_write::ReadWriteField<
       read_write::ReadWriteRegBase<register_info::csr::StvecInfo>,
-      register_info::csr::StvecInfo::Mode>
-      mode;
+      register_info::csr::StvecInfo::Mode>;
 
   static void SetDirect(uint64_t addr) {
-    read_write::ReadWriteField<
-        read_write::ReadWriteRegBase<register_info::csr::StvecInfo>,
-        register_info::csr::StvecInfo::Base>::Write(addr);
-    read_write::ReadWriteField<
-        read_write::ReadWriteRegBase<register_info::csr::StvecInfo>,
-        register_info::csr::StvecInfo::Mode>::
-        Write(register_info::csr::StvecInfo::kDirect);
+    Base::Write(addr);
+    Mode::Write(register_info::csr::StvecInfo::kDirect);
   }
-
-  /// @name 构造/析构函数
-  /// @{
-  Stvec() = default;
-  Stvec(const Stvec &) = delete;
-  Stvec(Stvec &&) = delete;
-  auto operator=(const Stvec &) -> Stvec & = delete;
-  auto operator=(Stvec &&) -> Stvec & = delete;
-  virtual ~Stvec() = default;
-  /// @}
 };
 
-class Sip : public read_write::ReadWriteRegBase<register_info::csr::SipInfo> {
- public:
-  read_write::ReadWriteField<
+struct Sip : public read_write::ReadWriteRegBase<register_info::csr::SipInfo> {
+  using Ssip = read_write::ReadWriteField<
       read_write::ReadWriteRegBase<register_info::csr::SipInfo>,
-      register_info::csr::SipInfo::Ssip>
-      ssip;
-  read_write::ReadWriteField<
+      register_info::csr::SipInfo::Ssip>;
+  using Stip = read_write::ReadWriteField<
       read_write::ReadWriteRegBase<register_info::csr::SipInfo>,
-      register_info::csr::SipInfo::Stip>
-      stip;
-  read_write::ReadWriteField<
+      register_info::csr::SipInfo::Stip>;
+  using Seip = read_write::ReadWriteField<
       read_write::ReadWriteRegBase<register_info::csr::SipInfo>,
-      register_info::csr::SipInfo::Seip>
-      seip;
-
-  /// @name 构造/析构函数
-  /// @{
-  Sip() = default;
-  Sip(const Sip &) = delete;
-  Sip(Sip &&) = delete;
-  auto operator=(const Sip &) -> Sip & = delete;
-  auto operator=(Sip &&) -> Sip & = delete;
-  virtual ~Sip() = default;
-  /// @}
+      register_info::csr::SipInfo::Seip>;
 };
 
-class Sie : public read_write::ReadWriteRegBase<register_info::csr::SieInfo> {
- public:
-  read_write::ReadWriteField<
+struct Sie : public read_write::ReadWriteRegBase<register_info::csr::SieInfo> {
+  using Ssie = read_write::ReadWriteField<
       read_write::ReadWriteRegBase<register_info::csr::SieInfo>,
-      register_info::csr::SieInfo::Ssie>
-      ssie;
-  read_write::ReadWriteField<
+      register_info::csr::SieInfo::Ssie>;
+  using Stie = read_write::ReadWriteField<
       read_write::ReadWriteRegBase<register_info::csr::SieInfo>,
-      register_info::csr::SieInfo::Stie>
-      stie;
-  read_write::ReadWriteField<
+      register_info::csr::SieInfo::Stie>;
+  using Seie = read_write::ReadWriteField<
       read_write::ReadWriteRegBase<register_info::csr::SieInfo>,
-      register_info::csr::SieInfo::Seie>
-      seie;
-
-  /// @name 构造/析构函数
-  /// @{
-  Sie() = default;
-  Sie(const Sie &) = delete;
-  Sie(Sie &&) = delete;
-  auto operator=(const Sie &) -> Sie & = delete;
-  auto operator=(Sie &&) -> Sie & = delete;
-  virtual ~Sie() = default;
-  /// @}
+      register_info::csr::SieInfo::Seie>;
 };
 
-class Time : public read_write::ReadOnlyRegBase<register_info::csr::TimeInfo> {
- public:
-  /// @name 构造/析构函数
-  /// @{
-  Time() = default;
-  Time(const Time &) = delete;
-  Time(Time &&) = delete;
-  auto operator=(const Time &) -> Time & = delete;
-  auto operator=(Time &&) -> Time & = delete;
-  virtual ~Time() = default;
-  /// @}
+struct Time : public read_write::ReadOnlyRegBase<register_info::csr::TimeInfo> {
 };
 
-class Cycle
-    : public read_write::ReadOnlyRegBase<register_info::csr::CycleInfo> {
- public:
-  /// @name 构造/析构函数
-  /// @{
-  Cycle() = default;
-  Cycle(const Cycle &) = delete;
-  Cycle(Cycle &&) = delete;
-  auto operator=(const Cycle &) -> Cycle & = delete;
-  auto operator=(Cycle &&) -> Cycle & = delete;
-  virtual ~Cycle() = default;
-  /// @}
-};
+struct Cycle
+    : public read_write::ReadOnlyRegBase<register_info::csr::CycleInfo> {};
 
-class Instret
-    : public read_write::ReadOnlyRegBase<register_info::csr::InstretInfo> {
- public:
-  /// @name 构造/析构函数
-  /// @{
-  Instret() = default;
-  Instret(const Instret &) = delete;
-  Instret(Instret &&) = delete;
-  auto operator=(const Instret &) -> Instret & = delete;
-  auto operator=(Instret &&) -> Instret & = delete;
-  virtual ~Instret() = default;
-  /// @}
-};
+struct Instret
+    : public read_write::ReadOnlyRegBase<register_info::csr::InstretInfo> {};
 
-class Sscratch
-    : public read_write::ReadWriteRegBase<register_info::csr::SscratchInfo> {
- public:
-  /// @name 构造/析构函数
-  /// @{
-  Sscratch() = default;
-  Sscratch(const Sscratch &) = delete;
-  Sscratch(Sscratch &&) = delete;
-  auto operator=(const Sscratch &) -> Sscratch & = delete;
-  auto operator=(Sscratch &&) -> Sscratch & = delete;
-  virtual ~Sscratch() = default;
-  /// @}
-};
+struct Sscratch
+    : public read_write::ReadWriteRegBase<register_info::csr::SscratchInfo> {};
 
-class Sepc : public read_write::ReadWriteRegBase<register_info::csr::SepcInfo> {
- public:
-  /// @name 构造/析构函数
-  /// @{
-  Sepc() = default;
-  Sepc(const Sepc &) = delete;
-  Sepc(Sepc &&) = delete;
-  auto operator=(const Sepc &) -> Sepc & = delete;
-  auto operator=(Sepc &&) -> Sepc & = delete;
-  virtual ~Sepc() = default;
-  /// @}
-};
+struct Sepc
+    : public read_write::ReadWriteRegBase<register_info::csr::SepcInfo> {};
 
-class Scause
+struct Scause
     : public read_write::ReadWriteRegBase<register_info::csr::ScauseInfo> {
- public:
-  read_write::ReadWriteField<
+  using Interrupt = read_write::ReadWriteField<
       read_write::ReadWriteRegBase<register_info::csr::ScauseInfo>,
-      register_info::csr::ScauseInfo::Interrupt>
-      interrupt;
-  read_write::ReadWriteField<
+      register_info::csr::ScauseInfo::Interrupt>;
+  using ExceptionCode = read_write::ReadWriteField<
       read_write::ReadWriteRegBase<register_info::csr::ScauseInfo>,
-      register_info::csr::ScauseInfo::ExceptionCode>
-      exception_code;
-
-  /// @name 构造/析构函数
-  /// @{
-  Scause() = default;
-  Scause(const Scause &) = delete;
-  Scause(Scause &&) = delete;
-  auto operator=(const Scause &) -> Scause & = delete;
-  auto operator=(Scause &&) -> Scause & = delete;
-  virtual ~Scause() = default;
-  /// @}
+      register_info::csr::ScauseInfo::ExceptionCode>;
 };
 
-class Stval
-    : public read_write::ReadWriteRegBase<register_info::csr::StvalInfo> {
- public:
-  /// @name 构造/析构函数
-  /// @{
-  Stval() = default;
-  Stval(const Stval &) = delete;
-  Stval(Stval &&) = delete;
-  auto operator=(const Stval &) -> Stval & = delete;
-  auto operator=(Stval &&) -> Stval & = delete;
-  virtual ~Stval() = default;
-  /// @}
-};
+struct Stval
+    : public read_write::ReadWriteRegBase<register_info::csr::StvalInfo> {};
 
-class Satp : public read_write::ReadWriteRegBase<register_info::csr::SatpInfo> {
- public:
-  read_write::ReadWriteField<
+struct Satp
+    : public read_write::ReadWriteRegBase<register_info::csr::SatpInfo> {
+  using Ppn = read_write::ReadWriteField<
       read_write::ReadWriteRegBase<register_info::csr::SatpInfo>,
-      register_info::csr::SatpInfo::Ppn>
-      ppn;
-  read_write::ReadWriteField<
+      register_info::csr::SatpInfo::Ppn>;
+  using Asid = read_write::ReadWriteField<
       read_write::ReadWriteRegBase<register_info::csr::SatpInfo>,
-      register_info::csr::SatpInfo::Asid>
-      asid;
-  read_write::ReadWriteField<
+      register_info::csr::SatpInfo::Asid>;
+  using Mode = read_write::ReadWriteField<
       read_write::ReadWriteRegBase<register_info::csr::SatpInfo>,
-      register_info::csr::SatpInfo::Mode>
-      mode;
-
-  /// @name 构造/析构函数
-  /// @{
-  Satp() = default;
-  Satp(const Satp &) = delete;
-  Satp(Satp &&) = delete;
-  auto operator=(const Satp &) -> Satp & = delete;
-  auto operator=(Satp &&) -> Satp & = delete;
-  virtual ~Satp() = default;
-  /// @}
+      register_info::csr::SatpInfo::Mode>;
 };
 
-class Stimecmp
-    : public read_write::ReadOnlyRegBase<register_info::csr::StimecmpInfo> {
- public:
-  /// @name 构造/析构函数
-  /// @{
-  Stimecmp() = default;
-  Stimecmp(const Stimecmp &) = delete;
-  Stimecmp(Stimecmp &&) = delete;
-  auto operator=(const Stimecmp &) -> Stimecmp & = delete;
-  auto operator=(Stimecmp &&) -> Stimecmp & = delete;
-  virtual ~Stimecmp() = default;
-  /// @}
-};
+struct Stimecmp
+    : public read_write::ReadOnlyRegBase<register_info::csr::StimecmpInfo> {};
 
 };  // namespace csr
 
