@@ -797,8 +797,6 @@ class ReadOnlyRegBase {
       __asm__ volatile("mov %%gs, %0" : "=r"(value) : :);
     } else {
       static_assert(sizeof(RegInfo) == 0);
-
-      throw;
     }
     return value;
   }
@@ -897,8 +895,6 @@ class WriteOnlyRegBase {
       __asm__ volatile("mov %0, %%gs" : : "r"(value) :);
     } else {
       static_assert(sizeof(RegInfo) == 0);
-
-      throw;
     }
   }
 
@@ -947,8 +943,6 @@ class WriteOnlyRegBase {
       static_assert(sizeof(RegInfo) == 0);
     } else {
       static_assert(sizeof(RegInfo) == 0);
-
-      throw;
     }
   }
 
@@ -997,8 +991,6 @@ class WriteOnlyRegBase {
       static_assert(sizeof(RegInfo) == 0);
     } else {
       static_assert(sizeof(RegInfo) == 0);
-
-      throw;
     }
   }
 
@@ -1208,9 +1200,7 @@ class ReadWriteField : public ReadOnlyField<Reg, RegInfo>,
 namespace regs {
 
 // 第三部分：寄存器实例
-class Rbp : public read_write::ReadWriteRegBase<register_info::RbpInfo> {
- public:
-};
+class Rbp : public read_write::ReadWriteRegBase<register_info::RbpInfo> {};
 
 class Efer : public read_write::ReadWriteRegBase<register_info::EferInfo> {
  public:
@@ -1272,9 +1262,7 @@ class Gdtr : public read_write::ReadWriteRegBase<register_info::GdtrInfo> {
       base;
 };
 
-class Ldtr : public read_write::ReadWriteRegBase<register_info::LdtrInfo> {
- public:
-};
+class Ldtr : public read_write::ReadWriteRegBase<register_info::LdtrInfo> {};
 
 class Idtr : public read_write::ReadWriteRegBase<register_info::IdtrInfo> {
  public:
@@ -1288,9 +1276,7 @@ class Idtr : public read_write::ReadWriteRegBase<register_info::IdtrInfo> {
       base;
 };
 
-class Tr : public read_write::ReadWriteRegBase<register_info::TrInfo> {
- public:
-};
+class Tr : public read_write::ReadWriteRegBase<register_info::TrInfo> {};
 
 namespace cr {
 
@@ -1316,9 +1302,7 @@ class Cr0 : public read_write::ReadWriteRegBase<register_info::cr::Cr0Info> {
   /// @}
 };
 
-class Cr2 : public read_write::ReadWriteRegBase<register_info::cr::Cr2Info> {
- public:
-};
+class Cr2 : public read_write::ReadWriteRegBase<register_info::cr::Cr2Info> {};
 
 class Cr3 : public read_write::ReadWriteRegBase<register_info::cr::Cr3Info> {
  public:
@@ -1364,19 +1348,13 @@ class Cr4 : public read_write::ReadWriteRegBase<register_info::cr::Cr4Info> {
   /// @}
 };
 
-class Cr8 : public read_write::ReadWriteRegBase<register_info::cr::Cr8Info> {
- public:
-};
+class Cr8 : public read_write::ReadWriteRegBase<register_info::cr::Cr8Info> {};
 
 };  // namespace cr
 
-class Cpuid : public read_write::ReadOnlyRegBase<register_info::CpuidInfo> {
- public:
-};
+class Cpuid : public read_write::ReadOnlyRegBase<register_info::CpuidInfo> {};
 
-class Xcr0 : public read_write::ReadWriteRegBase<register_info::Xcr0Info> {
- public:
-};
+class Xcr0 : public read_write::ReadWriteRegBase<register_info::Xcr0Info> {};
 
 namespace segment_register {
 class Cs : public read_write::ReadWriteRegBase<
