@@ -1079,7 +1079,7 @@ class ReadOnlyField {
    * @param value 指定的值
    * @return RegInfo::DataType 指定位值的信息
    */
-  static __always_inline auto Get(typename RegInfo::DataType value) ->
+  static __always_inline auto Get(uint64_t value) ->
       typename RegInfo::DataType {
     return static_cast<typename RegInfo::DataType>(
         (value & RegInfo::kBitMask) >> RegInfo::kBitOffset);
