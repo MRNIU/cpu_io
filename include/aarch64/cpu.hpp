@@ -28,7 +28,7 @@
  * aarch64 cpu 相关定义
  * @note 寄存器读写设计见 arch/README.md
  */
-namespace cpu {
+namespace cpu_io {
 
 /**
  * @brief 初始化 FPU
@@ -40,6 +40,6 @@ static __always_inline void SetupFpu() {
   asm volatile("isb");
 }
 
-}  // namespace cpu
+}  // namespace cpu_io
 
 #endif  // CPU_IO_INCLUDE_AARCH64_CPU_HPP_
