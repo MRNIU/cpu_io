@@ -34,7 +34,7 @@
  * Order Number: 325384-083US
  * https://www.intel.com/content/www/us/en/developer/articles/technical/intel-sdm.html
  */
-namespace cpu {
+namespace cpu_io {
 /**
  * @brief  从端口读数据
  * @tparam T              要读的数据类型
@@ -459,7 +459,7 @@ struct InterruptContext {
 
 /// 中断上下文，由 cpu 自动压入，有错误码
 struct InterruptContextErrorCode {
-  register_info::IdtrInfo::ErrorCode error_code;
+  detail::register_info::IdtrInfo::ErrorCode error_code;
   uint32_t padding;
   uint64_t rip;
   uint64_t cs;
@@ -468,6 +468,6 @@ struct InterruptContextErrorCode {
   uint64_t ss;
 };
 
-};  // namespace cpu
+};  // namespace cpu_io
 
 #endif  // CPU_IO_INCLUDE_X86_64_CPU_HPP_
