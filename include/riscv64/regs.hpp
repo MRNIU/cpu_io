@@ -35,7 +35,9 @@
  * @see
  * https://github.com/five-embeddev/riscv-scratchpad/blob/master/baremetal-startup-cxx/src/riscv-csr.hpp
  */
-namespace cpu {
+namespace cpu_io {
+
+namespace detail {
 
 // 第一部分：寄存器定义
 namespace register_info {
@@ -1181,14 +1183,7 @@ class ReadWriteField : public ReadOnlyField<Reg, RegInfo>,
 
 // 第三部分：寄存器实例
 namespace regs {
-class Fp : public read_write::ReadWriteRegBase<register_info::FpInfo> {
- public:
-};
-
-/// 通用寄存器
-struct AllXreg {
-  Fp fp;
-};
+class Fp : public read_write::ReadWriteRegBase<register_info::FpInfo> {};
 
 namespace csr {
 
@@ -1449,41 +1444,28 @@ class Stimecmp
   /// @}
 };
 
-class AllCsr {
- public:
-  csr::Sstatus sstatus;
-  csr::Stvec stvec;
-  csr::Sip sip;
-  csr::Sie sie;
-  csr::Time time;
-  csr::Cycle cycle;
-  csr::Instret instret;
-  csr::Sscratch sscratch;
-  csr::Sepc sepc;
-  csr::Scause scause;
-  csr::Stval stval;
-  csr::Satp satp;
-  csr::Stimecmp stimecmp;
-
-  /// @name 构造/析构函数
-  /// @{
-  AllCsr() = default;
-  AllCsr(const AllCsr &) = delete;
-  AllCsr(AllCsr &&) = delete;
-  auto operator=(const AllCsr &) -> AllCsr & = delete;
-  auto operator=(AllCsr &&) -> AllCsr & = delete;
-  virtual ~AllCsr() = default;
-  /// @}
-};
-
 };  // namespace csr
 
 };  // namespace regs
 
-// 第四部分：访问接口
-[[maybe_unused]] static regs::AllXreg kAllXreg;
-[[maybe_unused]] static regs::csr::AllCsr kAllCsr;
+};  // namespace detail
 
-};  // namespace cpu
+// 第四部分：访问接口
+[[maybe_unused]] static detail::regs::Fp fp;
+[[maybe_unused]] static detail::regs::csr::Sstatus sstatus;
+[[maybe_unused]] static detail::regs::csr::Stvec stvec;
+[[maybe_unused]] static detail::regs::csr::Sip sip;
+[[maybe_unused]] static detail::regs::csr::Sie sie;
+[[maybe_unused]] static detail::regs::csr::Time time;
+[[maybe_unused]] static detail::regs::csr::Cycle cycle;
+[[maybe_unused]] static detail::regs::csr::Instret instret;
+[[maybe_unused]] static detail::regs::csr::Sscratch sscratch;
+[[maybe_unused]] static detail::regs::csr::Sepc sepc;
+[[maybe_unused]] static detail::regs::csr::Scause scause;
+[[maybe_unused]] static detail::regs::csr::Stval stval;
+[[maybe_unused]] static detail::regs::csr::Satp satp;
+[[maybe_unused]] static detail::regs::csr::Stimecmp stimecmp;
+
+};  // namespace cpu_io
 
 #endif  // CPU_IO_INCLUDE_RISCV64_REGS_HPP_
