@@ -33,10 +33,7 @@ namespace cpu_io {
 /**
  * @brief 初始化 FPU
  */
-static __always_inline void SetupFpu() {
-  CpacrEl1::Fpen::Set();
-  __asm__ volatile("isb");
-}
+static __always_inline void SetupFpu() { CpacrEl1::Fpen::Set(); }
 
 }  // namespace cpu_io
 
