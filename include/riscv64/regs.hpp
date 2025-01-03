@@ -1451,20 +1451,20 @@ class Stimecmp
 };  // namespace detail
 
 // 第四部分：访问接口
-[[maybe_unused]] static detail::regs::Fp fp;
-[[maybe_unused]] static detail::regs::csr::Sstatus sstatus;
-[[maybe_unused]] static detail::regs::csr::Stvec stvec;
-[[maybe_unused]] static detail::regs::csr::Sip sip;
-[[maybe_unused]] static detail::regs::csr::Sie sie;
-[[maybe_unused]] static detail::regs::csr::Time time;
-[[maybe_unused]] static detail::regs::csr::Cycle cycle;
-[[maybe_unused]] static detail::regs::csr::Instret instret;
-[[maybe_unused]] static detail::regs::csr::Sscratch sscratch;
-[[maybe_unused]] static detail::regs::csr::Sepc sepc;
-[[maybe_unused]] static detail::regs::csr::Scause scause;
-[[maybe_unused]] static detail::regs::csr::Stval stval;
-[[maybe_unused]] static detail::regs::csr::Satp satp;
-[[maybe_unused]] static detail::regs::csr::Stimecmp stimecmp;
+using Fp = detail::regs::Fp;
+using Sstatus = detail::regs::csr::Sstatus;
+using Stvec = detail::regs::csr::Stvec;
+using Sip = detail::regs::csr::Sip;
+using Sie = detail::regs::csr::Sie;
+using Time = detail::regs::csr::Time;
+using Cycle = detail::regs::csr::Cycle;
+using Instret = detail::regs::csr::Instret;
+using Sscratch = detail::regs::csr::Sscratch;
+using Sepc = detail::regs::csr::Sepc;
+using Scause = detail::regs::csr::Scause;
+using Stval = detail::regs::csr::Stval;
+using Satp = detail::regs::csr::Satp;
+using Stimecmp = detail::regs::csr::Stimecmp;
 
 };  // namespace cpu_io
 
