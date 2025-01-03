@@ -29,7 +29,9 @@
  * x86_64 cpu Control Registers 相关定义
  * @note 寄存器读写设计见 arch/README.md
  */
-namespace cpu {
+namespace cpu_io {
+
+namespace detail {
 
 // 第一部分：寄存器定义
 namespace register_info {
@@ -1200,371 +1202,206 @@ class ReadWriteField : public ReadOnlyField<Reg, RegInfo>,
 namespace regs {
 
 // 第三部分：寄存器实例
-class Rbp : public read_write::ReadWriteRegBase<register_info::RbpInfo> {};
+struct Rbp : public read_write::ReadWriteRegBase<register_info::RbpInfo> {};
 
-class Efer : public read_write::ReadWriteRegBase<register_info::EferInfo> {
- public:
-  read_write::ReadWriteField<
+struct Efer : public read_write::ReadWriteRegBase<register_info::EferInfo> {
+  using Sce = read_write::ReadWriteField<
       read_write::ReadWriteRegBase<register_info::EferInfo>,
-      register_info::EferInfo::Sce>
-      sce;
-  read_write::ReadWriteField<
+      register_info::EferInfo::Sce>;
+  using Lme = read_write::ReadWriteField<
       read_write::ReadWriteRegBase<register_info::EferInfo>,
-      register_info::EferInfo::Lme>
-      lme;
-  read_write::ReadWriteField<
+      register_info::EferInfo::Lme>;
+  using Lma = read_write::ReadWriteField<
       read_write::ReadWriteRegBase<register_info::EferInfo>,
-      register_info::EferInfo::Lma>
-      lma;
-  read_write::ReadWriteField<
+      register_info::EferInfo::Lma>;
+  using Nxe = read_write::ReadWriteField<
       read_write::ReadWriteRegBase<register_info::EferInfo>,
-      register_info::EferInfo::Nxe>
-      nxe;
-
-  /// @name 构造/析构函数
-  /// @{
-  Efer() = default;
-  Efer(const Efer &) = delete;
-  Efer(Efer &&) = delete;
-  auto operator=(const Efer &) -> Efer & = delete;
-  auto operator=(Efer &&) -> Efer & = delete;
-  virtual ~Efer() = default;
-  /// @}
+      register_info::EferInfo::Nxe>;
 };
 
-class Rflags : public read_write::ReadWriteRegBase<register_info::RflagsInfo> {
- public:
-  read_write::ReadWriteField<
+struct Rflags : public read_write::ReadWriteRegBase<register_info::RflagsInfo> {
+  using If = read_write::ReadWriteField<
       read_write::ReadWriteRegBase<register_info::RflagsInfo>,
-      register_info::RflagsInfo::If>
-      interrupt_enable_flag;
-
-  /// @name 构造/析构函数
-  /// @{
-  Rflags() = default;
-  Rflags(const Rflags &) = delete;
-  Rflags(Rflags &&) = delete;
-  auto operator=(const Rflags &) -> Rflags & = delete;
-  auto operator=(Rflags &&) -> Rflags & = delete;
-  virtual ~Rflags() = default;
-  /// @}
+      register_info::RflagsInfo::If>;
 };
 
-class Gdtr : public read_write::ReadWriteRegBase<register_info::GdtrInfo> {
- public:
-  read_write::ReadWriteField<
+struct Gdtr : public read_write::ReadWriteRegBase<register_info::GdtrInfo> {
+  using Limit = read_write::ReadWriteField<
       read_write::ReadWriteRegBase<register_info::GdtrInfo>,
-      register_info::GdtrInfo::Limit>
-      limit;
-  read_write::ReadWriteField<
+      register_info::GdtrInfo::Limit>;
+  using Base = read_write::ReadWriteField<
       read_write::ReadWriteRegBase<register_info::GdtrInfo>,
-      register_info::GdtrInfo::Base>
-      base;
+      register_info::GdtrInfo::Base>;
 };
 
-class Ldtr : public read_write::ReadWriteRegBase<register_info::LdtrInfo> {};
+struct Ldtr : public read_write::ReadWriteRegBase<register_info::LdtrInfo> {};
 
-class Idtr : public read_write::ReadWriteRegBase<register_info::IdtrInfo> {
- public:
-  read_write::ReadWriteField<
+struct Idtr : public read_write::ReadWriteRegBase<register_info::IdtrInfo> {
+  using Limit = read_write::ReadWriteField<
       read_write::ReadWriteRegBase<register_info::IdtrInfo>,
-      register_info::IdtrInfo::Limit>
-      limit;
-  read_write::ReadWriteField<
+      register_info::IdtrInfo::Limit>;
+  using Base = read_write::ReadWriteField<
       read_write::ReadWriteRegBase<register_info::IdtrInfo>,
-      register_info::IdtrInfo::Base>
-      base;
+      register_info::IdtrInfo::Base>;
 };
 
-class Tr : public read_write::ReadWriteRegBase<register_info::TrInfo> {};
+struct Tr : public read_write::ReadWriteRegBase<register_info::TrInfo> {};
 
 namespace cr {
 
-class Cr0 : public read_write::ReadWriteRegBase<register_info::cr::Cr0Info> {
- public:
-  read_write::ReadWriteField<
+struct Cr0 : public read_write::ReadWriteRegBase<register_info::cr::Cr0Info> {
+  using Pe = read_write::ReadWriteField<
       read_write::ReadWriteRegBase<register_info::cr::Cr0Info>,
-      register_info::cr::Cr0Info::Pe>
-      pe;
-  read_write::ReadWriteField<
+      register_info::cr::Cr0Info::Pe>;
+  using Pg = read_write::ReadWriteField<
       read_write::ReadWriteRegBase<register_info::cr::Cr0Info>,
-      register_info::cr::Cr0Info::Pg>
-      pg;
-
-  /// @name 构造/析构函数
-  /// @{
-  Cr0() = default;
-  Cr0(const Cr0 &) = delete;
-  Cr0(Cr0 &&) = delete;
-  auto operator=(const Cr0 &) -> Cr0 & = delete;
-  auto operator=(Cr0 &&) -> Cr0 & = delete;
-  virtual ~Cr0() = default;
-  /// @}
+      register_info::cr::Cr0Info::Pg>;
 };
 
-class Cr2 : public read_write::ReadWriteRegBase<register_info::cr::Cr2Info> {};
+struct Cr2 : public read_write::ReadWriteRegBase<register_info::cr::Cr2Info> {};
 
-class Cr3 : public read_write::ReadWriteRegBase<register_info::cr::Cr3Info> {
- public:
-  read_write::ReadWriteField<
+struct Cr3 : public read_write::ReadWriteRegBase<register_info::cr::Cr3Info> {
+  using Pwt = read_write::ReadWriteField<
       read_write::ReadWriteRegBase<register_info::cr::Cr3Info>,
-      register_info::cr::Cr3Info::Pwt>
-      pwt;
-  read_write::ReadWriteField<
+      register_info::cr::Cr3Info::Pwt>;
+  using Pcd = read_write::ReadWriteField<
       read_write::ReadWriteRegBase<register_info::cr::Cr3Info>,
-      register_info::cr::Cr3Info::Pcd>
-      pcd;
-  read_write::ReadWriteField<
+      register_info::cr::Cr3Info::Pcd>;
+  using PageDirectoryBase = read_write::ReadWriteField<
       read_write::ReadWriteRegBase<register_info::cr::Cr3Info>,
-      register_info::cr::Cr3Info::PageDirectoryBase>
-      page_directory_base;
-
-  /// @name 构造/析构函数
-  /// @{
-  Cr3() = default;
-  Cr3(const Cr3 &) = delete;
-  Cr3(Cr3 &&) = delete;
-  auto operator=(const Cr3 &) -> Cr3 & = delete;
-  auto operator=(Cr3 &&) -> Cr3 & = delete;
-  virtual ~Cr3() = default;
-  /// @}
+      register_info::cr::Cr3Info::PageDirectoryBase>;
 };
 
-class Cr4 : public read_write::ReadWriteRegBase<register_info::cr::Cr4Info> {
- public:
-  read_write::ReadWriteField<
+struct Cr4 : public read_write::ReadWriteRegBase<register_info::cr::Cr4Info> {
+  using Pae = read_write::ReadWriteField<
       read_write::ReadWriteRegBase<register_info::cr::Cr4Info>,
-      register_info::cr::Cr4Info::Pae>
-      pae;
-
-  /// @name 构造/析构函数
-  /// @{
-  Cr4() = default;
-  Cr4(const Cr4 &) = delete;
-  Cr4(Cr4 &&) = delete;
-  auto operator=(const Cr4 &) -> Cr4 & = delete;
-  auto operator=(Cr4 &&) -> Cr4 & = delete;
-  virtual ~Cr4() = default;
-  /// @}
+      register_info::cr::Cr4Info::Pae>;
 };
 
-class Cr8 : public read_write::ReadWriteRegBase<register_info::cr::Cr8Info> {};
+struct Cr8 : public read_write::ReadWriteRegBase<register_info::cr::Cr8Info> {};
 
 };  // namespace cr
 
-class Cpuid : public read_write::ReadOnlyRegBase<register_info::CpuidInfo> {};
+struct Cpuid : public read_write::ReadOnlyRegBase<register_info::CpuidInfo> {};
 
-class Xcr0 : public read_write::ReadWriteRegBase<register_info::Xcr0Info> {};
+struct Xcr0 : public read_write::ReadWriteRegBase<register_info::Xcr0Info> {};
 
 namespace segment_register {
-class Cs : public read_write::ReadWriteRegBase<
-               register_info::segment_register::CsInfo> {
- public:
-  read_write::ReadOnlyField<
+struct Cs : public read_write::ReadWriteRegBase<
+                register_info::segment_register::CsInfo> {
+  using Rpl = read_write::ReadOnlyField<
       read_write::ReadWriteRegBase<register_info::segment_register::CsInfo>,
-      register_info::segment_register::CsInfo::Rpl>
-      rpl;
+      register_info::segment_register::CsInfo::Rpl>;
 
-  read_write::ReadOnlyField<
+  using Ti = read_write::ReadOnlyField<
       read_write::ReadWriteRegBase<register_info::segment_register::CsInfo>,
-      register_info::segment_register::CsInfo::Ti>
-      ti;
+      register_info::segment_register::CsInfo::Ti>;
 
-  read_write::ReadOnlyField<
+  using Index = read_write::ReadOnlyField<
       read_write::ReadWriteRegBase<register_info::segment_register::CsInfo>,
-      register_info::segment_register::CsInfo::Index>
-      index;
-
-  /// @name 构造/析构函数
-  /// @{
-  Cs() = default;
-  Cs(const Cs &) = delete;
-  Cs(Cs &&) = delete;
-  auto operator=(const Cs &) -> Cs & = delete;
-  auto operator=(Cs &&) -> Cs & = delete;
-  virtual ~Cs() = default;
-  /// @}
+      register_info::segment_register::CsInfo::Index>;
 };
 
-class Ss : public read_write::ReadWriteRegBase<
-               register_info::segment_register::SsInfo> {
- public:
-  read_write::ReadWriteField<
+struct Ss : public read_write::ReadWriteRegBase<
+                register_info::segment_register::SsInfo> {
+  using Rpl = read_write::ReadWriteField<
       read_write::ReadWriteRegBase<register_info::segment_register::SsInfo>,
-      register_info::segment_register::SsInfo::Rpl>
-      rpl;
+      register_info::segment_register::SsInfo::Rpl>;
 
-  read_write::ReadWriteField<
+  using Ti = read_write::ReadWriteField<
       read_write::ReadWriteRegBase<register_info::segment_register::SsInfo>,
-      register_info::segment_register::SsInfo::Ti>
-      ti;
+      register_info::segment_register::SsInfo::Ti>;
 
-  read_write::ReadWriteField<
+  using Index = read_write::ReadWriteField<
       read_write::ReadWriteRegBase<register_info::segment_register::SsInfo>,
-      register_info::segment_register::SsInfo::Index>
-      index;
-
-  /// @name 构造/析构函数
-  /// @{
-  Ss() = default;
-  Ss(const Ss &) = delete;
-  Ss(Ss &&) = delete;
-  auto operator=(const Ss &) -> Ss & = delete;
-  auto operator=(Ss &&) -> Ss & = delete;
-  virtual ~Ss() = default;
-  /// @}
+      register_info::segment_register::SsInfo::Index>;
 };
 
-class Ds : public read_write::ReadWriteRegBase<
-               register_info::segment_register::DsInfo> {
- public:
-  read_write::ReadWriteField<
+struct Ds : public read_write::ReadWriteRegBase<
+                register_info::segment_register::DsInfo> {
+  using Rpl = read_write::ReadWriteField<
       read_write::ReadWriteRegBase<register_info::segment_register::DsInfo>,
-      register_info::segment_register::DsInfo::Rpl>
-      rpl;
+      register_info::segment_register::DsInfo::Rpl>;
 
-  read_write::ReadWriteField<
+  using Ti = read_write::ReadWriteField<
       read_write::ReadWriteRegBase<register_info::segment_register::DsInfo>,
-      register_info::segment_register::DsInfo::Ti>
-      ti;
+      register_info::segment_register::DsInfo::Ti>;
 
-  read_write::ReadWriteField<
+  using Index = read_write::ReadWriteField<
       read_write::ReadWriteRegBase<register_info::segment_register::DsInfo>,
-      register_info::segment_register::DsInfo::Index>
-      index;
-
-  /// @name 构造/析构函数
-  /// @{
-  Ds() = default;
-  Ds(const Ds &) = delete;
-  Ds(Ds &&) = delete;
-  auto operator=(const Ds &) -> Ds & = delete;
-  auto operator=(Ds &&) -> Ds & = delete;
-  virtual ~Ds() = default;
-  /// @}
+      register_info::segment_register::DsInfo::Index>;
 };
 
-class Es : public read_write::ReadWriteRegBase<
-               register_info::segment_register::EsInfo> {
- public:
-  read_write::ReadWriteField<
+struct Es : public read_write::ReadWriteRegBase<
+                register_info::segment_register::EsInfo> {
+  using Rpl = read_write::ReadWriteField<
       read_write::ReadWriteRegBase<register_info::segment_register::EsInfo>,
-      register_info::segment_register::EsInfo::Rpl>
-      rpl;
+      register_info::segment_register::EsInfo::Rpl>;
 
-  read_write::ReadWriteField<
+  using Ti = read_write::ReadWriteField<
       read_write::ReadWriteRegBase<register_info::segment_register::EsInfo>,
-      register_info::segment_register::EsInfo::Ti>
-      ti;
+      register_info::segment_register::EsInfo::Ti>;
 
-  read_write::ReadWriteField<
+  using Index = read_write::ReadWriteField<
       read_write::ReadWriteRegBase<register_info::segment_register::EsInfo>,
-      register_info::segment_register::EsInfo::Index>
-      index;
-
-  /// @name 构造/析构函数
-  /// @{
-  Es() = default;
-  Es(const Es &) = delete;
-  Es(Es &&) = delete;
-  auto operator=(const Es &) -> Es & = delete;
-  auto operator=(Es &&) -> Es & = delete;
-  virtual ~Es() = default;
-  /// @}
+      register_info::segment_register::EsInfo::Index>;
 };
 
-class Fs : public read_write::ReadWriteRegBase<
-               register_info::segment_register::FsInfo> {
- public:
-  read_write::ReadWriteField<
+struct Fs : public read_write::ReadWriteRegBase<
+                register_info::segment_register::FsInfo> {
+  using Rpl = read_write::ReadWriteField<
       read_write::ReadWriteRegBase<register_info::segment_register::FsInfo>,
-      register_info::segment_register::FsInfo::Rpl>
-      rpl;
+      register_info::segment_register::FsInfo::Rpl>;
 
-  read_write::ReadWriteField<
+  using Ti = read_write::ReadWriteField<
       read_write::ReadWriteRegBase<register_info::segment_register::FsInfo>,
-      register_info::segment_register::FsInfo::Ti>
-      ti;
+      register_info::segment_register::FsInfo::Ti>;
 
-  read_write::ReadWriteField<
+  using Index = read_write::ReadWriteField<
       read_write::ReadWriteRegBase<register_info::segment_register::FsInfo>,
-      register_info::segment_register::FsInfo::Index>
-      index;
-
-  /// @name 构造/析构函数
-  /// @{
-  Fs() = default;
-  Fs(const Fs &) = delete;
-  Fs(Fs &&) = delete;
-  auto operator=(const Fs &) -> Fs & = delete;
-  auto operator=(Fs &&) -> Fs & = delete;
-  virtual ~Fs() = default;
-  /// @}
+      register_info::segment_register::FsInfo::Index>;
 };
 
-class Gs : public read_write::ReadWriteRegBase<
-               register_info::segment_register::GsInfo> {
- public:
-  read_write::ReadWriteField<
+struct Gs : public read_write::ReadWriteRegBase<
+                register_info::segment_register::GsInfo> {
+  using Rpl = read_write::ReadWriteField<
       read_write::ReadWriteRegBase<register_info::segment_register::GsInfo>,
-      register_info::segment_register::GsInfo::Rpl>
-      rpl;
-
-  read_write::ReadWriteField<
+      register_info::segment_register::GsInfo::Rpl>;
+  using Ti = read_write::ReadWriteField<
       read_write::ReadWriteRegBase<register_info::segment_register::GsInfo>,
-      register_info::segment_register::GsInfo::Ti>
-      ti;
-
-  read_write::ReadWriteField<
+      register_info::segment_register::GsInfo::Ti>;
+  using Index = read_write::ReadWriteField<
       read_write::ReadWriteRegBase<register_info::segment_register::GsInfo>,
-      register_info::segment_register::GsInfo::Index>
-      index;
-
-  /// @name 构造/析构函数
-  /// @{
-  Gs() = default;
-  Gs(const Gs &) = delete;
-  Gs(Gs &&) = delete;
-  auto operator=(const Gs &) -> Gs & = delete;
-  auto operator=(Gs &&) -> Gs & = delete;
-  virtual ~Gs() = default;
-  /// @}
+      register_info::segment_register::GsInfo::Index>;
 };
 };  // namespace segment_register
 
-/// 通用寄存器
-struct AllXreg {
-  Rbp rbp;
-};
-
-struct AllCr {
-  Efer efer;
-  Rflags rflags;
-  Gdtr gdtr;
-  Ldtr ldtr;
-  Idtr idtr;
-  Tr tr;
-  cr::Cr0 cr0;
-  cr::Cr2 cr2;
-  cr::Cr3 cr3;
-  cr::Cr4 cr4;
-  cr::Cr8 cr8;
-  Cpuid cpuid;
-  Xcr0 xcr0;
-  segment_register::Cs cs;
-  segment_register::Ss ss;
-  segment_register::Ds ds;
-  segment_register::Es es;
-  segment_register::Fs fs;
-  segment_register::Gs gs;
-};
-
 };  // namespace regs
 
-// 第四部分：访问接口
-[[maybe_unused]] static regs::AllXreg kAllXreg;
-[[maybe_unused]] static regs::AllCr kAllCr;
+};  // namespace detail
 
-};  // namespace cpu
+// 第四部分：访问接口
+using Rbp = detail::regs::Rbp;
+using Efer = detail::regs::Efer;
+using Rflags = detail::regs::Rflags;
+using Gdtr = detail::regs::Gdtr;
+using Ldtr = detail::regs::Ldtr;
+using Idtr = detail::regs::Idtr;
+using Tr = detail::regs::Tr;
+using Cr0 = detail::regs::cr::Cr0;
+using Cr2 = detail::regs::cr::Cr2;
+using Cr3 = detail::regs::cr::Cr3;
+using Cr4 = detail::regs::cr::Cr4;
+using Cr8 = detail::regs::cr::Cr8;
+using Cpuid = detail::regs::Cpuid;
+using Xcr0 = detail::regs::Xcr0;
+using Cs = detail::regs::segment_register::Cs;
+using Ss = detail::regs::segment_register::Ss;
+using Ds = detail::regs::segment_register::Ds;
+using Es = detail::regs::segment_register::Es;
+using Fs = detail::regs::segment_register::Fs;
+using Gs = detail::regs::segment_register::Gs;
+
+};  // namespace cpu_io
 
 #endif  // CPU_IO_INCLUDE_X86_64_REGS_HPP_
