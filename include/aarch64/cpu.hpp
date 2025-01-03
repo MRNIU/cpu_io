@@ -34,11 +34,8 @@ namespace cpu_io {
  * @brief 初始化 FPU
  */
 static __always_inline void SetupFpu() {
-  asm volatile("mrs x0, CPACR_EL1");
-  asm volatile("orr x0, x0, #(0b11 << 20)");
-  asm volatile("msr CPACR_EL1, x0");
   CpacrEl1::Fpen::Set();
-  asm volatile("isb");
+  __asm__ volatile("isb");
 }
 
 }  // namespace cpu_io
