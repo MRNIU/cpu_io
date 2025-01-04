@@ -24,7 +24,17 @@
 
 #include "regs.hpp"
 
-namespace cpu_io::vmm {
+namespace cpu_io {
+
+static __always_inline void EnableInterrupt() { Sstatus::Sie::Set(); }
+
+static __always_inline void DisableInterrupt() { Sstatus::Sie::Clear(); }
+
+static __always_inline auto GetInterruptStatus() -> bool {
+  return Sstatus::Sie::Get();
+}
+
+namespace vmm {
 enum {
   VALID_OFFSET = 0,
   READ_OFFSET = 1,
@@ -104,6 +114,7 @@ inline void FlushPage(uint64_t addr) {
   __asm__ volatile("sfence.vma zero, zero");
 }
 
-}  // namespace cpu_io::vmm
+}  // namespace vmm
+}  // namespace cpu_io
 
 #endif  // CPU_IO_INCLUDE_RISCV64_CPU_HPP_
