@@ -353,6 +353,8 @@ struct SatpInfo : public RegInfoBase {
       "Reserved", "Reserved", "SV39",     "SV48",     "SV57",     "SV64",
   };
 
+  static constexpr const uint64_t kPpnOffset = 12;
+
   struct Ppn {
     using DataType = uint64_t;
     static constexpr uint64_t kBitOffset = 0;
