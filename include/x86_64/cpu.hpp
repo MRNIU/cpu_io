@@ -448,6 +448,14 @@ class Pit {
   volatile size_t ticks_ = 0;
 };
 
+static __always_inline void EnableInterrupt() { Rflags::If::Set(); }
+
+static __always_inline void DisableInterrupt() { Rflags::If::Clear(); }
+
+static __always_inline auto GetInterruptStatus() -> bool {
+  return Rflags::If::Get();
+}
+
 /// 中断上下文，由 cpu 自动压入，无错误码
 struct InterruptContext {
   uint64_t rip;
