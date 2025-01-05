@@ -116,10 +116,10 @@ class Serial {
   /// @name 不使用的构造函数
   /// @{
   Serial() = delete;
-  Serial(const Serial &) = delete;
-  Serial(Serial &&) = delete;
-  auto operator=(const Serial &) -> Serial & = delete;
-  auto operator=(Serial &&) -> Serial & = delete;
+  Serial(const Serial&) = delete;
+  Serial(Serial&&) = delete;
+  auto operator=(const Serial&) -> Serial& = delete;
+  auto operator=(Serial&&) -> Serial& = delete;
   /// @}
 
   /**
@@ -208,10 +208,10 @@ class Pic {
   /// @name 构造/析构函数
   /// @{
   Pic() = delete;
-  Pic(const Pic &) = delete;
-  Pic(Pic &&) = delete;
-  auto operator=(const Pic &) -> Pic & = delete;
-  auto operator=(Pic &&) -> Pic & = delete;
+  Pic(const Pic&) = delete;
+  Pic(Pic&&) = delete;
+  auto operator=(const Pic&) -> Pic& = delete;
+  auto operator=(Pic&&) -> Pic& = delete;
   ~Pic() = default;
   /// @}
 
@@ -367,10 +367,10 @@ class Pit {
   /// @name 构造/析构函数
   /// @{
   Pit() = delete;
-  Pit(const Pit &) = delete;
-  Pit(Pit &&) = delete;
-  auto operator=(const Pit &) -> Pit & = delete;
-  auto operator=(Pit &&) -> Pit & = delete;
+  Pit(const Pit&) = delete;
+  Pit(Pit&&) = delete;
+  auto operator=(const Pit&) -> Pit& = delete;
+  auto operator=(Pit&&) -> Pit& = delete;
   ~Pit() = default;
   /// @}
 
