@@ -448,13 +448,28 @@ class Pit {
   volatile size_t ticks_ = 0;
 };
 
+/**
+ * @brief 允许中断
+ */
 static __always_inline void EnableInterrupt() { Rflags::If::Set(); }
 
+/**
+ * @brief 关闭中断
+ */
 static __always_inline void DisableInterrupt() { Rflags::If::Clear(); }
 
+/**
+ * @brief 获取中断状态
+ */
 static __always_inline auto GetInterruptStatus() -> bool {
   return Rflags::If::Get();
 }
+
+/**
+ * @brief 读取当前 core id
+ * @todo 未实现
+ */
+static __always_inline auto GetCurrentCoreId() -> size_t { return 0; }
 
 /// 中断上下文，由 cpu 自动压入，无错误码
 struct InterruptContext {

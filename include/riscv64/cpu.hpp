@@ -26,10 +26,19 @@
 
 namespace cpu_io {
 
+/**
+ * @brief 允许中断
+ */
 static __always_inline void EnableInterrupt() { Sstatus::Sie::Set(); }
 
+/**
+ * @brief 关闭中断
+ */
 static __always_inline void DisableInterrupt() { Sstatus::Sie::Clear(); }
 
+/**
+ * @brief 获取中断状态
+ */
 static __always_inline auto GetInterruptStatus() -> bool {
   return Sstatus::Sie::Get();
 }
