@@ -59,6 +59,7 @@ struct RegInfoBase {
 
 /// 通用寄存器
 struct FpInfo : public RegInfoBase {};
+struct TpInfo : public RegInfoBase {};
 
 namespace csr {
 /// 立即数掩码，大于这个值需要使用寄存器中转
@@ -421,6 +422,8 @@ class ReadOnlyRegBase {
     typename RegInfo::DataType value{};
     if constexpr (std::is_same_v<RegInfo, register_info::FpInfo>) {
       __asm__ volatile("mv %0, fp" : "=r"(value) : :);
+    } else if constexpr (std::is_same_v<RegInfo, register_info::TpInfo>) {
+      __asm__ volatile("mv %0, tp" : "=r"(value) : :);
     } else if constexpr (std::is_same_v<RegInfo,
                                         register_info::csr::SstatusInfo>) {
       __asm__ volatile("csrr %0, sstatus" : "=r"(value) : :);
@@ -496,6 +499,8 @@ class WriteOnlyRegBase {
   static __always_inline void Write(typename RegInfo::DataType value) {
     if constexpr (std::is_same_v<RegInfo, register_info::FpInfo>) {
       __asm__ volatile("mv fp, %0" : : "r"(value) :);
+    } else if constexpr (std::is_same_v<RegInfo, register_info::TpInfo>) {
+      __asm__ volatile("mv tp, %0" : : "r"(value) :);
     } else if constexpr (std::is_same_v<RegInfo,
                                         register_info::csr::SstatusInfo>) {
       __asm__ volatile("csrw sstatus, %0" : : "r"(value) :);
@@ -1186,6 +1191,7 @@ class ReadWriteField : public ReadOnlyField<Reg, RegInfo>,
 // 第三部分：寄存器实例
 namespace regs {
 struct Fp : public read_write::ReadWriteRegBase<register_info::FpInfo> {};
+struct Tp : public read_write::ReadWriteRegBase<register_info::TpInfo> {};
 
 namespace csr {
 
@@ -1293,6 +1299,7 @@ struct Stimecmp
 
 // 第四部分：访问接口
 using Fp = detail::regs::Fp;
+using Tp = detail::regs::Tp;
 using Sstatus = detail::regs::csr::Sstatus;
 using Stvec = detail::regs::csr::Stvec;
 using Sip = detail::regs::csr::Sip;
