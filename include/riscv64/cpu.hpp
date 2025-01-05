@@ -38,10 +38,17 @@ static __always_inline void DisableInterrupt() { Sstatus::Sie::Clear(); }
 
 /**
  * @brief 获取中断状态
+ * @return bool 中断状态
  */
 static __always_inline auto GetInterruptStatus() -> bool {
   return Sstatus::Sie::Get();
 }
+
+/**
+ * @brief 获取当前 core id
+ * @return size_t core id
+ */
+static __always_inline auto GetCurrentCoreId() -> size_t { return Tp::Read(); }
 
 namespace vmm {
 enum {

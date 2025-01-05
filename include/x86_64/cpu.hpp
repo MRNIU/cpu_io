@@ -467,6 +467,7 @@ static __always_inline auto GetInterruptStatus() -> bool {
 
 /**
  * @brief 读取当前 core id
+ * @return size_t core id
  * @todo 未实现
  */
 static __always_inline auto GetCurrentCoreId() -> size_t { return 0; }
