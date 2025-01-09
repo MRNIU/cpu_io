@@ -62,10 +62,27 @@ namespace system_reg {
  * @see
  * https://developer.arm.com/documentation/ddi0595/2021-03/AArch64-Registers/CPACR-EL1--Architectural-Feature-Access-Control-Register?lang=en
  */
-struct CpacrEl1Info : public RegInfoBase {
+struct CpacrEL1Info : public RegInfoBase {
   struct Fpen {
     using DataType = uint8_t;
     static constexpr uint64_t kBitOffset = 20;
+    static constexpr uint64_t kBitWidth = 2;
+    static constexpr uint64_t kBitMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) << kBitOffset : ~0ULL;
+    static constexpr uint64_t kAllSetMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) : ~0ULL;
+  };
+};
+
+/**
+ * @brief CurrentEL 寄存器定义
+ * @see
+ * https://developer.arm.com/documentation/ddi0601/2024-12/AArch64-Registers/CurrentEL--Current-Exception-Level
+ */
+struct CurrentELInfo : public RegInfoBase {
+  struct El {
+    using DataType = uint8_t;
+    static constexpr uint64_t kBitOffset = 2;
     static constexpr uint64_t kBitWidth = 2;
     static constexpr uint64_t kBitMask =
         (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) << kBitOffset : ~0ULL;
@@ -107,8 +124,8 @@ class ReadOnlyRegBase {
       __asm__ volatile("mov %0, x29" : "=r"(value) : :);
     } else if constexpr (std::is_same_v<
                              RegInfo,
-                             register_info::system_reg::CpacrEl1Info>) {
-      __asm__ volatile("mrs %0, CPACR_EL1" : "=r"(value) : :);
+                             register_info::system_reg::CpacrEL1Info>) {
+      __asm__ volatile("mrs %0, cpacr_el1" : "=r"(value) : :);
     } else {
       static_assert(sizeof(RegInfo) == 0);
     }
@@ -149,8 +166,8 @@ class WriteOnlyRegBase {
       __asm__ volatile("mov x29, %0" : : "r"(value) :);
     } else if constexpr (std::is_same_v<
                              RegInfo,
-                             register_info::system_reg::CpacrEl1Info>) {
-      __asm__ volatile("msr CPACR_EL1, %0" : : "r"(value) :);
+                             register_info::system_reg::CpacrEL1Info>) {
+      __asm__ volatile("msr cpacr_el1, %0" : : "r"(value) :);
     } else {
       static_assert(sizeof(RegInfo) == 0);
     }
@@ -162,9 +179,9 @@ class WriteOnlyRegBase {
    */
   static __always_inline void SetBits(uint64_t mask) {
     if constexpr (std::is_same_v<RegInfo,
-                                 register_info::system_reg::CpacrEl1Info>) {
+                                 register_info::system_reg::CpacrEL1Info>) {
       typename RegInfo::DataType value = 0;
-      __asm__ volatile("mrs %0, CPACR_EL1" : "=r"(value)::);
+      __asm__ volatile("mrs %0, cpacr_el1" : "=r"(value)::);
       value |= mask;
       Write(value);
     } else {
@@ -178,9 +195,9 @@ class WriteOnlyRegBase {
    */
   static __always_inline void ClearBits(uint64_t mask) {
     if constexpr (std::is_same_v<RegInfo,
-                                 register_info::system_reg::CpacrEl1Info>) {
+                                 register_info::system_reg::CpacrEL1Info>) {
       typename RegInfo::DataType value = 0;
-      __asm__ volatile("mrs %0, CPACR_EL1" : "=r"(value)::);
+      __asm__ volatile("mrs %0, cpacr_el1" : "=r"(value)::);
       value &= ~mask;
       Write(value);
     } else {
@@ -372,11 +389,11 @@ struct X29 : public read_write::ReadWriteRegBase<register_info::X29Info> {};
 
 namespace system_reg {
 
-struct CpacrEl1 : public read_write::ReadWriteRegBase<
-                      register_info::system_reg::CpacrEl1Info> {
+struct CpacrEL1 : public read_write::ReadWriteRegBase<
+                      register_info::system_reg::CpacrEL1Info> {
   using Fpen = read_write::ReadWriteField<
-      read_write::ReadWriteRegBase<register_info::system_reg::CpacrEl1Info>,
-      register_info::system_reg::CpacrEl1Info::Fpen>;
+      read_write::ReadWriteRegBase<register_info::system_reg::CpacrEL1Info>,
+      register_info::system_reg::CpacrEL1Info::Fpen>;
 };
 
 };  // namespace system_reg
@@ -387,7 +404,7 @@ struct CpacrEl1 : public read_write::ReadWriteRegBase<
 
 // 第四部分：访问接口
 using X29 = detail::regs::X29;
-using CpacrEl1 = detail::regs::system_reg::CpacrEl1;
+using CpacrEL1 = detail::regs::system_reg::CpacrEL1;
 
 };  // namespace cpu_io
 
