@@ -197,6 +197,14 @@ struct VBAREL1Info : public RegInfoBase {
   };
 };
 
+/**
+ * @brief ELR_EL1 寄存器定义
+ * @see
+ * https://developer.arm.com/documentation/ddi0601/2024-12/AArch64-Registers/ELR-EL1--Exception-Link-Register--EL1-
+ */
+struct ELREL1Info : public RegInfoBase {};
+
+
 };  // namespace system_reg
 
 };  // namespace register_info
@@ -231,7 +239,7 @@ class ReadOnlyRegBase {
     } else if constexpr (std::is_same_v<
                              RegInfo,
                              register_info::system_reg::CpacrEL1Info>) {
-      __asm__ volatile("mrs %0, cpacr_el1" : "=r"(value) : :);
+      __asm__ volatile("mrs %0, CPACR_EL1" : "=r"(value) : :);
     } else if constexpr (std::is_same_v<
                              RegInfo,
                              register_info::system_reg::CurrentELInfo>) {
@@ -245,6 +253,9 @@ class ReadOnlyRegBase {
     } else if constexpr (std::is_same_v<
                              RegInfo, register_info::system_reg::VBAREL1Info>) {
       __asm__ volatile("mrs %0, VBAR_EL1" : "=r"(value) : :);
+    } else if constexpr (std::is_same_v<
+                             RegInfo, register_info::system_reg::ELREL1Info>) {
+      __asm__ volatile("mrs %0, ELR_EL1" : "=r"(value) : :);
     } else {
       static_assert(sizeof(RegInfo) == 0);
     }
@@ -286,7 +297,7 @@ class WriteOnlyRegBase {
     } else if constexpr (std::is_same_v<
                              RegInfo,
                              register_info::system_reg::CpacrEL1Info>) {
-      __asm__ volatile("msr cpacr_el1, %0" : : "r"(value) :);
+      __asm__ volatile("msr CPACR_EL1, %0" : : "r"(value) :);
     } else if constexpr (std::is_same_v<RegInfo,
                                         register_info::system_reg::SPSelInfo>) {
       __asm__ volatile("msr SPSel, %0" : : "r"(value) :);
@@ -296,6 +307,9 @@ class WriteOnlyRegBase {
     } else if constexpr (std::is_same_v<
                              RegInfo, register_info::system_reg::VBAREL1Info>) {
       __asm__ volatile("msr VBAR_EL1, %0" : : "r"(value) :);
+    } else if constexpr (std::is_same_v<
+                             RegInfo, register_info::system_reg::ELREL1Info>) {
+      __asm__ volatile("msr ELR_EL1, %0" : : "r"(value) :);
     } else {
       static_assert(sizeof(RegInfo) == 0);
     }
@@ -323,7 +337,7 @@ class WriteOnlyRegBase {
     if constexpr (std::is_same_v<RegInfo,
                                  register_info::system_reg::CpacrEL1Info>) {
       typename RegInfo::DataType value = 0;
-      __asm__ volatile("mrs %0, cpacr_el1" : "=r"(value)::);
+      __asm__ volatile("mrs %0, CPACR_EL1" : "=r"(value)::);
       value |= mask;
       Write(value);
     } else if constexpr (std::is_same_v<RegInfo,
@@ -351,7 +365,7 @@ class WriteOnlyRegBase {
     if constexpr (std::is_same_v<RegInfo,
                                  register_info::system_reg::CpacrEL1Info>) {
       typename RegInfo::DataType value = 0;
-      __asm__ volatile("mrs %0, cpacr_el1" : "=r"(value)::);
+      __asm__ volatile("mrs %0, CPACR_EL1" : "=r"(value)::);
       value &= ~mask;
       Write(value);
     } else if constexpr (std::is_same_v<RegInfo,
@@ -688,6 +702,9 @@ struct VBAREL1 : public read_write::ReadWriteRegBase<
       register_info::system_reg::VBAREL1Info::Base>;
 };
 
+struct ELREL1 : public read_write::ReadWriteRegBase<
+                    register_info::system_reg::ELREL1Info> {};
+
 };  // namespace system_reg
 
 };  // namespace regs
@@ -701,6 +718,7 @@ using CurrentEL = detail::regs::system_reg::CurrentEL;
 using SPSel = detail::regs::system_reg::SPSel;
 using DAIF = detail::regs::system_reg::DAIF;
 using VBAREL1 = detail::regs::system_reg::VBAREL1;
+using ELREL1 = detail::regs::system_reg::ELREL1;
 
 };  // namespace cpu_io
 
