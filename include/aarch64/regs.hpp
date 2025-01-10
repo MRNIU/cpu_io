@@ -57,6 +57,11 @@ struct RegInfoBase {
 struct X29Info : public RegInfoBase {};
 
 namespace system_reg {
+/// 立即数掩码，大于这个值需要使用寄存器中转
+/// @see
+/// https://developer.arm.com/documentation/dui0802/b/A64-General-Instructions/MSR--immediate-
+static constexpr uint64_t kPSTATEImmOpMask = 0xF;
+
 /**
  * @brief CPACR-EL1 寄存器定义
  * @see
@@ -89,6 +94,26 @@ struct CurrentELInfo : public RegInfoBase {
     using DataType = uint8_t;
     static constexpr uint64_t kBitOffset = 2;
     static constexpr uint64_t kBitWidth = 2;
+    static constexpr uint64_t kBitMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) << kBitOffset : ~0ULL;
+    static constexpr uint64_t kAllSetMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) : ~0ULL;
+  };
+};
+
+/**
+ * @brief SPSel 寄存器定义
+ * @see
+ * https://developer.arm.com/documentation/ddi0601/2024-12/AArch64-Registers/SPSel--Stack-Pointer-Select
+ */
+struct SPSelInfo : public RegInfoBase {
+  static constexpr const bool kEL0 = false;
+  static constexpr const bool kELx = true;
+
+  struct SP {
+    using DataType = bool;
+    static constexpr uint64_t kBitOffset = 0;
+    static constexpr uint64_t kBitWidth = 1;
     static constexpr uint64_t kBitMask =
         (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) << kBitOffset : ~0ULL;
     static constexpr uint64_t kAllSetMask =
@@ -135,6 +160,9 @@ class ReadOnlyRegBase {
                              RegInfo,
                              register_info::system_reg::CurrentELInfo>) {
       __asm__ volatile("mrs %0, CurrentEL" : "=r"(value) : :);
+    } else if constexpr (std::is_same_v<RegInfo,
+                                        register_info::system_reg::SPSelInfo>) {
+      __asm__ volatile("mrs %0, SPSel" : "=r"(value) : :);
     }
 
     else {
@@ -179,6 +207,23 @@ class WriteOnlyRegBase {
                              RegInfo,
                              register_info::system_reg::CpacrEL1Info>) {
       __asm__ volatile("msr cpacr_el1, %0" : : "r"(value) :);
+    } else if constexpr (std::is_same_v<RegInfo,
+                                        register_info::system_reg::SPSelInfo>) {
+      __asm__ volatile("msr SPSel, %0" : : "r"(value) :);
+    } else {
+      static_assert(sizeof(RegInfo) == 0);
+    }
+  }
+
+  /**
+   * 写 PSTATE 寄存器，不通过寄存器中转
+   * @param value 要写的值
+   * @note 只能写 kPSTATEImmOpMask 范围内的值
+   */
+  static __always_inline void WriteImm(const uint8_t value) {
+    if constexpr (std::is_same_v<RegInfo,
+                                 register_info::system_reg::SPSelInfo>) {
+      __asm__ volatile("msr SPSel, %0" : : "i"(value) :);
     } else {
       static_assert(sizeof(RegInfo) == 0);
     }
@@ -193,6 +238,12 @@ class WriteOnlyRegBase {
                                  register_info::system_reg::CpacrEL1Info>) {
       typename RegInfo::DataType value = 0;
       __asm__ volatile("mrs %0, cpacr_el1" : "=r"(value)::);
+      value |= mask;
+      Write(value);
+    } else if constexpr (std::is_same_v<RegInfo,
+                                        register_info::system_reg::SPSelInfo>) {
+      typename RegInfo::DataType value = 0;
+      __asm__ volatile("mrs %0, SPSel" : "=r"(value)::);
       value |= mask;
       Write(value);
     } else {
@@ -211,8 +262,28 @@ class WriteOnlyRegBase {
       __asm__ volatile("mrs %0, cpacr_el1" : "=r"(value)::);
       value &= ~mask;
       Write(value);
+    } else if constexpr (std::is_same_v<RegInfo,
+                                        register_info::system_reg::SPSelInfo>) {
+      typename RegInfo::DataType value = 0;
+      __asm__ volatile("mrs %0, SPSel" : "=r"(value)::);
+      value &= ~mask;
+      Write(value);
     } else {
       static_assert(sizeof(RegInfo) == 0);
+    }
+  }
+
+  /**
+   * 向寄存器写常数
+   * @tparam value 常数的值
+   */
+  template <uint64_t value>
+  static __always_inline void WriteConst() {
+    if constexpr ((value & register_info::system_reg::kPSTATEImmOpMask) ==
+                  value) {
+      WriteImm(value);
+    } else {
+      Write(value);
     }
   }
 
