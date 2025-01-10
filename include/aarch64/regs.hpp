@@ -483,13 +483,12 @@ struct SCTLR_EL1Info : public RegInfoBase {
         (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) << kBitOffset : ~0ULL;
     static constexpr uint64_t kAllSetMask =
         (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) : ~0ULL;
+
+    // EL1&0 stage 1 address translation disabled.
+    static constexpr const bool KDisabled = false;
+    // EL1&0 stage 1 address translation enabled.
+    static constexpr const bool kEnabled = true;
   };
-
-  // EL1&0 stage 1 address translation disabled.
-  static constexpr const bool KDisabled = false;
-
-  // EL1&0 stage 1 address translation enabled.
-  static constexpr const bool kEnabled = true;
 };
 
 /**
@@ -497,7 +496,37 @@ struct SCTLR_EL1Info : public RegInfoBase {
  * @see
  * https://developer.arm.com/documentation/ddi0601/2024-12/AArch64-Registers/ESR-EL1--Exception-Syndrome-Register--EL1-
  */
-struct ESR_EL1Info : public RegInfoBase {};
+struct ESR_EL1Info : public RegInfoBase {
+  struct ISS2 {
+    using DataType = uint32_t;
+    static constexpr uint64_t kBitOffset = 32;
+    static constexpr uint64_t kBitWidth = 24;
+    static constexpr uint64_t kBitMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) << kBitOffset : ~0ULL;
+    static constexpr uint64_t kAllSetMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) : ~0ULL;
+  };
+
+  struct EC {
+    using DataType = uint8_t;
+    static constexpr uint64_t kBitOffset = 26;
+    static constexpr uint64_t kBitWidth = 6;
+    static constexpr uint64_t kBitMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) << kBitOffset : ~0ULL;
+    static constexpr uint64_t kAllSetMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) : ~0ULL;
+  };
+
+  struct ISS {
+    using DataType = uint32_t;
+    static constexpr uint64_t kBitOffset = 0;
+    static constexpr uint64_t kBitWidth = 25;
+    static constexpr uint64_t kBitMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) << kBitOffset : ~0ULL;
+    static constexpr uint64_t kAllSetMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) : ~0ULL;
+  };
+};
 
 /**
  * @brief CNTV_CTL_EL0 寄存器定义
@@ -611,6 +640,12 @@ class ReadOnlyRegBase {
     } else if constexpr (std::is_same_v<
                              RegInfo, register_info::system_reg::TCR_EL1Info>) {
       __asm__ volatile("mrs %0, TCR_EL1" : "=r"(value) : :);
+    } else if constexpr (std::is_same_v<
+                             RegInfo, register_info::system_reg::ESR_EL1Info>) {
+      __asm__ volatile("mrs %0, ESR_EL1" : "=r"(value) : :);
+    } else if constexpr (std::is_same_v<
+                             RegInfo, register_info::system_reg::FAR_EL1Info>) {
+      __asm__ volatile("mrs %0, FAR_EL1" : "=r"(value) : :);
     } else {
       static_assert(sizeof(RegInfo) == 0);
     }
@@ -687,6 +722,12 @@ class WriteOnlyRegBase {
     } else if constexpr (std::is_same_v<
                              RegInfo, register_info::system_reg::TCR_EL1Info>) {
       __asm__ volatile("msr TCR_EL1, %0" : : "r"(value) :);
+    } else if constexpr (std::is_same_v<
+                             RegInfo, register_info::system_reg::ESR_EL1Info>) {
+      __asm__ volatile("msr ESR_EL1, %0" : : "r"(value) :);
+    } else if constexpr (std::is_same_v<
+                             RegInfo, register_info::system_reg::FAR_EL1Info>) {
+      __asm__ volatile("msr FAR_EL1, %0" : : "r"(value) :);
     } else {
       static_assert(sizeof(RegInfo) == 0);
     }
@@ -1178,6 +1219,24 @@ struct TCR_EL1 : public read_write::ReadWriteRegBase<
       register_info::system_reg::TCR_EL1Info::T0SZ>;
 };
 
+struct ESR_EL1 : public read_write::ReadWriteRegBase<
+                     register_info::system_reg::ESR_EL1Info> {
+  using ISS2 = read_write::ReadWriteField<
+      read_write::ReadWriteRegBase<register_info::system_reg::ESR_EL1Info>,
+      register_info::system_reg::ESR_EL1Info::ISS2>;
+
+  using EC = read_write::ReadWriteField<
+      read_write::ReadWriteRegBase<register_info::system_reg::ESR_EL1Info>,
+      register_info::system_reg::ESR_EL1Info::EC>;
+
+  using ISS = read_write::ReadWriteField<
+      read_write::ReadWriteRegBase<register_info::system_reg::ESR_EL1Info>,
+      register_info::system_reg::ESR_EL1Info::ISS>;
+};
+
+struct FAR_EL1 : public read_write::ReadWriteRegBase<
+                     register_info::system_reg::FAR_EL1Info> {};
+
 };  // namespace system_reg
 
 };  // namespace regs
@@ -1199,6 +1258,8 @@ using MPIDR_EL1 = detail::regs::system_reg::MPIDR_EL1;
 using SCTLR_EL1 = detail::regs::system_reg::SCTLR_EL1;
 using MAIR_EL1 = detail::regs::system_reg::MAIR_EL1;
 using TCR_EL1 = detail::regs::system_reg::TCR_EL1;
+using ESR_EL1 = detail::regs::system_reg::ESR_EL1;
+using FAR_EL1 = detail::regs::system_reg::FAR_EL1;
 
 };  // namespace cpu_io
 
