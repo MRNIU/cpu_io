@@ -80,7 +80,12 @@ struct CpacrEL1Info : public RegInfoBase {
  * https://developer.arm.com/documentation/ddi0601/2024-12/AArch64-Registers/CurrentEL--Current-Exception-Level
  */
 struct CurrentELInfo : public RegInfoBase {
-  struct El {
+  static constexpr const uint8_t kEL0 = 0b00;
+  static constexpr const uint8_t kEL1 = 0b01;
+  static constexpr const uint8_t kEL2 = 0b10;
+  static constexpr const uint8_t kEL3 = 0b11;
+
+  struct EL {
     using DataType = uint8_t;
     static constexpr uint64_t kBitOffset = 2;
     static constexpr uint64_t kBitWidth = 2;
@@ -126,7 +131,13 @@ class ReadOnlyRegBase {
                              RegInfo,
                              register_info::system_reg::CpacrEL1Info>) {
       __asm__ volatile("mrs %0, cpacr_el1" : "=r"(value) : :);
-    } else {
+    } else if constexpr (std::is_same_v<
+                             RegInfo,
+                             register_info::system_reg::CurrentELInfo>) {
+      __asm__ volatile("mrs %0, CurrentEL" : "=r"(value) : :);
+    }
+
+    else {
       static_assert(sizeof(RegInfo) == 0);
     }
     return value;
@@ -394,6 +405,13 @@ struct CpacrEL1 : public read_write::ReadWriteRegBase<
   using Fpen = read_write::ReadWriteField<
       read_write::ReadWriteRegBase<register_info::system_reg::CpacrEL1Info>,
       register_info::system_reg::CpacrEL1Info::Fpen>;
+};
+
+struct CurrentEL : public read_write::ReadWriteRegBase<
+                       register_info::system_reg::CurrentELInfo> {
+  using EL = read_write::ReadOnlyField<
+      read_write::ReadOnlyRegBase<register_info::system_reg::CurrentELInfo>,
+      register_info::system_reg::CurrentELInfo::EL>;
 };
 
 };  // namespace system_reg
