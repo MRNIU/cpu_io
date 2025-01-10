@@ -713,9 +713,11 @@ class ReadOnlyRegBase {
                              RegInfo,
                              register_info::system_reg::CNTVCT_EL0Info>) {
       __asm__ volatile("mrs %0, CNTVCT_EL0" : "=r"(value) : :);
-    }
-
-    else {
+    } else if constexpr (std::is_same_v<
+                             RegInfo,
+                             register_info::system_reg::CNTFRQ_EL0Info>) {
+      __asm__ volatile("mrs %0, CNTFRQ_EL0" : "=r"(value) : :);
+    } else {
       static_assert(sizeof(RegInfo) == 0);
     }
     return value;
@@ -805,6 +807,10 @@ class WriteOnlyRegBase {
                              RegInfo,
                              register_info::system_reg::CNTV_TVAL_EL0Info>) {
       __asm__ volatile("msr CNTV_TVAL_EL0, %0" : : "r"(value) :);
+    } else if constexpr (std::is_same_v<
+                             RegInfo,
+                             register_info::system_reg::CNTFRQ_EL0Info>) {
+      __asm__ volatile("msr CNTFRQ_EL0, %0" : : "r"(value) :);
     } else {
       static_assert(sizeof(RegInfo) == 0);
     }
@@ -847,6 +853,13 @@ class WriteOnlyRegBase {
       __asm__ volatile("mrs %0, DAIF" : "=r"(value)::);
       value |= mask;
       Write(value);
+    } else if constexpr (std::is_same_v<
+                             RegInfo,
+                             register_info::system_reg::CNTV_CTL_EL0Info>) {
+      typename RegInfo::DataType value = 0;
+      __asm__ volatile("mrs %0, CNTV_CTL_EL0" : "=r"(value)::);
+      value |= mask;
+      Write(value);
     } else {
       static_assert(sizeof(RegInfo) == 0);
     }
@@ -873,6 +886,13 @@ class WriteOnlyRegBase {
                                         register_info::system_reg::DAIFInfo>) {
       typename RegInfo::DataType value = 0;
       __asm__ volatile("mrs %0, DAIF" : "=r"(value)::);
+      value &= ~mask;
+      Write(value);
+    } else if constexpr (std::is_same_v<
+                             RegInfo,
+                             register_info::system_reg::CNTV_CTL_EL0Info>) {
+      typename RegInfo::DataType value = 0;
+      __asm__ volatile("mrs %0, CNTV_CTL_EL0" : "=r"(value)::);
       value &= ~mask;
       Write(value);
     } else {
@@ -1340,6 +1360,9 @@ struct CNTV_TVAL_EL0 : public read_write::ReadWriteRegBase<
 struct CNTVCT_EL0 : public read_write::ReadWriteRegBase<
                         register_info::system_reg::CNTVCT_EL0Info> {};
 
+struct CNTFRQ_EL0 : public read_write::ReadWriteRegBase<
+                        register_info::system_reg::CNTFRQ_EL0Info> {};
+
 };  // namespace system_reg
 
 };  // namespace regs
@@ -1366,6 +1389,7 @@ using FAR_EL1 = detail::regs::system_reg::FAR_EL1;
 using CNTV_CTL_EL0 = detail::regs::system_reg::CNTV_CTL_EL0;
 using CNTV_TVAL_EL0 = detail::regs::system_reg::CNTV_TVAL_EL0;
 using CNTVCT_EL0 = detail::regs::system_reg::CNTVCT_EL0;
+using CNTFRQ_EL0 = detail::regs::system_reg::CNTFRQ_EL0;
 
 };  // namespace cpu_io
 
