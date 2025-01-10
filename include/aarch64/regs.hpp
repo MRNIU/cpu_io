@@ -183,9 +183,6 @@ struct DAIFInfo : public RegInfoBase {
  * https://developer.arm.com/documentation/ddi0601/2024-12/AArch64-Registers/VBAR-EL1--Vector-Base-Address-Register--EL1-
  */
 struct VBAREL1Info : public RegInfoBase {
-  static constexpr const bool kEL0 = false;
-  static constexpr const bool kELx = true;
-
   struct Base {
     using DataType = uint64_t;
     static constexpr uint64_t kBitOffset = 11;
@@ -204,6 +201,12 @@ struct VBAREL1Info : public RegInfoBase {
  */
 struct ELREL1Info : public RegInfoBase {};
 
+/**
+ * @brief SPSR_EL1 寄存器定义
+ * @see
+ * https://developer.arm.com/documentation/ddi0601/2024-12/AArch64-Registers/SPSR-EL1--Saved-Program-Status-Register--EL1-
+ */
+struct SPSREL1Info : public RegInfoBase {};
 
 };  // namespace system_reg
 
@@ -256,6 +259,9 @@ class ReadOnlyRegBase {
     } else if constexpr (std::is_same_v<
                              RegInfo, register_info::system_reg::ELREL1Info>) {
       __asm__ volatile("mrs %0, ELR_EL1" : "=r"(value) : :);
+    } else if constexpr (std::is_same_v<
+                             RegInfo, register_info::system_reg::SPSREL1Info>) {
+      __asm__ volatile("mrs %0, SPSR_EL1" : "=r"(value) : :);
     } else {
       static_assert(sizeof(RegInfo) == 0);
     }
@@ -310,6 +316,9 @@ class WriteOnlyRegBase {
     } else if constexpr (std::is_same_v<
                              RegInfo, register_info::system_reg::ELREL1Info>) {
       __asm__ volatile("msr ELR_EL1, %0" : : "r"(value) :);
+    } else if constexpr (std::is_same_v<
+                             RegInfo, register_info::system_reg::SPSREL1Info>) {
+      __asm__ volatile("msr SPSR_EL1, %0" : : "r"(value) :);
     } else {
       static_assert(sizeof(RegInfo) == 0);
     }
@@ -705,6 +714,9 @@ struct VBAREL1 : public read_write::ReadWriteRegBase<
 struct ELREL1 : public read_write::ReadWriteRegBase<
                     register_info::system_reg::ELREL1Info> {};
 
+struct SPSREL1 : public read_write::ReadWriteRegBase<
+                     register_info::system_reg::SPSREL1Info> {};
+
 };  // namespace system_reg
 
 };  // namespace regs
@@ -719,6 +731,7 @@ using SPSel = detail::regs::system_reg::SPSel;
 using DAIF = detail::regs::system_reg::DAIF;
 using VBAREL1 = detail::regs::system_reg::VBAREL1;
 using ELREL1 = detail::regs::system_reg::ELREL1;
+using SPSREL1 = detail::regs::system_reg::SPSREL1;
 
 };  // namespace cpu_io
 
