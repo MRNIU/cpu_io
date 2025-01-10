@@ -121,6 +121,62 @@ struct SPSelInfo : public RegInfoBase {
   };
 };
 
+/**
+ * @brief DAIF 寄存器定义
+ * @see
+ * https://developer.arm.com/documentation/ddi0601/2024-12/AArch64-Registers/DAIF--Interrupt-Mask-Bits
+ */
+struct DAIFInfo : public RegInfoBase {
+  static constexpr const bool kNotMasked = false;
+  static constexpr const bool kMasked = true;
+
+  /// Process state D mask.
+  /// Watchpoint, Breakpoint, and Software Step exceptions targeted at the
+  /// current Exception level
+  struct D {
+    using DataType = bool;
+    static constexpr uint64_t kBitOffset = 9;
+    static constexpr uint64_t kBitWidth = 1;
+    static constexpr uint64_t kBitMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) << kBitOffset : ~0ULL;
+    static constexpr uint64_t kAllSetMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) : ~0ULL;
+  };
+
+  /// SError exception mask bit.
+  struct A {
+    using DataType = bool;
+    static constexpr uint64_t kBitOffset = 8;
+    static constexpr uint64_t kBitWidth = 1;
+    static constexpr uint64_t kBitMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) << kBitOffset : ~0ULL;
+    static constexpr uint64_t kAllSetMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) : ~0ULL;
+  };
+
+  /// IRQ mask bit.
+  struct I {
+    using DataType = bool;
+    static constexpr uint64_t kBitOffset = 7;
+    static constexpr uint64_t kBitWidth = 1;
+    static constexpr uint64_t kBitMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) << kBitOffset : ~0ULL;
+    static constexpr uint64_t kAllSetMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) : ~0ULL;
+  };
+
+  /// FIQ mask bit.
+  struct F {
+    using DataType = bool;
+    static constexpr uint64_t kBitOffset = 6;
+    static constexpr uint64_t kBitWidth = 1;
+    static constexpr uint64_t kBitMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) << kBitOffset : ~0ULL;
+    static constexpr uint64_t kAllSetMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) : ~0ULL;
+  };
+};
+
 };  // namespace system_reg
 
 };  // namespace register_info
@@ -163,6 +219,9 @@ class ReadOnlyRegBase {
     } else if constexpr (std::is_same_v<RegInfo,
                                         register_info::system_reg::SPSelInfo>) {
       __asm__ volatile("mrs %0, SPSel" : "=r"(value) : :);
+    } else if constexpr (std::is_same_v<RegInfo,
+                                        register_info::system_reg::DAIFInfo>) {
+      __asm__ volatile("mrs %0, DAIF" : "=r"(value) : :);
     }
 
     else {
@@ -210,6 +269,9 @@ class WriteOnlyRegBase {
     } else if constexpr (std::is_same_v<RegInfo,
                                         register_info::system_reg::SPSelInfo>) {
       __asm__ volatile("msr SPSel, %0" : : "r"(value) :);
+    } else if constexpr (std::is_same_v<RegInfo,
+                                        register_info::system_reg::DAIFInfo>) {
+      __asm__ volatile("msr DAIF, %0" : : "r"(value) :);
     } else {
       static_assert(sizeof(RegInfo) == 0);
     }
