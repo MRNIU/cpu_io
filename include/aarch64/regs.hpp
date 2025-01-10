@@ -585,7 +585,17 @@ struct CNTV_CTL_EL0Info : public RegInfoBase {
  * @see
  * https://developer.arm.com/documentation/ddi0601/2024-12/AArch64-Registers/CNTV-TVAL-EL0--Counter-timer-Virtual-Timer-TimerValue-Register
  */
-struct CNTV_TVAL_EL0Info : public RegInfoBase {};
+struct CNTV_TVAL_EL0Info : public RegInfoBase {
+  struct TimerValue {
+    using DataType = uint32_t;
+    static constexpr uint64_t kBitOffset = 0;
+    static constexpr uint64_t kBitWidth = 32;
+    static constexpr uint64_t kBitMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) << kBitOffset : ~0ULL;
+    static constexpr uint64_t kAllSetMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) : ~0ULL;
+  };
+};
 
 /**
  * @brief FAR_EL1 寄存器定义
@@ -695,6 +705,10 @@ class ReadOnlyRegBase {
                              RegInfo,
                              register_info::system_reg::CNTV_CTL_EL0Info>) {
       __asm__ volatile("mrs %0, CNTV_CTL_EL0" : "=r"(value) : :);
+    } else if constexpr (std::is_same_v<
+                             RegInfo,
+                             register_info::system_reg::CNTV_TVAL_EL0Info>) {
+      __asm__ volatile("mrs %0, CNTV_TVAL_EL0" : "=r"(value) : :);
     } else {
       static_assert(sizeof(RegInfo) == 0);
     }
@@ -781,6 +795,10 @@ class WriteOnlyRegBase {
                              RegInfo,
                              register_info::system_reg::CNTV_CTL_EL0Info>) {
       __asm__ volatile("msr CNTV_CTL_EL0, %0" : : "r"(value) :);
+    } else if constexpr (std::is_same_v<
+                             RegInfo,
+                             register_info::system_reg::CNTV_TVAL_EL0Info>) {
+      __asm__ volatile("msr CNTV_TVAL_EL0, %0" : : "r"(value) :);
     } else {
       static_assert(sizeof(RegInfo) == 0);
     }
@@ -1305,6 +1323,17 @@ struct CNTV_CTL_EL0 : public read_write::ReadWriteRegBase<
       register_info::system_reg::CNTV_CTL_EL0Info::ENABLE>;
 };
 
+struct FAR_EL1 : public read_write::ReadWriteRegBase<
+                     register_info::system_reg::FAR_EL1Info> {};
+
+struct CNTV_TVAL_EL0 : public read_write::ReadWriteRegBase<
+                           register_info::system_reg::CNTV_TVAL_EL0Info> {
+  using TimerValue = read_write::ReadWriteField<
+      read_write::ReadWriteRegBase<
+          register_info::system_reg::CNTV_TVAL_EL0Info>,
+      register_info::system_reg::CNTV_TVAL_EL0Info::TimerValue>;
+};
+
 };  // namespace system_reg
 
 };  // namespace regs
@@ -1329,6 +1358,7 @@ using TCR_EL1 = detail::regs::system_reg::TCR_EL1;
 using ESR_EL1 = detail::regs::system_reg::ESR_EL1;
 using FAR_EL1 = detail::regs::system_reg::FAR_EL1;
 using CNTV_CTL_EL0 = detail::regs::system_reg::CNTV_CTL_EL0;
+using CNTV_TVAL_EL0 = detail::regs::system_reg::CNTV_TVAL_EL0;
 
 };  // namespace cpu_io
 
