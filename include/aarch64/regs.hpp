@@ -222,6 +222,102 @@ struct SPEL0Info : public RegInfoBase {};
  */
 struct SPEL1Info : public RegInfoBase {};
 
+/**
+ * @brief MPIDR_EL1 寄存器定义
+ * @see
+ * https://developer.arm.com/documentation/ddi0601/2024-12/AArch64-Registers/MPIDR-EL1--Multiprocessor-Affinity-Register
+ */
+struct MPIDREL1Info : public RegInfoBase {
+  struct Aff3 {
+    using DataType = uint8_t;
+    static constexpr uint64_t kBitOffset = 32;
+    static constexpr uint64_t kBitWidth = 8;
+    static constexpr uint64_t kBitMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) << kBitOffset : ~0ULL;
+    static constexpr uint64_t kAllSetMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) : ~0ULL;
+  };
+
+  struct U {
+    using DataType = bool;
+    static constexpr uint64_t kBitOffset = 30;
+    static constexpr uint64_t kBitWidth = 1;
+    static constexpr uint64_t kBitMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) << kBitOffset : ~0ULL;
+    static constexpr uint64_t kAllSetMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) : ~0ULL;
+
+    /// Processor is part of a uniprocessor system.
+    static constexpr const bool KUniProcessor = false;
+    /// Processor is part of a multiprocessor system.
+    static constexpr const bool kMultiProssor = true;
+  };
+
+  struct MT {
+    using DataType = bool;
+    static constexpr uint64_t kBitOffset = 24;
+    static constexpr uint64_t kBitWidth = 1;
+    static constexpr uint64_t kBitMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) << kBitOffset : ~0ULL;
+    static constexpr uint64_t kAllSetMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) : ~0ULL;
+
+    /// Performance of PEs with different affinity level 0 values, and the same
+    /// values for affinity level 1 and higher, is largely independent.
+    static constexpr const bool KSingleThread = false;
+
+    /// Performance of PEs with different affinity level 0 values, and the same
+    /// values for affinity level 1 and higher, is very interdependent.
+    static constexpr const bool KMultiThread = true;
+  };
+
+  struct Aff2 {
+    using DataType = uint8_t;
+    static constexpr uint64_t kBitOffset = 16;
+    static constexpr uint64_t kBitWidth = 8;
+    static constexpr uint64_t kBitMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) << kBitOffset : ~0ULL;
+    static constexpr uint64_t kAllSetMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) : ~0ULL;
+  };
+
+  struct Aff1 {
+    using DataType = uint8_t;
+    static constexpr uint64_t kBitOffset = 8;
+    static constexpr uint64_t kBitWidth = 8;
+    static constexpr uint64_t kBitMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) << kBitOffset : ~0ULL;
+    static constexpr uint64_t kAllSetMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) : ~0ULL;
+  };
+
+  struct Aff0 {
+    using DataType = uint8_t;
+    static constexpr uint64_t kBitOffset = 0;
+    static constexpr uint64_t kBitWidth = 8;
+    static constexpr uint64_t kBitMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) << kBitOffset : ~0ULL;
+    static constexpr uint64_t kAllSetMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) : ~0ULL;
+  };
+};
+
+// ttbr0_el1
+// ttbr1_el1
+// tcr_el1
+// mair_el1
+// sctlr_el1
+// vbar_el1
+// esr_el1
+// cntv_ctl_el0
+// cntv_tval_el0
+// daifclr
+// daifset
+// elr_el1
+// far_el1
+// cntvct_el0
+// cntfrq_el0
+
 };  // namespace system_reg
 
 };  // namespace register_info
@@ -282,6 +378,10 @@ class ReadOnlyRegBase {
     } else if constexpr (std::is_same_v<RegInfo,
                                         register_info::system_reg::SPEL1Info>) {
       __asm__ volatile("mrs %0, SP_EL1" : "=r"(value) : :);
+    } else if constexpr (std::is_same_v<
+                             RegInfo,
+                             register_info::system_reg::MPIDREL1Info>) {
+      __asm__ volatile("mrs %0, MPIDR_EL1" : "=r"(value) : :);
     } else {
       static_assert(sizeof(RegInfo) == 0);
     }
@@ -749,6 +849,28 @@ struct SPEL0 : public read_write::ReadWriteRegBase<
 struct SPEL1 : public read_write::ReadWriteRegBase<
                    register_info::system_reg::SPEL1Info> {};
 
+struct MPIDREL1 : public read_write::ReadOnlyRegBase<
+                      register_info::system_reg::MPIDREL1Info> {
+  using Aff3 = read_write::ReadOnlyField<
+      read_write::ReadOnlyRegBase<register_info::system_reg::MPIDREL1Info>,
+      register_info::system_reg::MPIDREL1Info::Aff3>;
+  using U = read_write::ReadOnlyField<
+      read_write::ReadOnlyRegBase<register_info::system_reg::MPIDREL1Info>,
+      register_info::system_reg::MPIDREL1Info::U>;
+  using MT = read_write::ReadOnlyField<
+      read_write::ReadOnlyRegBase<register_info::system_reg::MPIDREL1Info>,
+      register_info::system_reg::MPIDREL1Info::MT>;
+  using Aff2 = read_write::ReadOnlyField<
+      read_write::ReadOnlyRegBase<register_info::system_reg::MPIDREL1Info>,
+      register_info::system_reg::MPIDREL1Info::Aff2>;
+  using Aff1 = read_write::ReadOnlyField<
+      read_write::ReadOnlyRegBase<register_info::system_reg::MPIDREL1Info>,
+      register_info::system_reg::MPIDREL1Info::Aff1>;
+  using Aff0 = read_write::ReadOnlyField<
+      read_write::ReadOnlyRegBase<register_info::system_reg::MPIDREL1Info>,
+      register_info::system_reg::MPIDREL1Info::Aff0>;
+};
+
 };  // namespace system_reg
 
 };  // namespace regs
@@ -766,6 +888,7 @@ using ELREL1 = detail::regs::system_reg::ELREL1;
 using SPSREL1 = detail::regs::system_reg::SPSREL1;
 using SPEL0 = detail::regs::system_reg::SPEL0;
 using SPEL1 = detail::regs::system_reg::SPEL1;
+using MPIDREL1 = detail::regs::system_reg::MPIDREL1;
 
 };  // namespace cpu_io
 

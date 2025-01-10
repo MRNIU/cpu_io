@@ -62,9 +62,7 @@ static __always_inline auto GetInterruptStatus() -> bool {
  * @return size_t core id
  */
 static __always_inline auto GetCurrentCoreId() -> size_t {
-  uint64_t mpidr_el1;
-  __asm__ volatile("mrs %0, MPIDR_EL1" : "=r"(mpidr_el1));
-  return mpidr_el1 & 0xFF;  // 取最低8位作为核心 ID
+  return MPIDREL1::Aff0::Get();
 }
 
 /**
