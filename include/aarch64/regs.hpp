@@ -336,6 +336,34 @@ class WriteOnlyRegBase {
   }
 
   /**
+   * 通过掩码设置寄存器，不通过寄存器中转
+   * @param mask 掩码
+   * @note 只能写 kPSTATEImmOpMask 范围内的值
+   */
+  static __always_inline void SetBitsImm(const uint8_t mask) {
+    if constexpr (std::is_same_v<RegInfo,
+                                 register_info::system_reg::DAIFInfo>) {
+      __asm__ volatile("msr DAIFSet, %0" : : "i"(mask) :);
+    } else {
+      static_assert(sizeof(RegInfo) == 0);
+    }
+  }
+
+  /**
+   * 清零寄存器，不通过寄存器中转
+   * @param mask 掩码
+   * @note 只能写 kPSTATEImmOpMask 范围内的值
+   */
+  static __always_inline void ClearBitsImm(const uint8_t mask) {
+    if constexpr (std::is_same_v<RegInfo,
+                                 register_info::system_reg::DAIFInfo>) {
+      __asm__ volatile("msr DAIFClr, %0" : : "i"(mask) :);
+    } else {
+      static_assert(sizeof(RegInfo) == 0);
+    }
+  }
+
+  /**
    * 向寄存器写常数
    * @tparam value 常数的值
    */
@@ -346,6 +374,34 @@ class WriteOnlyRegBase {
       WriteImm(value);
     } else {
       Write(value);
+    }
+  }
+
+  /**
+   * 通过掩码写寄存器
+   * @tparam mask 掩码
+   */
+  template <uint64_t mask>
+  static __always_inline void SetConst() {
+    if constexpr ((mask & register_info::system_reg::kPSTATEImmOpMask) ==
+                  mask) {
+      SetBitsImm(mask);
+    } else {
+      SetBits(mask);
+    }
+  }
+
+  /**
+   * 通过掩码清零寄存器
+   * @tparam mask 掩码
+   */
+  template <uint64_t mask>
+  static __always_inline void ClearConst() {
+    if constexpr ((mask & register_info::system_reg::kPSTATEImmOpMask) ==
+                  mask) {
+      ClearBitsImm(mask);
+    } else {
+      ClearBits(mask);
     }
   }
 
