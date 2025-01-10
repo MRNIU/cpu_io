@@ -709,7 +709,7 @@ class WriteOnlyRegBase {
    * @tparam value 常数的值
    */
   template <uint64_t value>
-  static void WriteConst() {
+  static __always_inline void WriteConst() {
     if constexpr ((value & register_info::csr::kCsrImmOpMask) == value) {
       WriteImm(value);
     } else {
@@ -722,7 +722,7 @@ class WriteOnlyRegBase {
    * @tparam mask 掩码
    */
   template <uint64_t mask>
-  static void SetConst() {
+  static __always_inline void SetConst() {
     if constexpr ((mask & register_info::csr::kCsrImmOpMask) == mask) {
       SetBitsImm(mask);
     } else {
@@ -735,7 +735,7 @@ class WriteOnlyRegBase {
    * @tparam mask 掩码
    */
   template <uint64_t mask>
-  static void ClearConst() {
+  static __always_inline void ClearConst() {
     if constexpr ((mask & register_info::csr::kCsrImmOpMask) == mask) {
       ClearBitsImm(mask);
     } else {
@@ -865,7 +865,7 @@ class ReadWriteRegBase : public ReadOnlyRegBase<RegInfo>,
    * @return RegInfo::DataType 寄存器的值
    */
   template <uint64_t value>
-  static auto ReadWriteConst() -> typename RegInfo::DataType {
+  static __always_inline auto ReadWriteConst() -> typename RegInfo::DataType {
     if constexpr ((value & register_info::csr::kCsrImmOpMask) == value) {
       return ReadWriteRegBase<RegInfo>::ReadWriteImm(value);
     } else {
@@ -955,7 +955,7 @@ class ReadWriteRegBase : public ReadOnlyRegBase<RegInfo>,
    * @return RegInfo::DataType 寄存器的值
    */
   template <uint64_t mask>
-  static auto ReadSetBitsConst() -> typename RegInfo::DataType {
+  static __always_inline auto ReadSetBitsConst() -> typename RegInfo::DataType {
     if constexpr ((mask & register_info::csr::kCsrImmOpMask) == mask) {
       return ReadSetBitsImm(mask);
     } else {
@@ -1045,7 +1045,8 @@ class ReadWriteRegBase : public ReadOnlyRegBase<RegInfo>,
    * @return RegInfo::DataType 寄存器的值
    */
   template <uint64_t mask>
-  static auto ReadClearBitsConst() -> typename RegInfo::DataType {
+  static __always_inline auto ReadClearBitsConst() ->
+      typename RegInfo::DataType {
     if constexpr ((mask & register_info::csr::kCsrImmOpMask) == mask) {
       return WriteOnlyRegBase<RegInfo>::ReadClearBitsImm(mask);
     } else {
@@ -1217,7 +1218,7 @@ struct Stvec
       read_write::ReadWriteRegBase<register_info::csr::StvecInfo>,
       register_info::csr::StvecInfo::Mode>;
 
-  static void SetDirect(uint64_t addr) {
+  static __always_inline void SetDirect(uint64_t addr) {
     Base::Write(addr);
     Mode::Write(register_info::csr::StvecInfo::kDirect);
   }
