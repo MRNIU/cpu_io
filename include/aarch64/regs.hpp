@@ -208,6 +208,20 @@ struct ELREL1Info : public RegInfoBase {};
  */
 struct SPSREL1Info : public RegInfoBase {};
 
+/**
+ * @brief SPEL0 寄存器定义
+ * @see
+ * https://developer.arm.com/documentation/ddi0601/2024-12/AArch64-Registers/SP-EL0--Stack-Pointer--EL0-
+ */
+struct SPEL0Info : public RegInfoBase {};
+
+/**
+ * @brief SPEL1 寄存器定义
+ * @see
+ * https://developer.arm.com/documentation/ddi0601/2024-12/AArch64-Registers/SP-EL1--Stack-Pointer--EL1-
+ */
+struct SPEL1Info : public RegInfoBase {};
+
 };  // namespace system_reg
 
 };  // namespace register_info
@@ -262,6 +276,12 @@ class ReadOnlyRegBase {
     } else if constexpr (std::is_same_v<
                              RegInfo, register_info::system_reg::SPSREL1Info>) {
       __asm__ volatile("mrs %0, SPSR_EL1" : "=r"(value) : :);
+    } else if constexpr (std::is_same_v<RegInfo,
+                                        register_info::system_reg::SPEL0Info>) {
+      __asm__ volatile("mrs %0, SP_EL0" : "=r"(value) : :);
+    } else if constexpr (std::is_same_v<RegInfo,
+                                        register_info::system_reg::SPEL1Info>) {
+      __asm__ volatile("mrs %0, SP_EL1" : "=r"(value) : :);
     } else {
       static_assert(sizeof(RegInfo) == 0);
     }
@@ -319,6 +339,12 @@ class WriteOnlyRegBase {
     } else if constexpr (std::is_same_v<
                              RegInfo, register_info::system_reg::SPSREL1Info>) {
       __asm__ volatile("msr SPSR_EL1, %0" : : "r"(value) :);
+    } else if constexpr (std::is_same_v<RegInfo,
+                                        register_info::system_reg::SPEL0Info>) {
+      __asm__ volatile("msr SP_EL0, %0" : : "r"(value) :);
+    } else if constexpr (std::is_same_v<RegInfo,
+                                        register_info::system_reg::SPEL1Info>) {
+      __asm__ volatile("msr SP_EL1, %0" : : "r"(value) :);
     } else {
       static_assert(sizeof(RegInfo) == 0);
     }
@@ -717,6 +743,12 @@ struct ELREL1 : public read_write::ReadWriteRegBase<
 struct SPSREL1 : public read_write::ReadWriteRegBase<
                      register_info::system_reg::SPSREL1Info> {};
 
+struct SPEL0 : public read_write::ReadWriteRegBase<
+                   register_info::system_reg::SPEL0Info> {};
+
+struct SPEL1 : public read_write::ReadWriteRegBase<
+                   register_info::system_reg::SPEL1Info> {};
+
 };  // namespace system_reg
 
 };  // namespace regs
@@ -732,6 +764,8 @@ using DAIF = detail::regs::system_reg::DAIF;
 using VBAREL1 = detail::regs::system_reg::VBAREL1;
 using ELREL1 = detail::regs::system_reg::ELREL1;
 using SPSREL1 = detail::regs::system_reg::SPSREL1;
+using SPEL0 = detail::regs::system_reg::SPEL0;
+using SPEL1 = detail::regs::system_reg::SPEL1;
 
 };  // namespace cpu_io
 
