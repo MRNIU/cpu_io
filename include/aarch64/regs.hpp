@@ -432,13 +432,14 @@ class ReadOnlyRegBase {
                              RegInfo, register_info::system_reg::ELR_EL1Info>) {
       __asm__ volatile("mrs %0, ELR_EL1" : "=r"(value) : :);
     } else if constexpr (std::is_same_v<
-                             RegInfo, register_info::system_reg::SPSR_EL1Info>) {
+                             RegInfo,
+                             register_info::system_reg::SPSR_EL1Info>) {
       __asm__ volatile("mrs %0, SPSR_EL1" : "=r"(value) : :);
-    } else if constexpr (std::is_same_v<RegInfo,
-                                        register_info::system_reg::SP_EL0Info>) {
+    } else if constexpr (std::is_same_v<
+                             RegInfo, register_info::system_reg::SP_EL0Info>) {
       __asm__ volatile("mrs %0, SP_EL0" : "=r"(value) : :);
-    } else if constexpr (std::is_same_v<RegInfo,
-                                        register_info::system_reg::SP_EL1Info>) {
+    } else if constexpr (std::is_same_v<
+                             RegInfo, register_info::system_reg::SP_EL1Info>) {
       __asm__ volatile("mrs %0, SP_EL1" : "=r"(value) : :);
     } else if constexpr (std::is_same_v<
                              RegInfo,
@@ -500,13 +501,14 @@ class WriteOnlyRegBase {
                              RegInfo, register_info::system_reg::ELR_EL1Info>) {
       __asm__ volatile("msr ELR_EL1, %0" : : "r"(value) :);
     } else if constexpr (std::is_same_v<
-                             RegInfo, register_info::system_reg::SPSR_EL1Info>) {
+                             RegInfo,
+                             register_info::system_reg::SPSR_EL1Info>) {
       __asm__ volatile("msr SPSR_EL1, %0" : : "r"(value) :);
-    } else if constexpr (std::is_same_v<RegInfo,
-                                        register_info::system_reg::SP_EL0Info>) {
+    } else if constexpr (std::is_same_v<
+                             RegInfo, register_info::system_reg::SP_EL0Info>) {
       __asm__ volatile("msr SP_EL0, %0" : : "r"(value) :);
-    } else if constexpr (std::is_same_v<RegInfo,
-                                        register_info::system_reg::SP_EL1Info>) {
+    } else if constexpr (std::is_same_v<
+                             RegInfo, register_info::system_reg::SP_EL1Info>) {
       __asm__ volatile("msr SP_EL1, %0" : : "r"(value) :);
     } else {
       static_assert(sizeof(RegInfo) == 0);
