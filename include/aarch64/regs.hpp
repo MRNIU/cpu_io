@@ -709,7 +709,13 @@ class ReadOnlyRegBase {
                              RegInfo,
                              register_info::system_reg::CNTV_TVAL_EL0Info>) {
       __asm__ volatile("mrs %0, CNTV_TVAL_EL0" : "=r"(value) : :);
-    } else {
+    } else if constexpr (std::is_same_v<
+                             RegInfo,
+                             register_info::system_reg::CNTVCT_EL0Info>) {
+      __asm__ volatile("mrs %0, CNTVCT_EL0" : "=r"(value) : :);
+    }
+
+    else {
       static_assert(sizeof(RegInfo) == 0);
     }
     return value;
@@ -1323,9 +1329,6 @@ struct CNTV_CTL_EL0 : public read_write::ReadWriteRegBase<
       register_info::system_reg::CNTV_CTL_EL0Info::ENABLE>;
 };
 
-struct FAR_EL1 : public read_write::ReadWriteRegBase<
-                     register_info::system_reg::FAR_EL1Info> {};
-
 struct CNTV_TVAL_EL0 : public read_write::ReadWriteRegBase<
                            register_info::system_reg::CNTV_TVAL_EL0Info> {
   using TimerValue = read_write::ReadWriteField<
@@ -1333,6 +1336,9 @@ struct CNTV_TVAL_EL0 : public read_write::ReadWriteRegBase<
           register_info::system_reg::CNTV_TVAL_EL0Info>,
       register_info::system_reg::CNTV_TVAL_EL0Info::TimerValue>;
 };
+
+struct CNTVCT_EL0 : public read_write::ReadWriteRegBase<
+                        register_info::system_reg::CNTVCT_EL0Info> {};
 
 };  // namespace system_reg
 
@@ -1359,6 +1365,7 @@ using ESR_EL1 = detail::regs::system_reg::ESR_EL1;
 using FAR_EL1 = detail::regs::system_reg::FAR_EL1;
 using CNTV_CTL_EL0 = detail::regs::system_reg::CNTV_CTL_EL0;
 using CNTV_TVAL_EL0 = detail::regs::system_reg::CNTV_TVAL_EL0;
+using CNTVCT_EL0 = detail::regs::system_reg::CNTVCT_EL0;
 
 };  // namespace cpu_io
 
