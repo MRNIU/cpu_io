@@ -63,11 +63,11 @@ namespace system_reg {
 static constexpr uint64_t kPSTATEImmOpMask = 0xF;
 
 /**
- * @brief CPACR-EL1 寄存器定义
+ * @brief CPACR_EL1 寄存器定义
  * @see
  * https://developer.arm.com/documentation/ddi0595/2021-03/AArch64-Registers/CPACR-EL1--Architectural-Feature-Access-Control-Register?lang=en
  */
-struct CpacrEL1Info : public RegInfoBase {
+struct CPACR_EL1Info : public RegInfoBase {
   struct Fpen {
     using DataType = uint8_t;
     static constexpr uint64_t kBitOffset = 20;
@@ -178,11 +178,11 @@ struct DAIFInfo : public RegInfoBase {
 };
 
 /**
- * @brief VBAR-EL1 寄存器定义
+ * @brief VBAR_EL1 寄存器定义
  * @see
  * https://developer.arm.com/documentation/ddi0601/2024-12/AArch64-Registers/VBAR-EL1--Vector-Base-Address-Register--EL1-
  */
-struct VBAREL1Info : public RegInfoBase {
+struct VBAR_EL1Info : public RegInfoBase {
   struct Base {
     using DataType = uint64_t;
     static constexpr uint64_t kBitOffset = 11;
@@ -199,35 +199,35 @@ struct VBAREL1Info : public RegInfoBase {
  * @see
  * https://developer.arm.com/documentation/ddi0601/2024-12/AArch64-Registers/ELR-EL1--Exception-Link-Register--EL1-
  */
-struct ELREL1Info : public RegInfoBase {};
+struct ELR_EL1Info : public RegInfoBase {};
 
 /**
  * @brief SPSR_EL1 寄存器定义
  * @see
  * https://developer.arm.com/documentation/ddi0601/2024-12/AArch64-Registers/SPSR-EL1--Saved-Program-Status-Register--EL1-
  */
-struct SPSREL1Info : public RegInfoBase {};
+struct SPSR_EL1Info : public RegInfoBase {};
 
 /**
- * @brief SPEL0 寄存器定义
+ * @brief SP_EL0 寄存器定义
  * @see
  * https://developer.arm.com/documentation/ddi0601/2024-12/AArch64-Registers/SP-EL0--Stack-Pointer--EL0-
  */
-struct SPEL0Info : public RegInfoBase {};
+struct SP_EL0Info : public RegInfoBase {};
 
 /**
- * @brief SPEL1 寄存器定义
+ * @brief SP_EL1 寄存器定义
  * @see
  * https://developer.arm.com/documentation/ddi0601/2024-12/AArch64-Registers/SP-EL1--Stack-Pointer--EL1-
  */
-struct SPEL1Info : public RegInfoBase {};
+struct SP_EL1Info : public RegInfoBase {};
 
 /**
  * @brief MPIDR_EL1 寄存器定义
  * @see
  * https://developer.arm.com/documentation/ddi0601/2024-12/AArch64-Registers/MPIDR-EL1--Multiprocessor-Affinity-Register
  */
-struct MPIDREL1Info : public RegInfoBase {
+struct MPIDR_EL1Info : public RegInfoBase {
   struct Aff3 {
     using DataType = uint8_t;
     static constexpr uint64_t kBitOffset = 32;
@@ -302,21 +302,82 @@ struct MPIDREL1Info : public RegInfoBase {
   };
 };
 
-// ttbr0_el1
-// ttbr1_el1
-// tcr_el1
-// mair_el1
-// sctlr_el1
-// vbar_el1
-// esr_el1
-// cntv_ctl_el0
-// cntv_tval_el0
-// daifclr
-// daifset
-// elr_el1
-// far_el1
-// cntvct_el0
-// cntfrq_el0
+/**
+ * @brief TTBR0_EL1 寄存器定义
+ * @see
+ * https://developer.arm.com/documentation/ddi0601/2024-12/AArch64-Registers/TTBR0-EL1--Translation-Table-Base-Register-0--EL1-
+ */
+struct TTBR0_EL1Info : public RegInfoBase {};
+
+/**
+ * @brief TTBR1_EL1 寄存器定义
+ * @see
+ * https://developer.arm.com/documentation/ddi0601/2024-12/AArch64-Registers/TTBR1-EL1--Translation-Table-Base-Register-1--EL1-
+ */
+struct TTBR1_EL1Info : public RegInfoBase {};
+
+/**
+ * @brief TCR_EL1 寄存器定义
+ * @see
+ * https://developer.arm.com/documentation/ddi0601/2024-12/AArch64-Registers/TCR-EL1--Translation-Control-Register--EL1-
+ */
+struct TCR_EL1Info : public RegInfoBase {};
+
+/**
+ * @brief MAIR_EL1 寄存器定义
+ * @see
+ * https://developer.arm.com/documentation/ddi0601/2024-12/AArch64-Registers/MAIR-EL1--Memory-Attribute-Indirection-Register--EL1-
+ */
+struct MAIR_EL1Info : public RegInfoBase {};
+
+/**
+ * @brief SCTLR_EL1 寄存器定义
+ * @see
+ * https://developer.arm.com/documentation/ddi0601/2024-12/AArch64-Registers/SCTLR-EL1--System-Control-Register--EL1-
+ */
+struct SCTLR_EL1Info : public RegInfoBase {};
+
+/**
+ * @brief ESR_EL1 寄存器定义
+ * @see
+ * https://developer.arm.com/documentation/ddi0601/2024-12/AArch64-Registers/ESR-EL1--Exception-Syndrome-Register--EL1-
+ */
+struct ESR_EL1Info : public RegInfoBase {};
+
+/**
+ * @brief CNTV_CTL_EL0 寄存器定义
+ * @see
+ * https://developer.arm.com/documentation/ddi0601/2024-12/AArch64-Registers/CNTV-CTL-EL0--Counter-timer-Virtual-Timer-Control-Register
+ */
+struct CNTV_CTL_EL0Info : public RegInfoBase {};
+
+/**
+ * @brief CNTV_TVAL_EL0 寄存器定义
+ * @see
+ * https://developer.arm.com/documentation/ddi0601/2024-12/AArch64-Registers/CNTV-TVAL-EL0--Counter-timer-Virtual-Timer-TimerValue-Register
+ */
+struct CNTV_TVAL_EL0Info : public RegInfoBase {};
+
+/**
+ * @brief FAR_EL1 寄存器定义
+ * @see
+ * https://developer.arm.com/documentation/ddi0601/2024-12/AArch64-Registers/FAR-EL1--Fault-Address-Register--EL1-
+ */
+struct FAR_EL1Info : public RegInfoBase {};
+
+/**
+ * @brief CNTVCT_EL0 寄存器定义
+ * @see
+ * https://developer.arm.com/documentation/ddi0601/2024-12/AArch64-Registers/CNTVCT-EL0--Counter-timer-Virtual-Count-Register
+ */
+struct CNTVCT_EL0Info : public RegInfoBase {};
+
+/**
+ * @brief CNTFRQ_EL0 寄存器定义
+ * @see
+ * https://developer.arm.com/documentation/ddi0601/2024-12/AArch64-Registers/CNTFRQ-EL0--Counter-timer-Frequency-Register
+ */
+struct CNTFRQ_EL0Info : public RegInfoBase {};
 
 };  // namespace system_reg
 
@@ -351,7 +412,7 @@ class ReadOnlyRegBase {
       __asm__ volatile("mov %0, x29" : "=r"(value) : :);
     } else if constexpr (std::is_same_v<
                              RegInfo,
-                             register_info::system_reg::CpacrEL1Info>) {
+                             register_info::system_reg::CPACR_EL1Info>) {
       __asm__ volatile("mrs %0, CPACR_EL1" : "=r"(value) : :);
     } else if constexpr (std::is_same_v<
                              RegInfo,
@@ -364,23 +425,24 @@ class ReadOnlyRegBase {
                                         register_info::system_reg::DAIFInfo>) {
       __asm__ volatile("mrs %0, DAIF" : "=r"(value) : :);
     } else if constexpr (std::is_same_v<
-                             RegInfo, register_info::system_reg::VBAREL1Info>) {
+                             RegInfo,
+                             register_info::system_reg::VBAR_EL1Info>) {
       __asm__ volatile("mrs %0, VBAR_EL1" : "=r"(value) : :);
     } else if constexpr (std::is_same_v<
-                             RegInfo, register_info::system_reg::ELREL1Info>) {
+                             RegInfo, register_info::system_reg::ELR_EL1Info>) {
       __asm__ volatile("mrs %0, ELR_EL1" : "=r"(value) : :);
     } else if constexpr (std::is_same_v<
-                             RegInfo, register_info::system_reg::SPSREL1Info>) {
+                             RegInfo, register_info::system_reg::SPSR_EL1Info>) {
       __asm__ volatile("mrs %0, SPSR_EL1" : "=r"(value) : :);
     } else if constexpr (std::is_same_v<RegInfo,
-                                        register_info::system_reg::SPEL0Info>) {
+                                        register_info::system_reg::SP_EL0Info>) {
       __asm__ volatile("mrs %0, SP_EL0" : "=r"(value) : :);
     } else if constexpr (std::is_same_v<RegInfo,
-                                        register_info::system_reg::SPEL1Info>) {
+                                        register_info::system_reg::SP_EL1Info>) {
       __asm__ volatile("mrs %0, SP_EL1" : "=r"(value) : :);
     } else if constexpr (std::is_same_v<
                              RegInfo,
-                             register_info::system_reg::MPIDREL1Info>) {
+                             register_info::system_reg::MPIDR_EL1Info>) {
       __asm__ volatile("mrs %0, MPIDR_EL1" : "=r"(value) : :);
     } else {
       static_assert(sizeof(RegInfo) == 0);
@@ -422,7 +484,7 @@ class WriteOnlyRegBase {
       __asm__ volatile("mov x29, %0" : : "r"(value) :);
     } else if constexpr (std::is_same_v<
                              RegInfo,
-                             register_info::system_reg::CpacrEL1Info>) {
+                             register_info::system_reg::CPACR_EL1Info>) {
       __asm__ volatile("msr CPACR_EL1, %0" : : "r"(value) :);
     } else if constexpr (std::is_same_v<RegInfo,
                                         register_info::system_reg::SPSelInfo>) {
@@ -431,19 +493,20 @@ class WriteOnlyRegBase {
                                         register_info::system_reg::DAIFInfo>) {
       __asm__ volatile("msr DAIF, %0" : : "r"(value) :);
     } else if constexpr (std::is_same_v<
-                             RegInfo, register_info::system_reg::VBAREL1Info>) {
+                             RegInfo,
+                             register_info::system_reg::VBAR_EL1Info>) {
       __asm__ volatile("msr VBAR_EL1, %0" : : "r"(value) :);
     } else if constexpr (std::is_same_v<
-                             RegInfo, register_info::system_reg::ELREL1Info>) {
+                             RegInfo, register_info::system_reg::ELR_EL1Info>) {
       __asm__ volatile("msr ELR_EL1, %0" : : "r"(value) :);
     } else if constexpr (std::is_same_v<
-                             RegInfo, register_info::system_reg::SPSREL1Info>) {
+                             RegInfo, register_info::system_reg::SPSR_EL1Info>) {
       __asm__ volatile("msr SPSR_EL1, %0" : : "r"(value) :);
     } else if constexpr (std::is_same_v<RegInfo,
-                                        register_info::system_reg::SPEL0Info>) {
+                                        register_info::system_reg::SP_EL0Info>) {
       __asm__ volatile("msr SP_EL0, %0" : : "r"(value) :);
     } else if constexpr (std::is_same_v<RegInfo,
-                                        register_info::system_reg::SPEL1Info>) {
+                                        register_info::system_reg::SP_EL1Info>) {
       __asm__ volatile("msr SP_EL1, %0" : : "r"(value) :);
     } else {
       static_assert(sizeof(RegInfo) == 0);
@@ -470,7 +533,7 @@ class WriteOnlyRegBase {
    */
   static __always_inline void SetBits(uint64_t mask) {
     if constexpr (std::is_same_v<RegInfo,
-                                 register_info::system_reg::CpacrEL1Info>) {
+                                 register_info::system_reg::CPACR_EL1Info>) {
       typename RegInfo::DataType value = 0;
       __asm__ volatile("mrs %0, CPACR_EL1" : "=r"(value)::);
       value |= mask;
@@ -498,7 +561,7 @@ class WriteOnlyRegBase {
    */
   static __always_inline void ClearBits(uint64_t mask) {
     if constexpr (std::is_same_v<RegInfo,
-                                 register_info::system_reg::CpacrEL1Info>) {
+                                 register_info::system_reg::CPACR_EL1Info>) {
       typename RegInfo::DataType value = 0;
       __asm__ volatile("mrs %0, CPACR_EL1" : "=r"(value)::);
       value &= ~mask;
@@ -790,11 +853,11 @@ struct X29 : public read_write::ReadWriteRegBase<register_info::X29Info> {};
 
 namespace system_reg {
 
-struct CPACREL1 : public read_write::ReadWriteRegBase<
-                      register_info::system_reg::CpacrEL1Info> {
+struct CPACR_EL1 : public read_write::ReadWriteRegBase<
+                       register_info::system_reg::CPACR_EL1Info> {
   using Fpen = read_write::ReadWriteField<
-      read_write::ReadWriteRegBase<register_info::system_reg::CpacrEL1Info>,
-      register_info::system_reg::CpacrEL1Info::Fpen>;
+      read_write::ReadWriteRegBase<register_info::system_reg::CPACR_EL1Info>,
+      register_info::system_reg::CPACR_EL1Info::Fpen>;
 };
 
 struct CurrentEL : public read_write::ReadOnlyRegBase<
@@ -830,45 +893,45 @@ struct DAIF
       register_info::system_reg::DAIFInfo::F>;
 };
 
-struct VBAREL1 : public read_write::ReadWriteRegBase<
-                     register_info::system_reg::VBAREL1Info> {
+struct VBAR_EL1 : public read_write::ReadWriteRegBase<
+                      register_info::system_reg::VBAR_EL1Info> {
   using Base = read_write::ReadWriteField<
-      read_write::ReadWriteRegBase<register_info::system_reg::VBAREL1Info>,
-      register_info::system_reg::VBAREL1Info::Base>;
+      read_write::ReadWriteRegBase<register_info::system_reg::VBAR_EL1Info>,
+      register_info::system_reg::VBAR_EL1Info::Base>;
 };
 
-struct ELREL1 : public read_write::ReadWriteRegBase<
-                    register_info::system_reg::ELREL1Info> {};
+struct ELR_EL1 : public read_write::ReadWriteRegBase<
+                     register_info::system_reg::ELR_EL1Info> {};
 
-struct SPSREL1 : public read_write::ReadWriteRegBase<
-                     register_info::system_reg::SPSREL1Info> {};
+struct SPSR_EL1 : public read_write::ReadWriteRegBase<
+                      register_info::system_reg::SPSR_EL1Info> {};
 
-struct SPEL0 : public read_write::ReadWriteRegBase<
-                   register_info::system_reg::SPEL0Info> {};
+struct SP_EL0 : public read_write::ReadWriteRegBase<
+                    register_info::system_reg::SP_EL0Info> {};
 
-struct SPEL1 : public read_write::ReadWriteRegBase<
-                   register_info::system_reg::SPEL1Info> {};
+struct SP_EL1 : public read_write::ReadWriteRegBase<
+                    register_info::system_reg::SP_EL1Info> {};
 
-struct MPIDREL1 : public read_write::ReadOnlyRegBase<
-                      register_info::system_reg::MPIDREL1Info> {
+struct MPIDR_EL1 : public read_write::ReadOnlyRegBase<
+                       register_info::system_reg::MPIDR_EL1Info> {
   using Aff3 = read_write::ReadOnlyField<
-      read_write::ReadOnlyRegBase<register_info::system_reg::MPIDREL1Info>,
-      register_info::system_reg::MPIDREL1Info::Aff3>;
+      read_write::ReadOnlyRegBase<register_info::system_reg::MPIDR_EL1Info>,
+      register_info::system_reg::MPIDR_EL1Info::Aff3>;
   using U = read_write::ReadOnlyField<
-      read_write::ReadOnlyRegBase<register_info::system_reg::MPIDREL1Info>,
-      register_info::system_reg::MPIDREL1Info::U>;
+      read_write::ReadOnlyRegBase<register_info::system_reg::MPIDR_EL1Info>,
+      register_info::system_reg::MPIDR_EL1Info::U>;
   using MT = read_write::ReadOnlyField<
-      read_write::ReadOnlyRegBase<register_info::system_reg::MPIDREL1Info>,
-      register_info::system_reg::MPIDREL1Info::MT>;
+      read_write::ReadOnlyRegBase<register_info::system_reg::MPIDR_EL1Info>,
+      register_info::system_reg::MPIDR_EL1Info::MT>;
   using Aff2 = read_write::ReadOnlyField<
-      read_write::ReadOnlyRegBase<register_info::system_reg::MPIDREL1Info>,
-      register_info::system_reg::MPIDREL1Info::Aff2>;
+      read_write::ReadOnlyRegBase<register_info::system_reg::MPIDR_EL1Info>,
+      register_info::system_reg::MPIDR_EL1Info::Aff2>;
   using Aff1 = read_write::ReadOnlyField<
-      read_write::ReadOnlyRegBase<register_info::system_reg::MPIDREL1Info>,
-      register_info::system_reg::MPIDREL1Info::Aff1>;
+      read_write::ReadOnlyRegBase<register_info::system_reg::MPIDR_EL1Info>,
+      register_info::system_reg::MPIDR_EL1Info::Aff1>;
   using Aff0 = read_write::ReadOnlyField<
-      read_write::ReadOnlyRegBase<register_info::system_reg::MPIDREL1Info>,
-      register_info::system_reg::MPIDREL1Info::Aff0>;
+      read_write::ReadOnlyRegBase<register_info::system_reg::MPIDR_EL1Info>,
+      register_info::system_reg::MPIDR_EL1Info::Aff0>;
 };
 
 };  // namespace system_reg
@@ -879,16 +942,16 @@ struct MPIDREL1 : public read_write::ReadOnlyRegBase<
 
 // 第四部分：访问接口
 using X29 = detail::regs::X29;
-using CPACREL1 = detail::regs::system_reg::CPACREL1;
+using CPACR_EL1 = detail::regs::system_reg::CPACR_EL1;
 using CurrentEL = detail::regs::system_reg::CurrentEL;
 using SPSel = detail::regs::system_reg::SPSel;
 using DAIF = detail::regs::system_reg::DAIF;
-using VBAREL1 = detail::regs::system_reg::VBAREL1;
-using ELREL1 = detail::regs::system_reg::ELREL1;
-using SPSREL1 = detail::regs::system_reg::SPSREL1;
-using SPEL0 = detail::regs::system_reg::SPEL0;
-using SPEL1 = detail::regs::system_reg::SPEL1;
-using MPIDREL1 = detail::regs::system_reg::MPIDREL1;
+using VBAR_EL1 = detail::regs::system_reg::VBAR_EL1;
+using ELR_EL1 = detail::regs::system_reg::ELR_EL1;
+using SPSR_EL1 = detail::regs::system_reg::SPSR_EL1;
+using SP_EL0 = detail::regs::system_reg::SP_EL0;
+using SP_EL1 = detail::regs::system_reg::SP_EL1;
+using MPIDR_EL1 = detail::regs::system_reg::MPIDR_EL1;
 
 };  // namespace cpu_io
 
