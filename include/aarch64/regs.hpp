@@ -177,6 +177,26 @@ struct DAIFInfo : public RegInfoBase {
   };
 };
 
+/**
+ * @brief VBAR-EL1 寄存器定义
+ * @see
+ * https://developer.arm.com/documentation/ddi0601/2024-12/AArch64-Registers/VBAR-EL1--Vector-Base-Address-Register--EL1-
+ */
+struct VBAREL1Info : public RegInfoBase {
+  static constexpr const bool kEL0 = false;
+  static constexpr const bool kELx = true;
+
+  struct Base {
+    using DataType = uint64_t;
+    static constexpr uint64_t kBitOffset = 11;
+    static constexpr uint64_t kBitWidth = 53;
+    static constexpr uint64_t kBitMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) << kBitOffset : ~0ULL;
+    static constexpr uint64_t kAllSetMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) : ~0ULL;
+  };
+};
+
 };  // namespace system_reg
 
 };  // namespace register_info
@@ -222,9 +242,10 @@ class ReadOnlyRegBase {
     } else if constexpr (std::is_same_v<RegInfo,
                                         register_info::system_reg::DAIFInfo>) {
       __asm__ volatile("mrs %0, DAIF" : "=r"(value) : :);
-    }
-
-    else {
+    } else if constexpr (std::is_same_v<
+                             RegInfo, register_info::system_reg::VBAREL1Info>) {
+      __asm__ volatile("mrs %0, VBAR_EL1" : "=r"(value) : :);
+    } else {
       static_assert(sizeof(RegInfo) == 0);
     }
     return value;
@@ -272,6 +293,9 @@ class WriteOnlyRegBase {
     } else if constexpr (std::is_same_v<RegInfo,
                                         register_info::system_reg::DAIFInfo>) {
       __asm__ volatile("msr DAIF, %0" : : "r"(value) :);
+    } else if constexpr (std::is_same_v<
+                             RegInfo, register_info::system_reg::VBAREL1Info>) {
+      __asm__ volatile("msr VBAR_EL1, %0" : : "r"(value) :);
     } else {
       static_assert(sizeof(RegInfo) == 0);
     }
@@ -617,7 +641,7 @@ struct X29 : public read_write::ReadWriteRegBase<register_info::X29Info> {};
 
 namespace system_reg {
 
-struct CpacrEL1 : public read_write::ReadWriteRegBase<
+struct CPACREL1 : public read_write::ReadWriteRegBase<
                       register_info::system_reg::CpacrEL1Info> {
   using Fpen = read_write::ReadWriteField<
       read_write::ReadWriteRegBase<register_info::system_reg::CpacrEL1Info>,
@@ -657,6 +681,13 @@ struct DAIF
       register_info::system_reg::DAIFInfo::F>;
 };
 
+struct VBAREL1 : public read_write::ReadWriteRegBase<
+                     register_info::system_reg::VBAREL1Info> {
+  using Base = read_write::ReadWriteField<
+      read_write::ReadWriteRegBase<register_info::system_reg::VBAREL1Info>,
+      register_info::system_reg::VBAREL1Info::Base>;
+};
+
 };  // namespace system_reg
 
 };  // namespace regs
@@ -665,10 +696,11 @@ struct DAIF
 
 // 第四部分：访问接口
 using X29 = detail::regs::X29;
-using CpacrEL1 = detail::regs::system_reg::CpacrEL1;
+using CPACREL1 = detail::regs::system_reg::CPACREL1;
 using CurrentEL = detail::regs::system_reg::CurrentEL;
 using SPSel = detail::regs::system_reg::SPSel;
 using DAIF = detail::regs::system_reg::DAIF;
+using VBAREL1 = detail::regs::system_reg::VBAREL1;
 
 };  // namespace cpu_io
 

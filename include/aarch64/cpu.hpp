@@ -70,7 +70,7 @@ static __always_inline auto GetCurrentCoreId() -> size_t {
 /**
  * @brief 初始化 FPU
  */
-static __always_inline void SetupFpu() { CpacrEL1::Fpen::Set(); }
+static __always_inline void SetupFpu() { CPACREL1::Fpen::Set(); }
 
 }  // namespace cpu_io
 
