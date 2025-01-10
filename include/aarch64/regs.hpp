@@ -328,14 +328,135 @@ struct TCR_EL1Info : public RegInfoBase {};
  * @see
  * https://developer.arm.com/documentation/ddi0601/2024-12/AArch64-Registers/MAIR-EL1--Memory-Attribute-Indirection-Register--EL1-
  */
-struct MAIR_EL1Info : public RegInfoBase {};
+struct MAIR_EL1Info : public RegInfoBase {
+  ///	Device-nGnRnE memory.
+  static constexpr const uint8_t KDeviceNGnRnE = 0b00000000;
+  ///	Device-nGnRE memory.
+  static constexpr const uint8_t KDeviceNGnRE = 0b00000100;
+  ///	Device-nGRE memory.
+  static constexpr const uint8_t KDeviceNGRE = 0b00001000;
+  ///	Device-GRE memory.
+  static constexpr const uint8_t KDeviceGRE = 0b00001100;
+
+  // 0b00RW	where RW != 00	Normal memory, Outer Write-Through Transient.
+  // 0b0100		Normal memory, Outer Non-cacheable.
+  // 0b01RW	where RW != 00	Normal memory, Outer Write-Back Transient.
+  // 0b10RW		Normal memory, Outer Write-Through Non-transient.
+  // 0b11RW		Normal memory, Outer Write-Back Non-transient.
+
+  // 0b0000		See encoding of Attr.
+  // 0b00RW	where RW != 00	Normal memory, Inner Write-Through Transient.
+  // 0b0100		Normal memory, Inner Non-cacheable.
+  // 0b01RW	where RW != 00	Normal memory, Inner Write-Back Transient.
+  // 0b10RW		Normal memory, Inner Write-Through Non-transient.
+  // 0b11RW		Normal memory, Inner Write-Back Non-transient.
+
+  // 0b0	No Allocate.
+  // 0b1	Allocate.
+
+  struct Aff7 {
+    using DataType = uint8_t;
+    static constexpr uint64_t kBitOffset = 56;
+    static constexpr uint64_t kBitWidth = 8;
+    static constexpr uint64_t kBitMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) << kBitOffset : ~0ULL;
+    static constexpr uint64_t kAllSetMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) : ~0ULL;
+  };
+
+  struct Aff6 {
+    using DataType = uint8_t;
+    static constexpr uint64_t kBitOffset = 48;
+    static constexpr uint64_t kBitWidth = 8;
+    static constexpr uint64_t kBitMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) << kBitOffset : ~0ULL;
+    static constexpr uint64_t kAllSetMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) : ~0ULL;
+  };
+
+  struct Aff5 {
+    using DataType = uint8_t;
+    static constexpr uint64_t kBitOffset = 40;
+    static constexpr uint64_t kBitWidth = 8;
+    static constexpr uint64_t kBitMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) << kBitOffset : ~0ULL;
+    static constexpr uint64_t kAllSetMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) : ~0ULL;
+  };
+
+  struct Aff4 {
+    using DataType = uint8_t;
+    static constexpr uint64_t kBitOffset = 32;
+    static constexpr uint64_t kBitWidth = 8;
+    static constexpr uint64_t kBitMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) << kBitOffset : ~0ULL;
+    static constexpr uint64_t kAllSetMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) : ~0ULL;
+  };
+
+  struct Aff3 {
+    using DataType = uint8_t;
+    static constexpr uint64_t kBitOffset = 24;
+    static constexpr uint64_t kBitWidth = 8;
+    static constexpr uint64_t kBitMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) << kBitOffset : ~0ULL;
+    static constexpr uint64_t kAllSetMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) : ~0ULL;
+  };
+
+  struct Aff2 {
+    using DataType = uint8_t;
+    static constexpr uint64_t kBitOffset = 16;
+    static constexpr uint64_t kBitWidth = 8;
+    static constexpr uint64_t kBitMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) << kBitOffset : ~0ULL;
+    static constexpr uint64_t kAllSetMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) : ~0ULL;
+  };
+
+  struct Aff1 {
+    using DataType = uint8_t;
+    static constexpr uint64_t kBitOffset = 8;
+    static constexpr uint64_t kBitWidth = 8;
+    static constexpr uint64_t kBitMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) << kBitOffset : ~0ULL;
+    static constexpr uint64_t kAllSetMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) : ~0ULL;
+  };
+
+  struct Aff0 {
+    using DataType = uint8_t;
+    static constexpr uint64_t kBitOffset = 0;
+    static constexpr uint64_t kBitWidth = 8;
+    static constexpr uint64_t kBitMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) << kBitOffset : ~0ULL;
+    static constexpr uint64_t kAllSetMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) : ~0ULL;
+  };
+};
 
 /**
  * @brief SCTLR_EL1 寄存器定义
  * @see
  * https://developer.arm.com/documentation/ddi0601/2024-12/AArch64-Registers/SCTLR-EL1--System-Control-Register--EL1-
  */
-struct SCTLR_EL1Info : public RegInfoBase {};
+struct SCTLR_EL1Info : public RegInfoBase {
+  struct M {
+    using DataType = bool;
+    static constexpr uint64_t kBitOffset = 0;
+    static constexpr uint64_t kBitWidth = 1;
+    static constexpr uint64_t kBitMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) << kBitOffset : ~0ULL;
+    static constexpr uint64_t kAllSetMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) : ~0ULL;
+  };
+
+  // EL1&0 stage 1 address translation disabled.
+  static constexpr const bool KDisabled = false;
+
+  // EL1&0 stage 1 address translation enabled.
+  static constexpr const bool kEnabled = true;
+};
 
 /**
  * @brief ESR_EL1 寄存器定义
@@ -445,6 +566,14 @@ class ReadOnlyRegBase {
                              RegInfo,
                              register_info::system_reg::MPIDR_EL1Info>) {
       __asm__ volatile("mrs %0, MPIDR_EL1" : "=r"(value) : :);
+    } else if constexpr (std::is_same_v<
+                             RegInfo,
+                             register_info::system_reg::SCTLR_EL1Info>) {
+      __asm__ volatile("mrs %0, SCTLR_EL1" : "=r"(value) : :);
+    } else if constexpr (std::is_same_v<
+                             RegInfo,
+                             register_info::system_reg::MAIR_EL1Info>) {
+      __asm__ volatile("mrs %0, MAIR_EL1Info" : "=r"(value) : :);
     } else {
       static_assert(sizeof(RegInfo) == 0);
     }
@@ -510,6 +639,14 @@ class WriteOnlyRegBase {
     } else if constexpr (std::is_same_v<
                              RegInfo, register_info::system_reg::SP_EL1Info>) {
       __asm__ volatile("msr SP_EL1, %0" : : "r"(value) :);
+    } else if constexpr (std::is_same_v<
+                             RegInfo,
+                             register_info::system_reg::SCTLR_EL1Info>) {
+      __asm__ volatile("msr SCTLR_EL1, %0" : : "r"(value) :);
+    } else if constexpr (std::is_same_v<
+                             RegInfo,
+                             register_info::system_reg::MAIR_EL1Info>) {
+      __asm__ volatile("msr MAIR_EL1, %0" : : "r"(value) :);
     } else {
       static_assert(sizeof(RegInfo) == 0);
     }
@@ -936,6 +1073,48 @@ struct MPIDR_EL1 : public read_write::ReadOnlyRegBase<
       register_info::system_reg::MPIDR_EL1Info::Aff0>;
 };
 
+struct SCTLR_EL1 : public read_write::ReadWriteRegBase<
+                       register_info::system_reg::SCTLR_EL1Info> {
+  using M = read_write::ReadWriteField<
+      read_write::ReadWriteRegBase<register_info::system_reg::SCTLR_EL1Info>,
+      register_info::system_reg::SCTLR_EL1Info::M>;
+};
+
+struct MAIR_EL1 : public read_write::ReadWriteRegBase<
+                      register_info::system_reg::MAIR_EL1Info> {
+  using Aff7 = read_write::ReadWriteField<
+      read_write::ReadWriteRegBase<register_info::system_reg::MAIR_EL1Info>,
+      register_info::system_reg::MAIR_EL1Info::Aff7>;
+
+  using Aff6 = read_write::ReadWriteField<
+      read_write::ReadWriteRegBase<register_info::system_reg::MAIR_EL1Info>,
+      register_info::system_reg::MAIR_EL1Info::Aff6>;
+
+  using Aff5 = read_write::ReadWriteField<
+      read_write::ReadWriteRegBase<register_info::system_reg::MAIR_EL1Info>,
+      register_info::system_reg::MAIR_EL1Info::Aff5>;
+
+  using Aff4 = read_write::ReadWriteField<
+      read_write::ReadWriteRegBase<register_info::system_reg::MAIR_EL1Info>,
+      register_info::system_reg::MAIR_EL1Info::Aff4>;
+
+  using Aff3 = read_write::ReadWriteField<
+      read_write::ReadWriteRegBase<register_info::system_reg::MAIR_EL1Info>,
+      register_info::system_reg::MAIR_EL1Info::Aff3>;
+
+  using Aff2 = read_write::ReadWriteField<
+      read_write::ReadWriteRegBase<register_info::system_reg::MAIR_EL1Info>,
+      register_info::system_reg::MAIR_EL1Info::Aff2>;
+
+  using Aff1 = read_write::ReadWriteField<
+      read_write::ReadWriteRegBase<register_info::system_reg::MAIR_EL1Info>,
+      register_info::system_reg::MAIR_EL1Info::Aff1>;
+
+  using Aff0 = read_write::ReadWriteField<
+      read_write::ReadWriteRegBase<register_info::system_reg::MAIR_EL1Info>,
+      register_info::system_reg::MAIR_EL1Info::Aff0>;
+};
+
 };  // namespace system_reg
 
 };  // namespace regs
@@ -954,6 +1133,8 @@ using SPSR_EL1 = detail::regs::system_reg::SPSR_EL1;
 using SP_EL0 = detail::regs::system_reg::SP_EL0;
 using SP_EL1 = detail::regs::system_reg::SP_EL1;
 using MPIDR_EL1 = detail::regs::system_reg::MPIDR_EL1;
+using SCTLR_EL1 = detail::regs::system_reg::SCTLR_EL1;
+using MAIR_EL1 = detail::regs::system_reg::MAIR_EL1;
 
 };  // namespace cpu_io
 
