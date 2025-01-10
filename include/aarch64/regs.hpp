@@ -308,6 +308,12 @@ class WriteOnlyRegBase {
       __asm__ volatile("mrs %0, SPSel" : "=r"(value)::);
       value |= mask;
       Write(value);
+    } else if constexpr (std::is_same_v<RegInfo,
+                                        register_info::system_reg::DAIFInfo>) {
+      typename RegInfo::DataType value = 0;
+      __asm__ volatile("mrs %0, DAIF" : "=r"(value)::);
+      value |= mask;
+      Write(value);
     } else {
       static_assert(sizeof(RegInfo) == 0);
     }
@@ -328,6 +334,12 @@ class WriteOnlyRegBase {
                                         register_info::system_reg::SPSelInfo>) {
       typename RegInfo::DataType value = 0;
       __asm__ volatile("mrs %0, SPSel" : "=r"(value)::);
+      value &= ~mask;
+      Write(value);
+    } else if constexpr (std::is_same_v<RegInfo,
+                                        register_info::system_reg::DAIFInfo>) {
+      typename RegInfo::DataType value = 0;
+      __asm__ volatile("mrs %0, DAIF" : "=r"(value)::);
       value &= ~mask;
       Write(value);
     } else {
@@ -525,12 +537,28 @@ class WriteOnlyField {
   /**
    * 置位对应 Reg 的由 RegInfo 规定的指定位
    */
-  static __always_inline void Set() { Reg::SetBits(RegInfo::kBitMask); }
+  static __always_inline void Set() {
+    if constexpr ((RegInfo::kBitMask &
+                   register_info::system_reg::kPSTATEImmOpMask) ==
+                  RegInfo::kBitMask) {
+      Reg::SetBitsImm(RegInfo::kBitMask);
+    } else {
+      Reg::SetBits(RegInfo::kBitMask);
+    }
+  }
 
   /**
    * 清零对应 Reg 的由 RegInfo 规定的指定位
    */
-  static __always_inline void Clear() { Reg::ClearBits(RegInfo::kBitMask); }
+  static __always_inline void Clear() {
+    if constexpr ((RegInfo::kBitMask &
+                   register_info::system_reg::kPSTATEImmOpMask) ==
+                  RegInfo::kBitMask) {
+      Reg::ClearBitsImm(RegInfo::kBitMask);
+    } else {
+      Reg::ClearBits(RegInfo::kBitMask);
+    }
+  }
 };
 
 /**
@@ -596,11 +624,37 @@ struct CpacrEL1 : public read_write::ReadWriteRegBase<
       register_info::system_reg::CpacrEL1Info::Fpen>;
 };
 
-struct CurrentEL : public read_write::ReadWriteRegBase<
+struct CurrentEL : public read_write::ReadOnlyRegBase<
                        register_info::system_reg::CurrentELInfo> {
   using EL = read_write::ReadOnlyField<
       read_write::ReadOnlyRegBase<register_info::system_reg::CurrentELInfo>,
       register_info::system_reg::CurrentELInfo::EL>;
+};
+
+struct SPSel : public read_write::ReadWriteRegBase<
+                   register_info::system_reg::SPSelInfo> {
+  using SP = read_write::ReadWriteField<
+      read_write::ReadWriteRegBase<register_info::system_reg::SPSelInfo>,
+      register_info::system_reg::SPSelInfo::SP>;
+};
+
+struct DAIF
+    : public read_write::ReadWriteRegBase<register_info::system_reg::DAIFInfo> {
+  using D = read_write::ReadWriteField<
+      read_write::ReadWriteRegBase<register_info::system_reg::DAIFInfo>,
+      register_info::system_reg::DAIFInfo::D>;
+
+  using A = read_write::ReadWriteField<
+      read_write::ReadWriteRegBase<register_info::system_reg::DAIFInfo>,
+      register_info::system_reg::DAIFInfo::A>;
+
+  using I = read_write::ReadWriteField<
+      read_write::ReadWriteRegBase<register_info::system_reg::DAIFInfo>,
+      register_info::system_reg::DAIFInfo::I>;
+
+  using F = read_write::ReadWriteField<
+      read_write::ReadWriteRegBase<register_info::system_reg::DAIFInfo>,
+      register_info::system_reg::DAIFInfo::F>;
 };
 
 };  // namespace system_reg
@@ -612,6 +666,9 @@ struct CurrentEL : public read_write::ReadWriteRegBase<
 // 第四部分：访问接口
 using X29 = detail::regs::X29;
 using CpacrEL1 = detail::regs::system_reg::CpacrEL1;
+using CurrentEL = detail::regs::system_reg::CurrentEL;
+using SPSel = detail::regs::system_reg::SPSel;
+using DAIF = detail::regs::system_reg::DAIF;
 
 };  // namespace cpu_io
 

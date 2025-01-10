@@ -34,23 +34,27 @@ namespace cpu_io {
  * @brief 允许中断
  * @todo
  */
-static __always_inline void EnableInterrupt() {}
+static __always_inline void EnableInterrupt() {
+  DAIF::I::Clear();
+  DAIF::F::Clear();
+}
 
 /**
  * @brief 关闭中断
  * @todo
  */
-static __always_inline void DisableInterrupt() {}
+static __always_inline void DisableInterrupt() {
+  DAIF::I::Set();
+  DAIF::F::Set();
+}
 
 /**
  * @brief 获取中断状态
- * @return bool 中断状态
+ * @return true 允许中断
+ * @return false 禁用中断
  */
 static __always_inline auto GetInterruptStatus() -> bool {
-  uint64_t daif;
-  __asm__ volatile("mrs %0, DAIF" : "=r"(daif));
-  // 检查 IRQ 和 FIQ 屏蔽位 (第7位和第6位)
-  return !(daif & (1 << 7)) && !(daif & (1 << 6));
+  return !DAIF::I::Get() && !DAIF::F::Get();
 }
 
 /**
