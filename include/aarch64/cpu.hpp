@@ -62,13 +62,13 @@ static __always_inline auto GetInterruptStatus() -> bool {
  * @return size_t core id
  */
 static __always_inline auto GetCurrentCoreId() -> size_t {
-  return MPIDREL1::Aff0::Get();
+  return MPIDR_EL1::Aff0::Get();
 }
 
 /**
  * @brief 初始化 FPU
  */
-static __always_inline void SetupFpu() { CPACREL1::Fpen::Set(); }
+static __always_inline void SetupFpu() { CPACR_EL1::Fpen::Set(); }
 
 }  // namespace cpu_io
 
