@@ -321,7 +321,57 @@ struct TTBR1_EL1Info : public RegInfoBase {};
  * @see
  * https://developer.arm.com/documentation/ddi0601/2024-12/AArch64-Registers/TCR-EL1--Translation-Control-Register--EL1-
  */
-struct TCR_EL1Info : public RegInfoBase {};
+struct TCR_EL1Info : public RegInfoBase {
+  struct IPS {
+    using DataType = uint8_t;
+    static constexpr uint64_t kBitOffset = 32;
+    static constexpr uint64_t kBitWidth = 3;
+    static constexpr uint64_t kBitMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) << kBitOffset : ~0ULL;
+    static constexpr uint64_t kAllSetMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) : ~0ULL;
+  };
+
+  struct TG1 {
+    using DataType = uint8_t;
+    static constexpr uint64_t kBitOffset = 30;
+    static constexpr uint64_t kBitWidth = 2;
+    static constexpr uint64_t kBitMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) << kBitOffset : ~0ULL;
+    static constexpr uint64_t kAllSetMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) : ~0ULL;
+  };
+
+  struct T1SZ {
+    using DataType = uint8_t;
+    static constexpr uint64_t kBitOffset = 16;
+    static constexpr uint64_t kBitWidth = 6;
+    static constexpr uint64_t kBitMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) << kBitOffset : ~0ULL;
+    static constexpr uint64_t kAllSetMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) : ~0ULL;
+  };
+
+  struct TG0 {
+    using DataType = uint8_t;
+    static constexpr uint64_t kBitOffset = 14;
+    static constexpr uint64_t kBitWidth = 2;
+    static constexpr uint64_t kBitMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) << kBitOffset : ~0ULL;
+    static constexpr uint64_t kAllSetMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) : ~0ULL;
+  };
+
+  struct T0SZ {
+    using DataType = uint8_t;
+    static constexpr uint64_t kBitOffset = 0;
+    static constexpr uint64_t kBitWidth = 6;
+    static constexpr uint64_t kBitMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) << kBitOffset : ~0ULL;
+    static constexpr uint64_t kAllSetMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) : ~0ULL;
+  };
+};
 
 /**
  * @brief MAIR_EL1 寄存器定义
@@ -337,22 +387,6 @@ struct MAIR_EL1Info : public RegInfoBase {
   static constexpr const uint8_t KDeviceNGRE = 0b00001000;
   ///	Device-GRE memory.
   static constexpr const uint8_t KDeviceGRE = 0b00001100;
-
-  // 0b00RW	where RW != 00	Normal memory, Outer Write-Through Transient.
-  // 0b0100		Normal memory, Outer Non-cacheable.
-  // 0b01RW	where RW != 00	Normal memory, Outer Write-Back Transient.
-  // 0b10RW		Normal memory, Outer Write-Through Non-transient.
-  // 0b11RW		Normal memory, Outer Write-Back Non-transient.
-
-  // 0b0000		See encoding of Attr.
-  // 0b00RW	where RW != 00	Normal memory, Inner Write-Through Transient.
-  // 0b0100		Normal memory, Inner Non-cacheable.
-  // 0b01RW	where RW != 00	Normal memory, Inner Write-Back Transient.
-  // 0b10RW		Normal memory, Inner Write-Through Non-transient.
-  // 0b11RW		Normal memory, Inner Write-Back Non-transient.
-
-  // 0b0	No Allocate.
-  // 0b1	Allocate.
 
   struct Aff7 {
     using DataType = uint8_t;
@@ -574,6 +608,9 @@ class ReadOnlyRegBase {
                              RegInfo,
                              register_info::system_reg::MAIR_EL1Info>) {
       __asm__ volatile("mrs %0, MAIR_EL1Info" : "=r"(value) : :);
+    } else if constexpr (std::is_same_v<
+                             RegInfo, register_info::system_reg::TCR_EL1Info>) {
+      __asm__ volatile("mrs %0, TCR_EL1" : "=r"(value) : :);
     } else {
       static_assert(sizeof(RegInfo) == 0);
     }
@@ -647,6 +684,9 @@ class WriteOnlyRegBase {
                              RegInfo,
                              register_info::system_reg::MAIR_EL1Info>) {
       __asm__ volatile("msr MAIR_EL1, %0" : : "r"(value) :);
+    } else if constexpr (std::is_same_v<
+                             RegInfo, register_info::system_reg::TCR_EL1Info>) {
+      __asm__ volatile("msr TCR_EL1, %0" : : "r"(value) :);
     } else {
       static_assert(sizeof(RegInfo) == 0);
     }
@@ -1115,6 +1155,29 @@ struct MAIR_EL1 : public read_write::ReadWriteRegBase<
       register_info::system_reg::MAIR_EL1Info::Aff0>;
 };
 
+struct TCR_EL1 : public read_write::ReadWriteRegBase<
+                     register_info::system_reg::TCR_EL1Info> {
+  using IPS = read_write::ReadWriteField<
+      read_write::ReadWriteRegBase<register_info::system_reg::TCR_EL1Info>,
+      register_info::system_reg::TCR_EL1Info::IPS>;
+
+  using TG1 = read_write::ReadWriteField<
+      read_write::ReadWriteRegBase<register_info::system_reg::TCR_EL1Info>,
+      register_info::system_reg::TCR_EL1Info::TG1>;
+
+  using T1SZ = read_write::ReadWriteField<
+      read_write::ReadWriteRegBase<register_info::system_reg::TCR_EL1Info>,
+      register_info::system_reg::TCR_EL1Info::T1SZ>;
+
+  using TG0 = read_write::ReadWriteField<
+      read_write::ReadWriteRegBase<register_info::system_reg::TCR_EL1Info>,
+      register_info::system_reg::TCR_EL1Info::TG0>;
+
+  using T0SZ = read_write::ReadWriteField<
+      read_write::ReadWriteRegBase<register_info::system_reg::TCR_EL1Info>,
+      register_info::system_reg::TCR_EL1Info::T0SZ>;
+};
+
 };  // namespace system_reg
 
 };  // namespace regs
@@ -1135,6 +1198,7 @@ using SP_EL1 = detail::regs::system_reg::SP_EL1;
 using MPIDR_EL1 = detail::regs::system_reg::MPIDR_EL1;
 using SCTLR_EL1 = detail::regs::system_reg::SCTLR_EL1;
 using MAIR_EL1 = detail::regs::system_reg::MAIR_EL1;
+using TCR_EL1 = detail::regs::system_reg::TCR_EL1;
 
 };  // namespace cpu_io
 
