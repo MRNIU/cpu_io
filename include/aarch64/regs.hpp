@@ -1090,28 +1090,12 @@ class WriteOnlyField {
   /**
    * 置位对应 Reg 的由 RegInfo 规定的指定位
    */
-  static __always_inline void Set() {
-    if constexpr ((RegInfo::kBitMask &
-                   register_info::system_reg::kPSTATEImmOpMask) ==
-                  RegInfo::kBitMask) {
-      Reg::SetBitsImm(RegInfo::kBitMask);
-    } else {
-      Reg::SetBits(RegInfo::kBitMask);
-    }
-  }
+  static __always_inline void Set() { Reg::SetBits(RegInfo::kBitMask); }
 
   /**
    * 清零对应 Reg 的由 RegInfo 规定的指定位
    */
-  static __always_inline void Clear() {
-    if constexpr ((RegInfo::kBitMask &
-                   register_info::system_reg::kPSTATEImmOpMask) ==
-                  RegInfo::kBitMask) {
-      Reg::ClearBitsImm(RegInfo::kBitMask);
-    } else {
-      Reg::ClearBits(RegInfo::kBitMask);
-    }
-  }
+  static __always_inline void Clear() { Reg::ClearBits(RegInfo::kBitMask); }
 };
 
 /**
