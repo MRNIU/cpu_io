@@ -618,6 +618,102 @@ struct CNTVCT_EL0Info : public RegInfoBase {};
  */
 struct CNTFRQ_EL0Info : public RegInfoBase {};
 
+/**
+ * @brief ICC_PMR_EL1 寄存器定义
+ * @see
+ * https://developer.arm.com/documentation/ddi0601/2024-12/AArch64-Registers/ICC-PMR-EL1--Interrupt-Controller-Interrupt-Priority-Mask-Register
+ */
+struct ICC_PMR_EL1Info : public RegInfoBase {
+  struct Priority {
+    using DataType = uint8_t;
+    static constexpr uint64_t kBitOffset = 0;
+    static constexpr uint64_t kBitWidth = 8;
+    static constexpr uint64_t kBitMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) << kBitOffset : ~0ULL;
+    static constexpr uint64_t kAllSetMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) : ~0ULL;
+  };
+};
+
+/**
+ * @brief ICC_IGRPEN1_EL1 寄存器定义
+ * @see
+ * https://developer.arm.com/documentation/ddi0601/2024-12/AArch64-Registers/ICC-IGRPEN1-EL1--Interrupt-Controller-Interrupt-Group-1-Enable-Register
+ */
+struct ICC_IGRPEN1_EL1Info : public RegInfoBase {
+  struct Enable {
+    using DataType = bool;
+    static constexpr uint64_t kBitOffset = 0;
+    static constexpr uint64_t kBitWidth = 1;
+    static constexpr uint64_t kBitMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) << kBitOffset : ~0ULL;
+    static constexpr uint64_t kAllSetMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) : ~0ULL;
+
+    /// Group 1 interrupts are disabled for the current Security state.
+    static constexpr const bool kDisabel = false;
+
+    /// Group 1 interrupts are enabled for the current Security state.
+    static constexpr const bool kEnabel = true;
+  };
+};
+
+/**
+ * @brief ICC_SRE_EL1 寄存器定义
+ * @see
+ * https://developer.arm.com/documentation/ddi0601/2024-12/AArch64-Registers/ICC-SRE-EL1--Interrupt-Controller-System-Register-Enable-Register--EL1-
+ */
+struct ICC_SRE_EL1Info : public RegInfoBase {
+  struct DIB {
+    using DataType = bool;
+    static constexpr uint64_t kBitOffset = 2;
+    static constexpr uint64_t kBitWidth = 1;
+    static constexpr uint64_t kBitMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) << kBitOffset : ~0ULL;
+    static constexpr uint64_t kAllSetMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) : ~0ULL;
+
+    /// IRQ bypass enabled.
+    static constexpr const bool kEnabel = false;
+
+    /// IRQ bypass disabled.
+    static constexpr const bool kDisabel = true;
+  };
+
+  struct DFB {
+    using DataType = bool;
+    static constexpr uint64_t kBitOffset = 1;
+    static constexpr uint64_t kBitWidth = 1;
+    static constexpr uint64_t kBitMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) << kBitOffset : ~0ULL;
+    static constexpr uint64_t kAllSetMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) : ~0ULL;
+
+    /// FIQ bypass enabled.
+    static constexpr const bool kEnabel = false;
+
+    /// FIQ bypass disabled.
+    static constexpr const bool kDisabel = true;
+  };
+
+  struct SRE {
+    using DataType = bool;
+    static constexpr uint64_t kBitOffset = 0;
+    static constexpr uint64_t kBitWidth = 1;
+    static constexpr uint64_t kBitMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) << kBitOffset : ~0ULL;
+    static constexpr uint64_t kAllSetMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) : ~0ULL;
+  };
+
+  /// The memory-mapped interface must be used. Access at EL1 to any ICC_*
+  /// System register other than ICC_SRE_EL1 is trapped to EL1.
+  static constexpr const bool kDisabel = false;
+
+  /// The System register interface for the current Security state is enabled.
+  static constexpr const bool kEnabel = true;
+};
+
 };  // namespace system_reg
 
 };  // namespace register_info
@@ -717,6 +813,18 @@ class ReadOnlyRegBase {
                              RegInfo,
                              register_info::system_reg::CNTFRQ_EL0Info>) {
       __asm__ volatile("mrs %0, CNTFRQ_EL0" : "=r"(value) : :);
+    } else if constexpr (std::is_same_v<
+                             RegInfo,
+                             register_info::system_reg::ICC_PMR_EL1Info>) {
+      __asm__ volatile("mrs %0, ICC_PMR_EL1" : "=r"(value) : :);
+    } else if constexpr (std::is_same_v<
+                             RegInfo,
+                             register_info::system_reg::ICC_IGRPEN1_EL1Info>) {
+      __asm__ volatile("mrs %0, ICC_IGRPEN1_EL1" : "=r"(value) : :);
+    } else if constexpr (std::is_same_v<
+                             RegInfo,
+                             register_info::system_reg::ICC_SRE_EL1Info>) {
+      __asm__ volatile("mrs %0, ICC_SRE_EL1" : "=r"(value) : :);
     } else {
       static_assert(sizeof(RegInfo) == 0);
     }
@@ -811,6 +919,18 @@ class WriteOnlyRegBase {
                              RegInfo,
                              register_info::system_reg::CNTFRQ_EL0Info>) {
       __asm__ volatile("msr CNTFRQ_EL0, %0" : : "r"(value) :);
+    } else if constexpr (std::is_same_v<
+                             RegInfo,
+                             register_info::system_reg::ICC_PMR_EL1Info>) {
+      __asm__ volatile("msr ICC_PMR_EL1, %0" : : "r"(value) :);
+    } else if constexpr (std::is_same_v<
+                             RegInfo,
+                             register_info::system_reg::ICC_IGRPEN1_EL1Info>) {
+      __asm__ volatile("msr ICC_IGRPEN1_EL1, %0" : : "r"(value) :);
+    } else if constexpr (std::is_same_v<
+                             RegInfo,
+                             register_info::system_reg::ICC_SRE_EL1Info>) {
+      __asm__ volatile("msr ICC_SRE_EL1, %0" : : "r"(value) :);
     } else {
       static_assert(sizeof(RegInfo) == 0);
     }
@@ -1347,6 +1467,36 @@ struct CNTVCT_EL0 : public read_write::ReadWriteRegBase<
 struct CNTFRQ_EL0 : public read_write::ReadWriteRegBase<
                         register_info::system_reg::CNTFRQ_EL0Info> {};
 
+struct ICC_PMR_EL1 : public read_write::ReadWriteRegBase<
+                         register_info::system_reg::ICC_PMR_EL1Info> {
+  using Priority = read_write::ReadWriteField<
+      read_write::ReadWriteRegBase<register_info::system_reg::ICC_PMR_EL1Info>,
+      register_info::system_reg::ICC_PMR_EL1Info::Priority>;
+};
+
+struct ICC_IGRPEN1_EL1 : public read_write::ReadWriteRegBase<
+                             register_info::system_reg::ICC_IGRPEN1_EL1Info> {
+  using Enable = read_write::ReadWriteField<
+      read_write::ReadWriteRegBase<
+          register_info::system_reg::ICC_IGRPEN1_EL1Info>,
+      register_info::system_reg::ICC_IGRPEN1_EL1Info::Enable>;
+};
+
+struct ICC_SRE_EL1 : public read_write::ReadWriteRegBase<
+                         register_info::system_reg::ICC_SRE_EL1Info> {
+  using DIB = read_write::ReadWriteField<
+      read_write::ReadWriteRegBase<register_info::system_reg::ICC_SRE_EL1Info>,
+      register_info::system_reg::ICC_SRE_EL1Info::DIB>;
+
+  using DFB = read_write::ReadWriteField<
+      read_write::ReadWriteRegBase<register_info::system_reg::ICC_SRE_EL1Info>,
+      register_info::system_reg::ICC_SRE_EL1Info::DFB>;
+
+  using SRE = read_write::ReadWriteField<
+      read_write::ReadWriteRegBase<register_info::system_reg::ICC_SRE_EL1Info>,
+      register_info::system_reg::ICC_SRE_EL1Info::SRE>;
+};
+
 };  // namespace system_reg
 
 };  // namespace regs
@@ -1374,6 +1524,9 @@ using CNTV_CTL_EL0 = detail::regs::system_reg::CNTV_CTL_EL0;
 using CNTV_TVAL_EL0 = detail::regs::system_reg::CNTV_TVAL_EL0;
 using CNTVCT_EL0 = detail::regs::system_reg::CNTVCT_EL0;
 using CNTFRQ_EL0 = detail::regs::system_reg::CNTFRQ_EL0;
+using ICC_PMR_EL1 = detail::regs::system_reg::ICC_PMR_EL1;
+using ICC_IGRPEN1_EL1 = detail::regs::system_reg::ICC_IGRPEN1_EL1;
+using ICC_SRE_EL1 = detail::regs::system_reg::ICC_SRE_EL1;
 
 };  // namespace cpu_io
 

@@ -35,6 +35,8 @@ namespace cpu_io {
  * @todo
  */
 static __always_inline void EnableInterrupt() {
+  DAIF::D::Clear();
+  DAIF::A::Clear();
   DAIF::I::Clear();
   DAIF::F::Clear();
 }
@@ -44,6 +46,8 @@ static __always_inline void EnableInterrupt() {
  * @todo
  */
 static __always_inline void DisableInterrupt() {
+  DAIF::D::Set();
+  DAIF::A::Set();
   DAIF::I::Set();
   DAIF::F::Set();
 }
