@@ -616,7 +616,9 @@ struct CNTVCT_EL0Info : public RegInfoBase {};
  * @see
  * https://developer.arm.com/documentation/ddi0601/2024-12/AArch64-Registers/CNTFRQ-EL0--Counter-timer-Frequency-Register
  */
-struct CNTFRQ_EL0Info : public RegInfoBase {};
+struct CNTFRQ_EL0Info : public RegInfoBase {
+  using DataType = uint32_t;
+};
 
 /**
  * @brief ICC_PMR_EL1 寄存器定义
