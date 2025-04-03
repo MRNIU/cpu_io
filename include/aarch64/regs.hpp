@@ -54,6 +54,7 @@ struct RegInfoBase {
 };
 
 /// 通用寄存器
+struct X0Info : public RegInfoBase {};
 struct X29Info : public RegInfoBase {};
 
 namespace system_reg {
@@ -785,7 +786,9 @@ class ReadOnlyRegBase {
    */
   static __always_inline auto Read() -> typename RegInfo::DataType {
     typename RegInfo::DataType value{};
-    if constexpr (std::is_same_v<RegInfo, register_info::X29Info>) {
+    if constexpr (std::is_same_v<RegInfo, register_info::X0Info>) {
+      __asm__ volatile("mov %0, x0" : "=r"(value) : :);
+    } else if constexpr (std::is_same_v<RegInfo, register_info::X29Info>) {
       __asm__ volatile("mov %0, x29" : "=r"(value) : :);
     } else if constexpr (std::is_same_v<
                              RegInfo,
@@ -907,7 +910,9 @@ class WriteOnlyRegBase {
    * @param value 要写的值
    */
   static __always_inline void Write(typename RegInfo::DataType value) {
-    if constexpr (std::is_same_v<RegInfo, register_info::X29Info>) {
+    if constexpr (std::is_same_v<RegInfo, register_info::X0Info>) {
+      __asm__ volatile("mov x0, %0" : : "r"(value) :);
+    } else if constexpr (std::is_same_v<RegInfo, register_info::X29Info>) {
       __asm__ volatile("mov x29, %0" : : "r"(value) :);
     } else if constexpr (std::is_same_v<
                              RegInfo,
@@ -1348,6 +1353,7 @@ class ReadWriteField : public ReadOnlyField<Reg, RegInfo>,
 
 // 第三部分：寄存器实例
 namespace regs {
+struct X0 : public read_write::ReadWriteRegBase<register_info::X0Info> {};
 struct X29 : public read_write::ReadWriteRegBase<register_info::X29Info> {};
 
 namespace system_reg {
@@ -1597,6 +1603,7 @@ struct ICC_EOIR1_EL1 : public read_write::WriteOnlyRegBase<
 };  // namespace detail
 
 // 第四部分：访问接口
+using X0 = detail::regs::X0;
 using X29 = detail::regs::X29;
 using CPACR_EL1 = detail::regs::system_reg::CPACR_EL1;
 using CurrentEL = detail::regs::system_reg::CurrentEL;
