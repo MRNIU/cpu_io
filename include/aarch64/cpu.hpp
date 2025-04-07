@@ -74,6 +74,31 @@ static __always_inline auto GetCurrentCoreId() -> size_t {
  */
 static __always_inline void SetupFpu() { CPACR_EL1::Fpen::Set(); }
 
+static __always_inline void SecureMonitorCall(uint64_t a0, uint64_t a1,
+                                              uint64_t a2, uint64_t a3,
+                                              uint64_t a4, uint64_t a5,
+                                              uint64_t a6, uint64_t a7,
+                                              struct Arm_smccc_res *res) {
+  register uint64_t x0 __asm__("x0") = a0;
+  register uint64_t x1 __asm__("x1") = a1;
+  register uint64_t x2 __asm__("x2") = a2;
+  register uint64_t x3 __asm__("x3") = a3;
+  register uint64_t x4 __asm__("x4") = a4;
+  register uint64_t x5 __asm__("x5") = a5;
+  register uint64_t x6 __asm__("x6") = a6;
+  register uint64_t x7 __asm__("x7") = a7;
+
+  __asm__ volatile(
+      "smc #0\n"
+      "stp x0, x1, [%8]\n"
+      "stp x2, x3, [%8, #16]"
+      : "=r"(x0), "=r"(x1), "=r"(x2), "=r"(x3), "=r"(x4), "=r"(x5), "=r"(x6),
+        "=r"(x7)
+      : "r"(x0), "r"(x1), "r"(x2), "r"(x3), "r"(x4), "r"(x5), "r"(x6), "r"(x7),
+        "r"(res)
+      : "memory");
+}
+
 /**
  * @brief psci 接口
  * @see https://developer.arm.com/documentation/den0022/fb/?lang=en
@@ -180,31 +205,6 @@ struct PowerState {
   // [15:0] StateID
   struct StateID state_id;
 } __attribute__((packed));
-
-static __always_inline void SecureMonitorCall(uint64_t a0, uint64_t a1,
-                                              uint64_t a2, uint64_t a3,
-                                              uint64_t a4, uint64_t a5,
-                                              uint64_t a6, uint64_t a7,
-                                              struct Arm_smccc_res *res) {
-  register uint64_t x0 __asm__("x0") = a0;
-  register uint64_t x1 __asm__("x1") = a1;
-  register uint64_t x2 __asm__("x2") = a2;
-  register uint64_t x3 __asm__("x3") = a3;
-  register uint64_t x4 __asm__("x4") = a4;
-  register uint64_t x5 __asm__("x5") = a5;
-  register uint64_t x6 __asm__("x6") = a6;
-  register uint64_t x7 __asm__("x7") = a7;
-
-  __asm__ volatile(
-      "smc #0\n"
-      "stp x0, x1, [%8]\n"
-      "stp x2, x3, [%8, #16]"
-      : "=r"(x0), "=r"(x1), "=r"(x2), "=r"(x3), "=r"(x4), "=r"(x5), "=r"(x6),
-        "=r"(x7)
-      : "r"(x0), "r"(x1), "r"(x2), "r"(x3), "r"(x4), "r"(x5), "r"(x6), "r"(x7),
-        "r"(res)
-      : "memory");
-}
 
 /**
  * Suspend execution on a core or higher-level topology node.
