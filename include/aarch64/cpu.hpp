@@ -101,7 +101,7 @@ static __always_inline auto SecureMonitorCall(uint64_t a0, uint64_t a1,
                                               uint64_t a4, uint64_t a5,
                                               uint64_t a6, uint64_t a7)
     -> const SMCReturnValue {
-  SMCReturnValue ret;
+  SMCReturnValue result;
   register uint64_t x0 __asm__("x0") = a0;
   register uint64_t x1 __asm__("x1") = a1;
   register uint64_t x2 __asm__("x2") = a2;
@@ -110,16 +110,17 @@ static __always_inline auto SecureMonitorCall(uint64_t a0, uint64_t a1,
   register uint64_t x5 __asm__("x5") = a5;
   register uint64_t x6 __asm__("x6") = a6;
   register uint64_t x7 __asm__("x7") = a7;
-  __asm__ volatile(
-      "smc #0\n"
-      "stp x0, x1, [%8]\n"
-      "stp x2, x3, [%8, #16]"
-      : "=r"(x0), "=r"(x1), "=r"(x2), "=r"(x3), "=r"(x4), "=r"(x5), "=r"(x6),
-        "=r"(x7)
-      : "r"(x0), "r"(x1), "r"(x2), "r"(x3), "r"(x4), "r"(x5), "r"(x6), "r"(x7),
-        "r"(&ret)
-      : "memory");
-  return ret;
+
+  __asm__ volatile("smc #0"
+                   : "+r"(x0), "+r"(x1), "+r"(x2), "+r"(x3)
+                   : "r"(x4), "r"(x5), "r"(x6), "r"(x7)
+                   : "memory");
+
+  result.a0 = x0;
+  result.a1 = x1;
+  result.a2 = x2;
+  result.a3 = x3;
+  return result;
 }
 
 /**
