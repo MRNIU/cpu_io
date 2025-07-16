@@ -111,15 +111,14 @@ class Serial {
     Out<uint8_t>(port_ + 4, 0x0F);
   }
 
-  ~Serial() = default;
-
   /// @name 不使用的构造函数
   /// @{
-  Serial() = delete;
+  Serial() = default;
   Serial(const Serial&) = delete;
-  Serial(Serial&&) = delete;
+  Serial(Serial&&) = default;
   auto operator=(const Serial&) -> Serial& = delete;
-  auto operator=(Serial&&) -> Serial& = delete;
+  auto operator=(Serial&&) -> Serial& = default;
+  ~Serial() = default;
   /// @}
 
   /**
@@ -207,11 +206,11 @@ class Pic {
 
   /// @name 构造/析构函数
   /// @{
-  Pic() = delete;
+  Pic() = default;
   Pic(const Pic&) = delete;
-  Pic(Pic&&) = delete;
+  Pic(Pic&&) = default;
   auto operator=(const Pic&) -> Pic& = delete;
-  auto operator=(Pic&&) -> Pic& = delete;
+  auto operator=(Pic&&) -> Pic& = default;
   ~Pic() = default;
   /// @}
 
@@ -366,11 +365,11 @@ class Pit {
 
   /// @name 构造/析构函数
   /// @{
-  Pit() = delete;
+  Pit() = default;
   Pit(const Pit&) = delete;
-  Pit(Pit&&) = delete;
+  Pit(Pit&&) = default;
   auto operator=(const Pit&) -> Pit& = delete;
-  auto operator=(Pit&&) -> Pit& = delete;
+  auto operator=(Pit&&) -> Pit& = default;
   ~Pit() = default;
   /// @}
 
