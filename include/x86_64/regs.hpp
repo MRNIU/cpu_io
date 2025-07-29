@@ -58,48 +58,7 @@ struct RbpInfo : public RegInfoBase {};
  * @brief efer 寄存器
  * @see sdm.pdf#2.2.1
  */
-struct EferInfo : public RegInfoBase {
-  struct Sce {
-    using DataType = bool;
-    static constexpr uint64_t kBitOffset = 0;
-    static constexpr uint64_t kBitWidth = 1;
-    static constexpr uint64_t kBitMask =
-        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) << kBitOffset : ~0ULL;
-    static constexpr uint64_t kAllSetMask =
-        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) : ~0ULL;
-  };
-
-  struct Lme {
-    using DataType = bool;
-    static constexpr uint64_t kBitOffset = 8;
-    static constexpr uint64_t kBitWidth = 1;
-    static constexpr uint64_t kBitMask =
-        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) << kBitOffset : ~0ULL;
-    static constexpr uint64_t kAllSetMask =
-        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) : ~0ULL;
-  };
-
-  /// @note Read Only
-  struct Lma {
-    using DataType = bool;
-    static constexpr uint64_t kBitOffset = 10;
-    static constexpr uint64_t kBitWidth = 1;
-    static constexpr uint64_t kBitMask =
-        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) << kBitOffset : ~0ULL;
-    static constexpr uint64_t kAllSetMask =
-        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) : ~0ULL;
-  };
-
-  struct Nxe {
-    using DataType = bool;
-    static constexpr uint64_t kBitOffset = 11;
-    static constexpr uint64_t kBitWidth = 1;
-    static constexpr uint64_t kBitMask =
-        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) << kBitOffset : ~0ULL;
-    static constexpr uint64_t kAllSetMask =
-        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) : ~0ULL;
-  };
-};
+struct MsrInfo : public RegInfoBase {};
 
 /**
  * @brief rflags 寄存器
@@ -738,11 +697,6 @@ class ReadOnlyRegBase {
     typename RegInfo::DataType value{};
     if constexpr (std::is_same_v<RegInfo, register_info::RbpInfo>) {
       __asm__ volatile("mov %%rbp, %0" : "=r"(value) : :);
-    } else if constexpr (std::is_same_v<RegInfo, register_info::EferInfo>) {
-      uint32_t low{};
-      uint32_t high{};
-      __asm__ volatile("rdmsr" : "=a"(low), "=d"(high) : "c"(0xC0000080) :);
-      value = (static_cast<uint64_t>(high) << 32) | low;
     } else if constexpr (std::is_same_v<RegInfo, register_info::RflagsInfo>) {
       __asm__ volatile("pushfq; popq %0" : "=r"(value) : :);
     } else if constexpr (std::is_same_v<RegInfo, register_info::GdtrInfo>) {
@@ -795,6 +749,20 @@ class ReadOnlyRegBase {
     return value;
   }
 
+  static __always_inline auto Read(uint32_t offset) ->
+      typename RegInfo::DataType {
+    typename RegInfo::DataType value{};
+    if constexpr (std::is_same_v<RegInfo, register_info::MsrInfo>) {
+      uint32_t low{};
+      uint32_t high{};
+      __asm__ volatile("rdmsr" : "=a"(low), "=d"(high) : "c"(offset) :);
+      value = (static_cast<uint64_t>(high) << 32) | low;
+    } else {
+      static_assert(sizeof(RegInfo) == 0);
+    }
+    return value;
+  }
+
   /**
    * () 重载
    */
@@ -827,10 +795,6 @@ class WriteOnlyRegBase {
   static __always_inline void Write(typename RegInfo::DataType value) {
     if constexpr (std::is_same_v<RegInfo, register_info::RbpInfo>) {
       __asm__ volatile("mov %0, %%rbp" : : "r"(value) :);
-    } else if constexpr (std::is_same_v<RegInfo, register_info::EferInfo>) {
-      uint32_t low = value & 0xFFFFFFFF;
-      uint32_t high = value >> 32;
-      __asm__ volatile("wrmsr" : : "c"(0xC0000080), "a"(low), "d"(high) :);
     } else if constexpr (std::is_same_v<RegInfo, register_info::RflagsInfo>) {
       __asm__ volatile("pushq %0; popfq" : : "r"(value) :);
     } else if constexpr (std::is_same_v<RegInfo, register_info::GdtrInfo>) {
@@ -892,6 +856,17 @@ class WriteOnlyRegBase {
     }
   }
 
+  static __always_inline void Write(uint32_t offset,
+                                    typename RegInfo::DataType value) {
+    if constexpr (std::is_same_v<RegInfo, register_info::MsrInfo>) {
+      uint32_t low = value & 0xFFFFFFFF;
+      uint32_t high = value >> 32;
+      __asm__ volatile("wrmsr" : : "c"(offset), "a"(low), "d"(high) :);
+    } else {
+      static_assert(sizeof(RegInfo) == 0);
+    }
+  }
+
   /**
    * 通过偏移设置寄存器
    * @param offset 位偏移
@@ -899,13 +874,6 @@ class WriteOnlyRegBase {
   static __always_inline void SetBits(uint64_t offset) {
     if constexpr (std::is_same_v<RegInfo, register_info::RbpInfo>) {
       __asm__ volatile("bts %%rbp, %0" : : "r"(offset) :);
-    } else if constexpr (std::is_same_v<RegInfo, register_info::EferInfo>) {
-      uint32_t low{};
-      uint32_t high{};
-      __asm__ volatile("rdmsr" : "=a"(low), "=d"(high) : "c"(0xC0000080) :);
-      uint64_t value = (static_cast<uint64_t>(high) << 32) | low;
-      value |= (1ULL << offset);
-      Write(value);
     } else if constexpr (std::is_same_v<RegInfo, register_info::RflagsInfo>) {
       if (offset == register_info::RflagsInfo::If::kBitOffset) {
         __asm__ volatile("sti");
@@ -947,13 +915,6 @@ class WriteOnlyRegBase {
   static __always_inline void ClearBits(uint64_t offset) {
     if constexpr (std::is_same_v<RegInfo, register_info::RbpInfo>) {
       __asm__ volatile("btr %%rbp, %0" : : "r"(offset) :);
-    } else if constexpr (std::is_same_v<RegInfo, register_info::EferInfo>) {
-      uint32_t low{};
-      uint32_t high{};
-      __asm__ volatile("rdmsr" : "=a"(low), "=d"(high) : "c"(0xC0000080) :);
-      uint64_t value = (static_cast<uint64_t>(high) << 32) | low;
-      value &= ~(1ULL << offset);
-      Write(value);
     } else if constexpr (std::is_same_v<RegInfo, register_info::RflagsInfo>) {
       if (offset == register_info::RflagsInfo::If::kBitOffset) {
         __asm__ volatile("cli");
@@ -1196,20 +1157,7 @@ namespace regs {
 // 第三部分：寄存器实例
 struct Rbp : public read_write::ReadWriteRegBase<register_info::RbpInfo> {};
 
-struct Efer : public read_write::ReadWriteRegBase<register_info::EferInfo> {
-  using Sce = read_write::ReadWriteField<
-      read_write::ReadWriteRegBase<register_info::EferInfo>,
-      register_info::EferInfo::Sce>;
-  using Lme = read_write::ReadWriteField<
-      read_write::ReadWriteRegBase<register_info::EferInfo>,
-      register_info::EferInfo::Lme>;
-  using Lma = read_write::ReadWriteField<
-      read_write::ReadWriteRegBase<register_info::EferInfo>,
-      register_info::EferInfo::Lma>;
-  using Nxe = read_write::ReadWriteField<
-      read_write::ReadWriteRegBase<register_info::EferInfo>,
-      register_info::EferInfo::Nxe>;
-};
+struct Msr : public read_write::ReadWriteRegBase<register_info::MsrInfo> {};
 
 struct Rflags : public read_write::ReadWriteRegBase<register_info::RflagsInfo> {
   using If = read_write::ReadWriteField<
@@ -1372,7 +1320,7 @@ struct Gs : public read_write::ReadWriteRegBase<
 
 // 第四部分：访问接口
 using Rbp = detail::regs::Rbp;
-using Efer = detail::regs::Efer;
+using Msr = detail::regs::Msr;
 using Rflags = detail::regs::Rflags;
 using Gdtr = detail::regs::Gdtr;
 using Ldtr = detail::regs::Ldtr;

@@ -25,6 +25,7 @@
 #include <cstring>
 #include <type_traits>
 
+#include "msr.hpp"
 #include "regs.hpp"
 
 /**
