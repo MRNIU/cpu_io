@@ -643,12 +643,6 @@ struct Cr8Info : public RegInfoBase {};
 };  // namespace cr
 
 /**
- * @brief cpuid 寄存器
- * @see sdm.pdf#2.5.1
- */
-struct CpuidInfo : public RegInfoBase {};
-
-/**
  * @brief xcr0 寄存器
  * @see sdm.pdf#2.6
  */
@@ -769,8 +763,6 @@ class ReadOnlyRegBase {
       __asm__ volatile("mov %%cr4, %0" : "=r"(value) : :);
     } else if constexpr (std::is_same_v<RegInfo, register_info::cr::Cr8Info>) {
       __asm__ volatile("mov %%cr8, %0" : "=r"(value) : :);
-    } else if constexpr (std::is_same_v<RegInfo, register_info::CpuidInfo>) {
-      __asm__ volatile("mov %%rbp, %0" : "=r"(value) : :);
     } else if constexpr (std::is_same_v<RegInfo, register_info::Xcr0Info>) {
       static_assert(sizeof(RegInfo) == 0);
     } else if constexpr (std::is_same_v<
@@ -1282,8 +1274,6 @@ struct Cr8 : public read_write::ReadWriteRegBase<register_info::cr::Cr8Info> {};
 
 };  // namespace cr
 
-struct Cpuid : public read_write::ReadOnlyRegBase<register_info::CpuidInfo> {};
-
 struct Xcr0 : public read_write::ReadWriteRegBase<register_info::Xcr0Info> {};
 
 namespace segment_register {
@@ -1393,7 +1383,6 @@ using Cr2 = detail::regs::cr::Cr2;
 using Cr3 = detail::regs::cr::Cr3;
 using Cr4 = detail::regs::cr::Cr4;
 using Cr8 = detail::regs::cr::Cr8;
-using Cpuid = detail::regs::Cpuid;
 using Xcr0 = detail::regs::Xcr0;
 using Cs = detail::regs::segment_register::Cs;
 using Ss = detail::regs::segment_register::Ss;
