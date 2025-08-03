@@ -13,7 +13,7 @@
 #include "apic.hpp"
 #include "cpuid.hpp"
 #include "io.hpp"
-#include "msr.hpp"
+#include "msr.h"
 #include "pic.hpp"
 #include "pit.hpp"
 #include "regs.hpp"

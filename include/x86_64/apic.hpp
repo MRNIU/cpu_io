@@ -5,10 +5,11 @@
 #ifndef CPU_IO_INCLUDE_X86_64_APIC_HPP_
 #define CPU_IO_INCLUDE_X86_64_APIC_HPP_
 
-#include "msr.hpp"
+#include "msr.h"
 #include "regs.hpp"
 
 namespace cpu_io {
+namespace msr {
 
 /**
  * @brief APIC 相关 MSR 专用命名空间
@@ -286,7 +287,7 @@ static __always_inline void WriteTimerDivide(uint32_t value) {
 }
 
 }  // namespace apic
-
+}  // namespace msr
 }  // namespace cpu_io
 
 #endif  // CPU_IO_INCLUDE_X86_64_APIC_HPP_

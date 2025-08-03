@@ -2,14 +2,14 @@
  * @copyright Copyright The cpu_io Contributors
  */
 
-#ifndef CPU_IO_INCLUDE_X86_64_MSR_HPP_
-#define CPU_IO_INCLUDE_X86_64_MSR_HPP_
+#ifndef CPU_IO_INCLUDE_X86_64_MSR_H_
+#define CPU_IO_INCLUDE_X86_64_MSR_H_
 
 #include <cstdint>
 
 namespace cpu_io {
 /**
- * @brief MSR（Model Specific Register）相关定义和操作
+ * @brief MSR（Model Specific Register）相关定义
  */
 namespace msr {
 
@@ -123,9 +123,7 @@ static constexpr const uint64_t kBaseMask = 0xFFFFF000ULL;
 
 }  // namespace base
 }  // namespace apic
-
 }  // namespace msr
+}  // namespace cpu_io
 
-};  // namespace cpu_io
-
-#endif  // CPU_IO_INCLUDE_X86_64_MSR_HPP_
+#endif  // CPU_IO_INCLUDE_X86_64_MSR_H_
