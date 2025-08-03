@@ -4,6 +4,8 @@ Header only multi-arch CPU register Read/Write library
 
 一个跨架构的 CPU 寄存器读写库，提供统一的接口来操作不同架构的 CPU 寄存器和设备。
 
+**中文版本** | [English Version](README_EN.md)
+
 ## 特性
 
 - **Header Only**: 无需编译，直接包含头文件即可使用
