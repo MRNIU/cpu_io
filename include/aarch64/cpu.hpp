@@ -1,17 +1,5 @@
-
 /**
- * @file cpu.hpp
- * @brief aarch64 cpu 相关定义
- * @author Zone.N (Zone.Niuzh@hotmail.com)
- * @version 1.0
- * @date 2024-03-05
- * @copyright MIT LICENSE
- * https://github.com/MRNIU/cpu_io
- * @par change log:
- * <table>
- * <tr><th>Date<th>Author<th>Description
- * <tr><td>2024-03-05<td>Zone.N (Zone.Niuzh@hotmail.com)<td>创建文件
- * </table>
+ * @copyright Copyright The cpu_io Contributors
  */
 
 #ifndef CPU_IO_INCLUDE_AARCH64_CPU_HPP_
@@ -29,6 +17,34 @@
  * @note 寄存器读写设计见 arch/README.md
  */
 namespace cpu_io {
+
+// 第四部分：访问接口
+using X0 = detail::regs::X0;
+using X29 = detail::regs::X29;
+using CPACR_EL1 = detail::regs::system_reg::CPACR_EL1;
+using CurrentEL = detail::regs::system_reg::CurrentEL;
+using SPSel = detail::regs::system_reg::SPSel;
+using DAIF = detail::regs::system_reg::DAIF;
+using VBAR_EL1 = detail::regs::system_reg::VBAR_EL1;
+using ELR_EL1 = detail::regs::system_reg::ELR_EL1;
+using SPSR_EL1 = detail::regs::system_reg::SPSR_EL1;
+using SP_EL0 = detail::regs::system_reg::SP_EL0;
+using SP_EL1 = detail::regs::system_reg::SP_EL1;
+using MPIDR_EL1 = detail::regs::system_reg::MPIDR_EL1;
+using SCTLR_EL1 = detail::regs::system_reg::SCTLR_EL1;
+using MAIR_EL1 = detail::regs::system_reg::MAIR_EL1;
+using TCR_EL1 = detail::regs::system_reg::TCR_EL1;
+using ESR_EL1 = detail::regs::system_reg::ESR_EL1;
+using FAR_EL1 = detail::regs::system_reg::FAR_EL1;
+using CNTV_CTL_EL0 = detail::regs::system_reg::CNTV_CTL_EL0;
+using CNTV_TVAL_EL0 = detail::regs::system_reg::CNTV_TVAL_EL0;
+using CNTVCT_EL0 = detail::regs::system_reg::CNTVCT_EL0;
+using CNTFRQ_EL0 = detail::regs::system_reg::CNTFRQ_EL0;
+using ICC_PMR_EL1 = detail::regs::system_reg::ICC_PMR_EL1;
+using ICC_IGRPEN1_EL1 = detail::regs::system_reg::ICC_IGRPEN1_EL1;
+using ICC_SRE_EL1 = detail::regs::system_reg::ICC_SRE_EL1;
+using ICC_IAR1_EL1 = detail::regs::system_reg::ICC_IAR1_EL1;
+using ICC_EOIR1_EL1 = detail::regs::system_reg::ICC_EOIR1_EL1;
 
 /**
  * @brief 允许中断
@@ -96,11 +112,9 @@ struct SMCReturnValue {
  * @param a7 参数7
  * @param res 返回值
  */
-static __always_inline auto SecureMonitorCall(uint64_t a0, uint64_t a1,
-                                              uint64_t a2, uint64_t a3,
-                                              uint64_t a4, uint64_t a5,
-                                              uint64_t a6, uint64_t a7)
-    -> const SMCReturnValue {
+static __always_inline auto SecureMonitorCall(
+    uint64_t a0, uint64_t a1, uint64_t a2, uint64_t a3, uint64_t a4,
+    uint64_t a5, uint64_t a6, uint64_t a7) -> const SMCReturnValue {
   SMCReturnValue result;
   register uint64_t x0 __asm__("x0") = a0;
   register uint64_t x1 __asm__("x1") = a1;
@@ -234,9 +248,7 @@ struct PowerState {
 static __always_inline auto CpuSuspend(PowerState power_state,
                                        uint64_t entry_point_address,
                                        uint64_t context_id) -> enum ErrorCode {
-  (void)power_state;
-  (void)entry_point_address;
-  (void)context_id;
+  (void)power_state; (void)entry_point_address; (void)context_id;
   return SUCCESS;
 }
 
