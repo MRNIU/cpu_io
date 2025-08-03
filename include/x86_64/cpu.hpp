@@ -10,6 +10,7 @@
 #include <cstdint>
 #include <type_traits>
 
+#include "apic.hpp"
 #include "cpuid.hpp"
 #include "io.hpp"
 #include "msr.hpp"
