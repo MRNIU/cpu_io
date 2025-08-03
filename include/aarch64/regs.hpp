@@ -757,9 +757,9 @@ struct ICC_EOIR1_EL1Info : public RegInfoBase {
   };
 };
 
-};  // namespace system_reg
+}  // namespace system_reg
 
-};  // namespace register_info
+}  // namespace register_info
 
 // 第二部分：读/写模版实现
 namespace read_write {
@@ -1349,7 +1349,7 @@ class ReadWriteField : public ReadOnlyField<Reg, RegInfo>,
   }
 };
 
-};  // namespace read_write
+}  // namespace read_write
 
 // 第三部分：寄存器实例
 namespace regs {
@@ -1596,11 +1596,11 @@ struct ICC_EOIR1_EL1 : public read_write::WriteOnlyRegBase<
       register_info::system_reg::ICC_EOIR1_EL1Info::INTID>;
 };
 
-};  // namespace system_reg
+}  // namespace system_reg
 
-};  // namespace regs
+}  // namespace regs
 
-};  // namespace detail
+}  // namespace detail
 
 // 第四部分：访问接口
 using X0 = detail::regs::X0;
@@ -1630,6 +1630,6 @@ using ICC_SRE_EL1 = detail::regs::system_reg::ICC_SRE_EL1;
 using ICC_IAR1_EL1 = detail::regs::system_reg::ICC_IAR1_EL1;
 using ICC_EOIR1_EL1 = detail::regs::system_reg::ICC_EOIR1_EL1;
 
-};  // namespace cpu_io
+}  // namespace cpu_io
 
 #endif  // CPU_IO_INCLUDE_AARCH64_REGS_HPP_

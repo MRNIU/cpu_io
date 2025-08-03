@@ -21,7 +21,7 @@ namespace apic {
  * @return uint64_t APIC Base 寄存器的值
  */
 static __always_inline auto ReadBase() -> uint64_t {
-  return cpu_io::Msr::Read(cpu_io::msr::apic::kBase);
+  return detail::regs::Msr::Read(cpu_io::msr::apic::kBase);
 }
 
 /**
@@ -29,7 +29,7 @@ static __always_inline auto ReadBase() -> uint64_t {
  * @param value 要写入的值
  */
 static __always_inline void WriteBase(uint64_t value) {
-  cpu_io::Msr::Write(msr::kIa32ApicBase, value);
+  detail::regs::Msr::Write(msr::kIa32ApicBase, value);
 }
 
 /**
@@ -108,7 +108,7 @@ static __always_inline void DisableX2Apic() {
  * @return uint32_t x2APIC ID
  */
 static __always_inline auto ReadId() -> uint32_t {
-  return static_cast<uint32_t>(cpu_io::Msr::Read(msr::apic::kId));
+  return static_cast<uint32_t>(detail::regs::Msr::Read(msr::apic::kId));
 }
 
 /**
@@ -116,7 +116,7 @@ static __always_inline auto ReadId() -> uint32_t {
  * @return uint32_t APIC 版本信息
  */
 static __always_inline auto ReadVersion() -> uint32_t {
-  return static_cast<uint32_t>(cpu_io::Msr::Read(msr::apic::kVersion));
+  return static_cast<uint32_t>(detail::regs::Msr::Read(msr::apic::kVersion));
 }
 
 /**
@@ -124,7 +124,7 @@ static __always_inline auto ReadVersion() -> uint32_t {
  * @return uint32_t 任务优先级值
  */
 static __always_inline auto ReadTpr() -> uint32_t {
-  return static_cast<uint32_t>(cpu_io::Msr::Read(msr::apic::kTpr));
+  return static_cast<uint32_t>(detail::regs::Msr::Read(msr::apic::kTpr));
 }
 
 /**
@@ -132,7 +132,7 @@ static __always_inline auto ReadTpr() -> uint32_t {
  * @param value 要设置的任务优先级值
  */
 static __always_inline void WriteTpr(uint32_t value) {
-  cpu_io::Msr::Write(msr::apic::kTpr, value);
+  detail::regs::Msr::Write(msr::apic::kTpr, value);
 }
 
 /**
@@ -140,7 +140,7 @@ static __always_inline void WriteTpr(uint32_t value) {
  * @param value EOI 值（通常为 0）
  */
 static __always_inline void WriteEoi(uint32_t value = 0) {
-  cpu_io::Msr::Write(msr::apic::kEoi, value);
+  detail::regs::Msr::Write(msr::apic::kEoi, value);
 }
 
 /**
@@ -148,7 +148,7 @@ static __always_inline void WriteEoi(uint32_t value = 0) {
  * @return uint32_t SIVR 值
  */
 static __always_inline auto ReadSivr() -> uint32_t {
-  return static_cast<uint32_t>(cpu_io::Msr::Read(msr::apic::kSivr));
+  return static_cast<uint32_t>(detail::regs::Msr::Read(msr::apic::kSivr));
 }
 
 /**
@@ -156,7 +156,7 @@ static __always_inline auto ReadSivr() -> uint32_t {
  * @param value 要设置的 SIVR 值
  */
 static __always_inline void WriteSivr(uint32_t value) {
-  cpu_io::Msr::Write(msr::apic::kSivr, value);
+  detail::regs::Msr::Write(msr::apic::kSivr, value);
 }
 
 /**
@@ -164,7 +164,7 @@ static __always_inline void WriteSivr(uint32_t value) {
  * @return uint64_t ICR 值
  */
 static __always_inline auto ReadIcr() -> uint64_t {
-  return cpu_io::Msr::Read(msr::apic::kIcr);
+  return detail::regs::Msr::Read(msr::apic::kIcr);
 }
 
 /**
@@ -172,7 +172,7 @@ static __always_inline auto ReadIcr() -> uint64_t {
  * @param value 要发送的 IPI 命令
  */
 static __always_inline void WriteIcr(uint64_t value) {
-  cpu_io::Msr::Write(msr::apic::kIcr, value);
+  detail::regs::Msr::Write(msr::apic::kIcr, value);
 }
 
 /**
@@ -181,7 +181,7 @@ static __always_inline void WriteIcr(uint64_t value) {
  */
 static __always_inline auto ReadLvtTimer() -> uint32_t {
   return static_cast<uint32_t>(
-      cpu_io::Msr::Read(::cpu_io::msr::apic::kLvtTimer));
+      detail::regs::Msr::Read(::cpu_io::msr::apic::kLvtTimer));
 }
 
 /**
@@ -189,7 +189,7 @@ static __always_inline auto ReadLvtTimer() -> uint32_t {
  * @param value 要设置的 LVT Timer 值
  */
 static __always_inline void WriteLvtTimer(uint32_t value) {
-  cpu_io::Msr::Write(::cpu_io::msr::apic::kLvtTimer, value);
+  detail::regs::Msr::Write(::cpu_io::msr::apic::kLvtTimer, value);
 }
 
 /**
@@ -198,7 +198,7 @@ static __always_inline void WriteLvtTimer(uint32_t value) {
  */
 static __always_inline auto ReadLvtLint0() -> uint32_t {
   return static_cast<uint32_t>(
-      cpu_io::Msr::Read(::cpu_io::msr::apic::kLvtLint0));
+      detail::regs::Msr::Read(::cpu_io::msr::apic::kLvtLint0));
 }
 
 /**
@@ -206,7 +206,7 @@ static __always_inline auto ReadLvtLint0() -> uint32_t {
  * @param value 要设置的 LVT LINT0 值
  */
 static __always_inline void WriteLvtLint0(uint32_t value) {
-  cpu_io::Msr::Write(::cpu_io::msr::apic::kLvtLint0, value);
+  detail::regs::Msr::Write(::cpu_io::msr::apic::kLvtLint0, value);
 }
 
 /**
@@ -215,7 +215,7 @@ static __always_inline void WriteLvtLint0(uint32_t value) {
  */
 static __always_inline auto ReadLvtLint1() -> uint32_t {
   return static_cast<uint32_t>(
-      cpu_io::Msr::Read(::cpu_io::msr::apic::kLvtLint1));
+      detail::regs::Msr::Read(::cpu_io::msr::apic::kLvtLint1));
 }
 
 /**
@@ -223,7 +223,7 @@ static __always_inline auto ReadLvtLint1() -> uint32_t {
  * @param value 要设置的 LVT LINT1 值
  */
 static __always_inline void WriteLvtLint1(uint32_t value) {
-  cpu_io::Msr::Write(::cpu_io::msr::apic::kLvtLint1, value);
+  detail::regs::Msr::Write(::cpu_io::msr::apic::kLvtLint1, value);
 }
 
 /**
@@ -232,7 +232,7 @@ static __always_inline void WriteLvtLint1(uint32_t value) {
  */
 static __always_inline auto ReadLvtError() -> uint32_t {
   return static_cast<uint32_t>(
-      cpu_io::Msr::Read(::cpu_io::msr::apic::kLvtError));
+      detail::regs::Msr::Read(::cpu_io::msr::apic::kLvtError));
 }
 
 /**
@@ -240,7 +240,7 @@ static __always_inline auto ReadLvtError() -> uint32_t {
  * @param value 要设置的 LVT Error 值
  */
 static __always_inline void WriteLvtError(uint32_t value) {
-  cpu_io::Msr::Write(::cpu_io::msr::apic::kLvtError, value);
+  detail::regs::Msr::Write(::cpu_io::msr::apic::kLvtError, value);
 }
 
 /**
@@ -249,7 +249,7 @@ static __always_inline void WriteLvtError(uint32_t value) {
  */
 static __always_inline auto ReadTimerInitCount() -> uint32_t {
   return static_cast<uint32_t>(
-      cpu_io::Msr::Read(::cpu_io::msr::apic::kTimerInitCount));
+      detail::regs::Msr::Read(::cpu_io::msr::apic::kTimerInitCount));
 }
 
 /**
@@ -257,7 +257,7 @@ static __always_inline auto ReadTimerInitCount() -> uint32_t {
  * @param value 要设置的定时器初始计数值
  */
 static __always_inline void WriteTimerInitCount(uint32_t value) {
-  cpu_io::Msr::Write(::cpu_io::msr::apic::kTimerInitCount, value);
+  detail::regs::Msr::Write(::cpu_io::msr::apic::kTimerInitCount, value);
 }
 
 /**
@@ -266,7 +266,7 @@ static __always_inline void WriteTimerInitCount(uint32_t value) {
  */
 static __always_inline auto ReadTimerCurrCount() -> uint32_t {
   return static_cast<uint32_t>(
-      cpu_io::Msr::Read(::cpu_io::msr::apic::kTimerCurrCount));
+      detail::regs::Msr::Read(::cpu_io::msr::apic::kTimerCurrCount));
 }
 
 /**
@@ -275,7 +275,7 @@ static __always_inline auto ReadTimerCurrCount() -> uint32_t {
  */
 static __always_inline auto ReadTimerDivide() -> uint32_t {
   return static_cast<uint32_t>(
-      cpu_io::Msr::Read(::cpu_io::msr::apic::kTimerDivide));
+      detail::regs::Msr::Read(::cpu_io::msr::apic::kTimerDivide));
 }
 
 /**
@@ -283,7 +283,7 @@ static __always_inline auto ReadTimerDivide() -> uint32_t {
  * @param value 要设置的定时器分频配置值
  */
 static __always_inline void WriteTimerDivide(uint32_t value) {
-  cpu_io::Msr::Write(::cpu_io::msr::apic::kTimerDivide, value);
+  detail::regs::Msr::Write(::cpu_io::msr::apic::kTimerDivide, value);
 }
 
 }  // namespace apic

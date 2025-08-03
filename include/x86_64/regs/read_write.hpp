@@ -492,10 +492,10 @@ class ReadWriteField : public ReadOnlyField<Reg, RegInfo>,
   }
 };
 
-};  // namespace read_write
+}  // namespace read_write
 
-};  // namespace detail
+}  // namespace detail
 
-};  // namespace cpu_io
+}  // namespace cpu_io
 
 #endif  // CPU_IO_INCLUDE_X86_64_READ_WRITE_HPP_

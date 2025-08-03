@@ -1,17 +1,5 @@
-
 /**
- * @file cpu.hpp
- * @brief riscv64 cpu 相关定义
- * @author Zone.N (Zone.Niuzh@hotmail.com)
- * @version 1.0
- * @date 2024-03-05
- * @copyright MIT LICENSE
- * https://github.com/MRNIU/cpu_io
- * @par change log:
- * <table>
- * <tr><th>Date<th>Author<th>Description
- * <tr><td>2024-03-05<td>Zone.N (Zone.Niuzh@hotmail.com)<td>创建文件
- * </table>
+ * @copyright Copyright The cpu_io Contributors
  */
 
 #ifndef CPU_IO_INCLUDE_RISCV64_CPU_HPP_
@@ -25,6 +13,22 @@
 #include "regs.hpp"
 
 namespace cpu_io {
+
+using Fp = detail::regs::Fp;
+using Tp = detail::regs::Tp;
+using Sstatus = detail::regs::csr::Sstatus;
+using Stvec = detail::regs::csr::Stvec;
+using Sip = detail::regs::csr::Sip;
+using Sie = detail::regs::csr::Sie;
+using Time = detail::regs::csr::Time;
+using Cycle = detail::regs::csr::Cycle;
+using Instret = detail::regs::csr::Instret;
+using Sscratch = detail::regs::csr::Sscratch;
+using Sepc = detail::regs::csr::Sepc;
+using Scause = detail::regs::csr::Scause;
+using Stval = detail::regs::csr::Stval;
+using Satp = detail::regs::csr::Satp;
+using Stimecmp = detail::regs::csr::Stimecmp;
 
 /**
  * @brief 允许中断

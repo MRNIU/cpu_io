@@ -99,6 +99,6 @@ class Serial {
   }
 };
 
-};  // namespace cpu_io
+}  // namespace cpu_io
 
 #endif  // CPU_IO_INCLUDE_X86_64_SERIAL_HPP_

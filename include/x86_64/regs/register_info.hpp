@@ -8,26 +8,13 @@
 #include <array>
 #include <cstdint>
 
+#include "register_info_base.h"
+
 namespace cpu_io {
 
 namespace detail {
 
 namespace register_info {
-
-struct RegInfoBase {
-  /// 寄存器数据类型
-  using DataType = uint64_t;
-  /// 起始位
-  static constexpr uint64_t kBitOffset = 0;
-  /// 位宽
-  static constexpr uint64_t kBitWidth = 64;
-  /// 掩码，(val & kBitMask) == 对应当前位的值
-  static constexpr uint64_t kBitMask =
-      (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) << kBitOffset : ~0ULL;
-  /// 对应位置位掩码
-  static constexpr uint64_t kAllSetMask =
-      (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) : ~0ULL;
-};
 
 /// 通用寄存器
 struct RbpInfo : public RegInfoBase {};
@@ -577,7 +564,7 @@ struct Cr4Info : public RegInfoBase {
 
 struct Cr8Info : public RegInfoBase {};
 
-};  // namespace cr
+}  // namespace cr
 
 /**
  * @brief xcr0 寄存器
@@ -644,12 +631,12 @@ struct FsInfo : public SegmentSelector {};
 
 struct GsInfo : public SegmentSelector {};
 
-};  // namespace segment_register
+}  // namespace segment_register
 
-};  // namespace register_info
+}  // namespace register_info
 
-};  // namespace detail
+}  // namespace detail
 
-};  // namespace cpu_io
+}  // namespace cpu_io
 
 #endif  // CPU_IO_INCLUDE_X86_64_REGISTER_INFO_HPP_

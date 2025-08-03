@@ -48,6 +48,6 @@ static __always_inline void Out(const uint32_t port, const T data) {
   }
 }
 
-};  // namespace cpu_io
+}  // namespace cpu_io
 
 #endif  // CPU_IO_INCLUDE_X86_64_IO_HPP_

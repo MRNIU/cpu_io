@@ -30,6 +30,46 @@
  */
 namespace cpu_io {
 
+using Rbp = detail::regs::Rbp;
+using Msr = detail::regs::Msr;
+using Rflags = detail::regs::Rflags;
+using Gdtr = detail::regs::Gdtr;
+using Ldtr = detail::regs::Ldtr;
+using Idtr = detail::regs::Idtr;
+using Tr = detail::regs::Tr;
+using Cr0 = detail::regs::cr::Cr0;
+using Cr2 = detail::regs::cr::Cr2;
+using Cr3 = detail::regs::cr::Cr3;
+using Cr4 = detail::regs::cr::Cr4;
+using Cr8 = detail::regs::cr::Cr8;
+using Xcr0 = detail::regs::Xcr0;
+using Cs = detail::regs::segment_register::Cs;
+using Ss = detail::regs::segment_register::Ss;
+using Ds = detail::regs::segment_register::Ds;
+using Es = detail::regs::segment_register::Es;
+using Fs = detail::regs::segment_register::Fs;
+using Gs = detail::regs::segment_register::Gs;
+
+/// 中断上下文，由 cpu 自动压入，无错误码
+struct InterruptContext {
+  uint64_t rip;
+  uint64_t cs;
+  uint64_t rflags;
+  uint64_t rsp;
+  uint64_t ss;
+};
+
+/// 中断上下文，由 cpu 自动压入，有错误码
+struct InterruptContextErrorCode {
+  detail::register_info::IdtrInfo::ErrorCode error_code;
+  uint32_t padding;
+  uint64_t rip;
+  uint64_t cs;
+  uint64_t rflags;
+  uint64_t rsp;
+  uint64_t ss;
+};
+
 /**
  * @brief 允许中断
  */
@@ -55,26 +95,6 @@ static __always_inline auto GetCurrentCoreId() -> size_t {
   return cpuid::GetExtendedApicId();
 }
 
-/// 中断上下文，由 cpu 自动压入，无错误码
-struct InterruptContext {
-  uint64_t rip;
-  uint64_t cs;
-  uint64_t rflags;
-  uint64_t rsp;
-  uint64_t ss;
-};
-
-/// 中断上下文，由 cpu 自动压入，有错误码
-struct InterruptContextErrorCode {
-  detail::register_info::IdtrInfo::ErrorCode error_code;
-  uint32_t padding;
-  uint64_t rip;
-  uint64_t cs;
-  uint64_t rflags;
-  uint64_t rsp;
-  uint64_t ss;
-};
-
-};  // namespace cpu_io
+}  // namespace cpu_io
 
 #endif  // CPU_IO_INCLUDE_X86_64_CPU_HPP_

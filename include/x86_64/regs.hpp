@@ -13,7 +13,6 @@
 #include <cstdlib>
 #include <type_traits>
 
-#include "regs/gdtr.hpp"
 #include "regs/read_write.hpp"
 #include "regs/register_info.hpp"
 
@@ -23,7 +22,6 @@ namespace detail {
 
 namespace regs {
 
-// 第三部分：寄存器实例
 struct Rbp : public read_write::ReadWriteRegBase<register_info::RbpInfo> {};
 
 struct Msr : public read_write::ReadWriteRegBase<register_info::MsrInfo> {};
@@ -89,7 +87,7 @@ struct Cr4 : public read_write::ReadWriteRegBase<register_info::cr::Cr4Info> {
 
 struct Cr8 : public read_write::ReadWriteRegBase<register_info::cr::Cr8Info> {};
 
-};  // namespace cr
+}  // namespace cr
 
 struct Xcr0 : public read_write::ReadWriteRegBase<register_info::Xcr0Info> {};
 
@@ -181,33 +179,12 @@ struct Gs : public read_write::ReadWriteRegBase<
       read_write::ReadWriteRegBase<register_info::segment_register::GsInfo>,
       register_info::segment_register::GsInfo::Index>;
 };
-};  // namespace segment_register
+}  // namespace segment_register
 
-};  // namespace regs
+}  // namespace regs
 
-};  // namespace detail
+}  // namespace detail
 
-// 第四部分：访问接口
-using Rbp = detail::regs::Rbp;
-using Msr = detail::regs::Msr;
-using Rflags = detail::regs::Rflags;
-using Gdtr = detail::regs::Gdtr;
-using Ldtr = detail::regs::Ldtr;
-using Idtr = detail::regs::Idtr;
-using Tr = detail::regs::Tr;
-using Cr0 = detail::regs::cr::Cr0;
-using Cr2 = detail::regs::cr::Cr2;
-using Cr3 = detail::regs::cr::Cr3;
-using Cr4 = detail::regs::cr::Cr4;
-using Cr8 = detail::regs::cr::Cr8;
-using Xcr0 = detail::regs::Xcr0;
-using Cs = detail::regs::segment_register::Cs;
-using Ss = detail::regs::segment_register::Ss;
-using Ds = detail::regs::segment_register::Ds;
-using Es = detail::regs::segment_register::Es;
-using Fs = detail::regs::segment_register::Fs;
-using Gs = detail::regs::segment_register::Gs;
-
-};  // namespace cpu_io
+}  // namespace cpu_io
 
 #endif  // CPU_IO_INCLUDE_X86_64_REGS_HPP_
