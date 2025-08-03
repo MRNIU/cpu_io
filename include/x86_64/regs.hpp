@@ -1,17 +1,5 @@
-
 /**
- * @file regs.hpp
- * @brief x86_64 寄存器相关定义
- * @author Zone.N (Zone.Niuzh@hotmail.com)
- * @version 1.0
- * @date 2024-03-05
- * @copyright MIT LICENSE
- * https://github.com/MRNIU/cpu_io
- * @par change log:
- * <table>
- * <tr><th>Date<th>Author<th>Description
- * <tr><td>2024-03-05<td>Zone.N (Zone.Niuzh@hotmail.com)<td>创建文件
- * </table>
+ * @copyright Copyright The cpu_io Contributors
  */
 
 #ifndef CPU_IO_INCLUDE_X86_64_REGS_HPP_

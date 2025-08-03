@@ -1,6 +1,5 @@
 /**
  * @copyright Copyright The cpu_io Contributors
- * @brief msr 驱动头文件
  */
 
 #ifndef CPU_IO_INCLUDE_X86_64_MSR_HPP_
