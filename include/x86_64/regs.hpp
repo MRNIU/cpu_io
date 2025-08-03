@@ -13,10 +13,6 @@
 #include <cstdlib>
 #include <type_traits>
 
-/**
- * x86_64 cpu Control Registers 相关定义
- * @note 寄存器读写设计见 arch/README.md
- */
 namespace cpu_io {
 
 namespace detail {

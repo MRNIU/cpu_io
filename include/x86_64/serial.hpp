@@ -7,15 +7,6 @@
 
 #include "io.hpp"
 
-/**
- * x86_64 cpu 相关定义
- * @note 寄存器读写设计见 arch/README.md
- * @see sdm.pdf
- * Intel® 64 and IA-32 Architectures Software Developer’s Manual
- * Volume 3 (3A, 3B, 3C, & 3D): System Programming Guide
- * Order Number: 325384-083US
- * https://www.intel.com/content/www/us/en/developer/articles/technical/intel-sdm.html
- */
 namespace cpu_io {
 
 /// @name 端口
