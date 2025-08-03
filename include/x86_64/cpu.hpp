@@ -14,6 +14,7 @@
 #include <cstring>
 #include <type_traits>
 
+#include "cpuid.hpp"
 #include "io.hpp"
 #include "msr.hpp"
 #include "pic.hpp"
