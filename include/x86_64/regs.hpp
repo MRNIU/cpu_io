@@ -13,8 +13,9 @@
 #include <cstdlib>
 #include <type_traits>
 
-#include "read_write.hpp"
-#include "register_info.hpp"
+#include "regs/gdtr.hpp"
+#include "regs/read_write.hpp"
+#include "regs/register_info.hpp"
 
 namespace cpu_io {
 

@@ -12,7 +12,6 @@ namespace cpu_io {
 
 namespace detail {
 
-// 第一部分：寄存器定义
 namespace register_info {
 
 struct RegInfoBase {
