@@ -271,14 +271,84 @@ struct MPIDR_EL1Info : public RegInfoBase {
  * @see
  * https://developer.arm.com/documentation/ddi0601/2024-12/AArch64-Registers/TTBR0-EL1--Translation-Table-Base-Register-0--EL1-
  */
-struct TTBR0_EL1Info : public RegInfoBase {};
+struct TTBR0_EL1Info : public RegInfoBase {
+  struct ASID {
+    using DataType = uint16_t;
+    static constexpr uint64_t kBitOffset = 48;
+    static constexpr uint64_t kBitWidth = 16;
+    static constexpr uint64_t kBitMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) << kBitOffset : ~0ULL;
+    static constexpr uint64_t kAllSetMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) : ~0ULL;
+  };
+
+  struct BADDR {
+    using DataType = uint64_t;
+    static constexpr uint64_t kBitOffset = 1;
+    static constexpr uint64_t kBitWidth = 47;
+    static constexpr uint64_t kBitMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) << kBitOffset : ~0ULL;
+    static constexpr uint64_t kAllSetMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) : ~0ULL;
+  };
+
+  struct CnP {
+    using DataType = bool;
+    static constexpr uint64_t kBitOffset = 0;
+    static constexpr uint64_t kBitWidth = 1;
+    static constexpr uint64_t kBitMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) << kBitOffset : ~0ULL;
+    static constexpr uint64_t kAllSetMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) : ~0ULL;
+
+    /// No meaning to Common not Private.
+    static constexpr const bool kNotPrivate = false;
+    /// Common not Private.
+    static constexpr const bool kCommon = true;
+  };
+};
 
 /**
  * @brief TTBR1_EL1 寄存器定义
  * @see
  * https://developer.arm.com/documentation/ddi0601/2024-12/AArch64-Registers/TTBR1-EL1--Translation-Table-Base-Register-1--EL1-
  */
-struct TTBR1_EL1Info : public RegInfoBase {};
+struct TTBR1_EL1Info : public RegInfoBase {
+  struct ASID {
+    using DataType = uint16_t;
+    static constexpr uint64_t kBitOffset = 48;
+    static constexpr uint64_t kBitWidth = 16;
+    static constexpr uint64_t kBitMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) << kBitOffset : ~0ULL;
+    static constexpr uint64_t kAllSetMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) : ~0ULL;
+  };
+
+  struct BADDR {
+    using DataType = uint64_t;
+    static constexpr uint64_t kBitOffset = 1;
+    static constexpr uint64_t kBitWidth = 47;
+    static constexpr uint64_t kBitMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) << kBitOffset : ~0ULL;
+    static constexpr uint64_t kAllSetMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) : ~0ULL;
+  };
+
+  struct CnP {
+    using DataType = bool;
+    static constexpr uint64_t kBitOffset = 0;
+    static constexpr uint64_t kBitWidth = 1;
+    static constexpr uint64_t kBitMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) << kBitOffset : ~0ULL;
+    static constexpr uint64_t kAllSetMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) : ~0ULL;
+
+    /// No meaning to Common not Private.
+    static constexpr const bool kNotPrivate = false;
+    /// Common not Private.
+    static constexpr const bool kCommon = true;
+  };
+};
 
 /**
  * @brief TCR_EL1 寄存器定义

@@ -84,10 +84,18 @@ class ReadOnlyRegBase {
     } else if constexpr (std::is_same_v<
                              RegInfo,
                              register_info::system_reg::MAIR_EL1Info>) {
-      __asm__ volatile("mrs %0, MAIR_EL1Info" : "=r"(value) : :);
+      __asm__ volatile("mrs %0, MAIR_EL1" : "=r"(value) : :);
     } else if constexpr (std::is_same_v<
                              RegInfo, register_info::system_reg::TCR_EL1Info>) {
       __asm__ volatile("mrs %0, TCR_EL1" : "=r"(value) : :);
+    } else if constexpr (std::is_same_v<
+                             RegInfo,
+                             register_info::system_reg::TTBR0_EL1Info>) {
+      __asm__ volatile("mrs %0, TTBR0_EL1" : "=r"(value) : :);
+    } else if constexpr (std::is_same_v<
+                             RegInfo,
+                             register_info::system_reg::TTBR1_EL1Info>) {
+      __asm__ volatile("mrs %0, TTBR1_EL1" : "=r"(value) : :);
     } else if constexpr (std::is_same_v<
                              RegInfo, register_info::system_reg::ESR_EL1Info>) {
       __asm__ volatile("mrs %0, ESR_EL1" : "=r"(value) : :);
@@ -205,6 +213,14 @@ class WriteOnlyRegBase {
                              RegInfo, register_info::system_reg::TCR_EL1Info>) {
       __asm__ volatile("msr TCR_EL1, %0" : : "r"(value) :);
     } else if constexpr (std::is_same_v<
+                             RegInfo,
+                             register_info::system_reg::TTBR0_EL1Info>) {
+      __asm__ volatile("msr TTBR0_EL1, %0" : : "r"(value) :);
+    } else if constexpr (std::is_same_v<
+                             RegInfo,
+                             register_info::system_reg::TTBR1_EL1Info>) {
+      __asm__ volatile("msr TTBR1_EL1, %0" : : "r"(value) :);
+    } else if constexpr (std::is_same_v<
                              RegInfo, register_info::system_reg::ESR_EL1Info>) {
       __asm__ volatile("msr ESR_EL1, %0" : : "r"(value) :);
     } else if constexpr (std::is_same_v<
@@ -308,6 +324,27 @@ class WriteOnlyRegBase {
       __asm__ volatile("mrs %0, ICC_IGRPEN1_EL1" : "=r"(value)::);
       value |= mask;
       Write(value);
+    } else if constexpr (std::is_same_v<
+                             RegInfo,
+                             register_info::system_reg::SCTLR_EL1Info>) {
+      typename RegInfo::DataType value = 0;
+      __asm__ volatile("mrs %0, SCTLR_EL1" : "=r"(value)::);
+      value |= mask;
+      Write(value);
+    } else if constexpr (std::is_same_v<
+                             RegInfo,
+                             register_info::system_reg::TTBR0_EL1Info>) {
+      typename RegInfo::DataType value = 0;
+      __asm__ volatile("mrs %0, TTBR0_EL1" : "=r"(value)::);
+      value |= mask;
+      Write(value);
+    } else if constexpr (std::is_same_v<
+                             RegInfo,
+                             register_info::system_reg::TTBR1_EL1Info>) {
+      typename RegInfo::DataType value = 0;
+      __asm__ volatile("mrs %0, TTBR1_EL1" : "=r"(value)::);
+      value |= mask;
+      Write(value);
     } else {
       static_assert(sizeof(RegInfo) == 0);
     }
@@ -348,6 +385,27 @@ class WriteOnlyRegBase {
                              register_info::system_reg::ICC_IGRPEN1_EL1Info>) {
       typename RegInfo::DataType value = 0;
       __asm__ volatile("mrs %0, ICC_IGRPEN1_EL1" : "=r"(value)::);
+      value &= ~mask;
+      Write(value);
+    } else if constexpr (std::is_same_v<
+                             RegInfo,
+                             register_info::system_reg::SCTLR_EL1Info>) {
+      typename RegInfo::DataType value = 0;
+      __asm__ volatile("mrs %0, SCTLR_EL1" : "=r"(value)::);
+      value &= ~mask;
+      Write(value);
+    } else if constexpr (std::is_same_v<
+                             RegInfo,
+                             register_info::system_reg::TTBR0_EL1Info>) {
+      typename RegInfo::DataType value = 0;
+      __asm__ volatile("mrs %0, TTBR0_EL1" : "=r"(value)::);
+      value &= ~mask;
+      Write(value);
+    } else if constexpr (std::is_same_v<
+                             RegInfo,
+                             register_info::system_reg::TTBR1_EL1Info>) {
+      typename RegInfo::DataType value = 0;
+      __asm__ volatile("mrs %0, TTBR1_EL1" : "=r"(value)::);
       value &= ~mask;
       Write(value);
     } else {

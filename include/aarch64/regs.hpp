@@ -269,6 +269,36 @@ struct ICC_EOIR1_EL1 : public read_write::WriteOnlyRegBase<
       register_info::system_reg::ICC_EOIR1_EL1Info::INTID>;
 };
 
+struct TTBR0_EL1 : public read_write::ReadWriteRegBase<
+                       register_info::system_reg::TTBR0_EL1Info> {
+  using ASID = read_write::ReadWriteField<
+      read_write::ReadWriteRegBase<register_info::system_reg::TTBR0_EL1Info>,
+      register_info::system_reg::TTBR0_EL1Info::ASID>;
+
+  using BADDR = read_write::ReadWriteField<
+      read_write::ReadWriteRegBase<register_info::system_reg::TTBR0_EL1Info>,
+      register_info::system_reg::TTBR0_EL1Info::BADDR>;
+
+  using CnP = read_write::ReadWriteField<
+      read_write::ReadWriteRegBase<register_info::system_reg::TTBR0_EL1Info>,
+      register_info::system_reg::TTBR0_EL1Info::CnP>;
+};
+
+struct TTBR1_EL1 : public read_write::ReadWriteRegBase<
+                       register_info::system_reg::TTBR1_EL1Info> {
+  using ASID = read_write::ReadWriteField<
+      read_write::ReadWriteRegBase<register_info::system_reg::TTBR1_EL1Info>,
+      register_info::system_reg::TTBR1_EL1Info::ASID>;
+
+  using BADDR = read_write::ReadWriteField<
+      read_write::ReadWriteRegBase<register_info::system_reg::TTBR1_EL1Info>,
+      register_info::system_reg::TTBR1_EL1Info::BADDR>;
+
+  using CnP = read_write::ReadWriteField<
+      read_write::ReadWriteRegBase<register_info::system_reg::TTBR1_EL1Info>,
+      register_info::system_reg::TTBR1_EL1Info::CnP>;
+};
+
 }  // namespace system_reg
 
 }  // namespace regs
