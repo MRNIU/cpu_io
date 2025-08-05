@@ -11,6 +11,7 @@
 #include <typeinfo>
 
 #include "regs.hpp"
+#include "virtual_memory.hpp"
 
 namespace cpu_io {
 

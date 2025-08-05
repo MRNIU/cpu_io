@@ -69,29 +69,32 @@ static constexpr uint64_t kPtePxn = kPxn;
 static constexpr uint64_t kPteUxn = kUxn;
 
 /// 访问权限值
-static constexpr uint64_t kApReadWrite = 0ULL << kApOffset;  ///< EL1 读写
-static constexpr uint64_t kApReadOnly = 2ULL << kApOffset;   ///< EL1 只读
-static constexpr uint64_t kApUserReadWrite = 1ULL
-                                             << kApOffset;  ///< EL0/EL1 读写
-static constexpr uint64_t kApUserReadOnly = 3ULL
-                                            << kApOffset;  ///< EL0/EL1 只读
+/// EL1 读写
+static constexpr uint64_t kApReadWrite = 0ULL << kApOffset;
+/// EL1 只读
+static constexpr uint64_t kApReadOnly = 2ULL << kApOffset;
+/// EL0/EL1 读写
+static constexpr uint64_t kApUserReadWrite = 1ULL << kApOffset;
+/// EL0/EL1 只读
+static constexpr uint64_t kApUserReadOnly = 3ULL << kApOffset;
 
 /// 共享性属性值
-static constexpr uint64_t kShNonShareable = 0ULL << kShOffset;    ///< 非共享
-static constexpr uint64_t kShOuterShareable = 2ULL << kShOffset;  ///< 外部共享
-static constexpr uint64_t kShInnerShareable = 3ULL << kShOffset;  ///< 内部共享
+/// 非共享
+static constexpr uint64_t kShNonShareable = 0ULL << kShOffset;
+/// 外部共享
+static constexpr uint64_t kShOuterShareable = 2ULL << kShOffset;
+/// 内部共享
+static constexpr uint64_t kShInnerShareable = 3ULL << kShOffset;
 
 /// 内存属性索引值
-static constexpr uint64_t kAttrDevice = 0ULL << kAttrIndxOffset;  ///< 设备内存
-static constexpr uint64_t kAttrNormalNc =
-    1ULL << kAttrIndxOffset;  ///< 普通内存，非缓存
-static constexpr uint64_t kAttrNormalWt =
-    2ULL << kAttrIndxOffset;  ///< 普通内存，写透
-static constexpr uint64_t kAttrNormalWb =
-    3ULL << kAttrIndxOffset;  ///< 普通内存，写回
-
-/// @name 分页管理函数
-/// @{
+/// 设备内存
+static constexpr uint64_t kAttrDevice = 0ULL << kAttrIndxOffset;
+/// 普通内存，非缓存
+static constexpr uint64_t kAttrNormalNc = 1ULL << kAttrIndxOffset;
+/// 普通内存，写透
+static constexpr uint64_t kAttrNormalWt = 2ULL << kAttrIndxOffset;
+/// 普通内存，写回
+static constexpr uint64_t kAttrNormalWb = 3ULL << kAttrIndxOffset;
 
 /**
  * @brief 开启分页
@@ -137,8 +140,6 @@ inline void FlushPage(uint64_t addr) {
   __asm__ volatile("dsb sy");
   __asm__ volatile("isb");
 }
-
-/// @}
 
 }  // namespace virtual_memory
 }  // namespace cpu_io
