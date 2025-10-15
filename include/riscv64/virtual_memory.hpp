@@ -270,6 +270,67 @@ static __always_inline auto GetPageCount(uint64_t start_addr, uint64_t end_addr)
   return (aligned_end - aligned_start) / kPageSize;
 }
 
+/**
+ * @brief 获取内核页表权限
+ * @param readable 可读标志
+ * @param writable 可写标志
+ * @param executable 可执行标志
+ * @param global 全局标志
+ * @return uint8_t 内核页表权限标志
+ */
+static __always_inline auto GetKernelPagePermissions(bool readable = true,
+                                                     bool writable = true,
+                                                     bool executable = false,
+                                                     bool global = true)
+    -> uint8_t {
+  uint8_t flags = kValid;
+  if (readable) {
+    flags |= kRead;
+  }
+  if (writable) {
+    flags |= kWrite;
+  }
+  if (executable) {
+    flags |= kExec;
+  }
+  if (global) {
+    flags |= kGlobal;
+  }
+
+  // 内核页面不设置用户权限位
+  return flags;
+}
+
+/**
+ * @brief 获取用户页表权限
+ * @param readable 可读标志
+ * @param writable 可写标志
+ * @param executable 可执行标志
+ * @param global 全局标志
+ * @return uint8_t 用户页表权限标志
+ */
+static __always_inline auto GetUserPagePermissions(bool readable = true,
+                                                   bool writable = false,
+                                                   bool executable = false,
+                                                   bool global = false)
+    -> uint8_t {
+  uint8_t flags = kValid | kUser;  // 用户页面必须设置 USER 位
+  if (readable) {
+    flags |= kRead;
+  }
+  if (writable) {
+    flags |= kWrite;
+  }
+  if (executable) {
+    flags |= kExec;
+  }
+  if (global) {
+    flags |= kGlobal;
+  }
+
+  return flags;
+}
+
 }  // namespace virtual_memory
 }  // namespace cpu_io
 
