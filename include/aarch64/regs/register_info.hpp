@@ -356,6 +356,38 @@ struct TTBR1_EL1Info : public RegInfoBase {
  * https://developer.arm.com/documentation/ddi0601/2024-12/AArch64-Registers/TCR-EL1--Translation-Control-Register--EL1-
  */
 struct TCR_EL1Info : public RegInfoBase {
+  // IPS (Intermediate Physical Address Size) 值常量
+  /// 32 bits, 4GB
+  static constexpr const uint8_t kIPS_32Bits = 0b000;
+  /// 36 bits, 64GB
+  static constexpr const uint8_t kIPS_36Bits = 0b001;
+  /// 40 bits, 1TB
+  static constexpr const uint8_t kIPS_40Bits = 0b010;
+  /// 42 bits, 4TB
+  static constexpr const uint8_t kIPS_42Bits = 0b011;
+  /// 44 bits, 16TB
+  static constexpr const uint8_t kIPS_44Bits = 0b100;
+  /// 48 bits, 256TB
+  static constexpr const uint8_t kIPS_48Bits = 0b101;
+  /// 52 bits, 4PB
+  static constexpr const uint8_t kIPS_52Bits = 0b110;
+
+  // TG0/TG1 (Granule size) 值常量
+  /// 4KB granule
+  static constexpr const uint8_t kTG_4KB = 0b00;
+  /// 16KB granule
+  static constexpr const uint8_t kTG_16KB = 0b10;
+  /// 64KB granule
+  static constexpr const uint8_t kTG_64KB = 0b01;
+
+  // TG1 特殊值（编码不同）
+  /// 4KB granule for TTBR1_EL1
+  static constexpr const uint8_t kTG1_4KB = 0b10;
+  /// 16KB granule for TTBR1_EL1
+  static constexpr const uint8_t kTG1_16KB = 0b01;
+  /// 64KB granule for TTBR1_EL1
+  static constexpr const uint8_t kTG1_64KB = 0b11;
+
   struct IPS {
     using DataType = uint8_t;
     static constexpr uint64_t kBitOffset = 32;
@@ -413,14 +445,45 @@ struct TCR_EL1Info : public RegInfoBase {
  * https://developer.arm.com/documentation/ddi0601/2024-12/AArch64-Registers/MAIR-EL1--Memory-Attribute-Indirection-Register--EL1-
  */
 struct MAIR_EL1Info : public RegInfoBase {
-  ///	Device-nGnRnE memory.
-  static constexpr const uint8_t KDeviceNGnRnE = 0b00000000;
-  ///	Device-nGnRE memory.
-  static constexpr const uint8_t KDeviceNGnRE = 0b00000100;
-  ///	Device-nGRE memory.
-  static constexpr const uint8_t KDeviceNGRE = 0b00001000;
-  ///	Device-GRE memory.
-  static constexpr const uint8_t KDeviceGRE = 0b00001100;
+  // 设备内存类型常量
+  // Device memory: [7:4]=0000, [3:2]=设备类型, [1:0]=00
+
+  /// Device-nGnRnE memory (0x00 = 0b00000000)
+  /// 最严格的设备内存：不可收集、不可重排序、不可提前确认写入
+  /// 适用于 MMIO 设备寄存器
+  static constexpr const uint8_t kDeviceNGnRnE = 0x00;
+
+  /// Device-nGnRE memory (0x04 = 0b00000100)
+  /// 不可收集、不可重排序、可提前确认写入
+  static constexpr const uint8_t kDeviceNGnRE = 0x04;
+
+  /// Device-nGRE memory (0x08 = 0b00001000)
+  /// 不可收集、可重排序、可提前确认写入
+  static constexpr const uint8_t kDeviceNGRE = 0x08;
+
+  /// Device-GRE memory (0x0C = 0b00001100)
+  /// 可收集、可重排序、可提前确认写入
+  static constexpr const uint8_t kDeviceGRE = 0x0C;
+
+  // 普通内存类型常量
+  // Normal memory: [7:4]=外部缓存属性, [3:0]=内部缓存属性
+  // 缓存属性编码: 0000=Non-cacheable, 0100=WT/No-alloc, 1011=WT/RA, 1111=WB/RWA
+
+  /// Normal memory, Non-cacheable (0x44 = 0b01000100)
+  /// 外部和内部都不缓存，但允许内存访问重排序和合并
+  static constexpr const uint8_t kNormalNonCacheable = 0x44;
+
+  /// Normal memory, Write-through, No-allocate (0x44 = 0b01000100)
+  /// 写透缓存，不分配缓存行
+  static constexpr const uint8_t kNormalWriteThroughNoAlloc = 0x44;
+
+  /// Normal memory, Write-through, Read-allocate (0xBB = 0b10111011)
+  /// 写透缓存，读取时分配缓存行
+  static constexpr const uint8_t kNormalWriteThroughReadAlloc = 0xBB;
+
+  /// Normal memory, Write-back, Read/Write-allocate (0xFF = 0b11111111)
+  /// 写回缓存，读写时都分配缓存行，性能最优
+  static constexpr const uint8_t kNormalWriteBackReadWriteAlloc = 0xFF;
 
   struct Aff7 {
     using DataType = uint8_t;

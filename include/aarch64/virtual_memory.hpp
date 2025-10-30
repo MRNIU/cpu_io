@@ -97,9 +97,91 @@ static constexpr uint64_t kAttrNormalWt = 2ULL << kAttrIndxOffset;
 static constexpr uint64_t kAttrNormalWb = 3ULL << kAttrIndxOffset;
 
 /**
+ * @brief 配置内存属性间接寄存器 (MAIR_EL1)
+ * @note 配置四种内存类型：
+ *       - Attr0: 设备内存 (Device-nGnRnE)
+ *       - Attr1: 普通内存，非缓存 (Normal, Non-cacheable)
+ *       - Attr2: 普通内存，写透缓存 (Normal, Write-through, Read-allocate)
+ *       - Attr3: 普通内存，写回缓存 (Normal, Write-back, Read/Write-allocate)
+ */
+inline void ConfigureMAIR() {
+  namespace reg_info = detail::register_info::system_reg;
+
+  // Attr0: Device-nGnRnE memory
+  // 最严格的设备内存，适用于 MMIO
+  detail::regs::system_reg::MAIR_EL1::Aff0::Write(
+      reg_info::MAIR_EL1Info::kDeviceNGnRnE);
+
+  // Attr1: Normal memory, Non-cacheable
+  // 不使用缓存，但允许内存访问重排序和合并
+  detail::regs::system_reg::MAIR_EL1::Aff1::Write(
+      reg_info::MAIR_EL1Info::kNormalNonCacheable);
+
+  // Attr2: Normal memory, Write-through, Read-allocate
+  // 写透缓存，读分配（写入时直接写入内存，读取时分配缓存行）
+  detail::regs::system_reg::MAIR_EL1::Aff2::Write(
+      reg_info::MAIR_EL1Info::kNormalWriteThroughReadAlloc);
+
+  // Attr3: Normal memory, Write-back, Read/Write-allocate
+  // 写回缓存，读写分配，性能最优，适用于普通内存访问
+  detail::regs::system_reg::MAIR_EL1::Aff3::Write(
+      reg_info::MAIR_EL1Info::kNormalWriteBackReadWriteAlloc);
+
+  // 指令同步屏障，确保 MAIR 配置生效
+  __asm__ volatile("isb");
+}
+
+/**
+ * @brief 配置地址转换控制寄存器 (TCR_EL1)
+ * @param t0sz TTBR0_EL1 的地址空间大小 (默认 16，表示 48 位地址空间)
+ * @param t1sz TTBR1_EL1 的地址空间大小 (默认 16，表示 48 位地址空间)
+ * @note 配置四级页表，4KB 页粒度，48 位物理地址
+ *
+ * @details T0SZ/T1SZ 计算：
+ *   - 虚拟地址宽度 = 64 - TxSZ
+ *   - T0SZ=16 表示 TTBR0 管理 48 位地址空间 (0x0000_0000_0000_0000 -
+ * 0x0000_FFFF_FFFF_FFFF)
+ *   - T1SZ=16 表示 TTBR1 管理 48 位地址空间 (0xFFFF_0000_0000_0000 -
+ * 0xFFFF_FFFF_FFFF_FFFF)
+ */
+inline void ConfigureTCR(uint8_t t0sz = 16, uint8_t t1sz = 16) {
+  namespace reg_info = detail::register_info::system_reg;
+
+  // 配置 TTBR0_EL1 的地址空间大小
+  // T0SZ = 16 表示 48 位虚拟地址空间 (2^48 = 256TB)
+  detail::regs::system_reg::TCR_EL1::T0SZ::Write(t0sz);
+
+  // 配置 TTBR1_EL1 的地址空间大小
+  // T1SZ = 16 表示 48 位虚拟地址空间
+  detail::regs::system_reg::TCR_EL1::T1SZ::Write(t1sz);
+
+  // 配置 TTBR0_EL1 页粒度为 4KB
+  detail::regs::system_reg::TCR_EL1::TG0::Write(reg_info::TCR_EL1Info::kTG_4KB);
+
+  // 配置 TTBR1_EL1 页粒度为 4KB
+  detail::regs::system_reg::TCR_EL1::TG1::Write(
+      reg_info::TCR_EL1Info::kTG1_4KB);
+
+  // 配置中间物理地址大小为 48 位 (支持 256TB 物理地址空间)
+  detail::regs::system_reg::TCR_EL1::IPS::Write(
+      reg_info::TCR_EL1Info::kIPS_48Bits);
+
+  // 指令同步屏障，确保 TCR 配置生效
+  __asm__ volatile("isb");
+}
+
+/**
  * @brief 开启分页
+ * @note 配置 MAIR_EL1 和 TCR_EL1，然后开启 MMU
  */
 inline void EnablePage() {
+  // 配置内存属性
+  ConfigureMAIR();
+
+  // 配置地址转换控制
+  ConfigureTCR();
+
+  // 启用 MMU
   detail::regs::system_reg::SCTLR_EL1::M::Set();
   __asm__ volatile("isb");
 }
