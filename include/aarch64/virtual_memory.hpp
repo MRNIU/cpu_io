@@ -106,9 +106,21 @@ inline void EnablePage() {
 
 /**
  * @brief 关闭分页
+ * @note 禁用 MMU、数据缓存和指令缓存，并清除 TLB
  */
 inline void DisablePage() {
+  // 禁用 MMU、数据缓存和指令缓存
   detail::regs::system_reg::SCTLR_EL1::M::Clear();
+  detail::regs::system_reg::SCTLR_EL1::C::Clear();
+  detail::regs::system_reg::SCTLR_EL1::I::Clear();
+  
+  // 指令同步屏障
+  __asm__ volatile("isb");
+  
+  // 清除 TLB
+  __asm__ volatile("dsb sy");
+  __asm__ volatile("tlbi vmalle1");
+  __asm__ volatile("dsb sy");
   __asm__ volatile("isb");
 }
 

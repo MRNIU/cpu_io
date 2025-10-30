@@ -117,6 +117,14 @@ struct SCTLR_EL1 : public read_write::ReadWriteRegBase<
   using M = read_write::ReadWriteField<
       read_write::ReadWriteRegBase<register_info::system_reg::SCTLR_EL1Info>,
       register_info::system_reg::SCTLR_EL1Info::M>;
+  
+  using C = read_write::ReadWriteField<
+      read_write::ReadWriteRegBase<register_info::system_reg::SCTLR_EL1Info>,
+      register_info::system_reg::SCTLR_EL1Info::C>;
+  
+  using I = read_write::ReadWriteField<
+      read_write::ReadWriteRegBase<register_info::system_reg::SCTLR_EL1Info>,
+      register_info::system_reg::SCTLR_EL1Info::I>;
 };
 
 struct MAIR_EL1 : public read_write::ReadWriteRegBase<

@@ -523,6 +523,36 @@ struct SCTLR_EL1Info : public RegInfoBase {
     // EL1&0 stage 1 address translation enabled.
     static constexpr const bool kEnabled = true;
   };
+
+  struct C {
+    using DataType = bool;
+    static constexpr uint64_t kBitOffset = 2;
+    static constexpr uint64_t kBitWidth = 1;
+    static constexpr uint64_t kBitMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) << kBitOffset : ~0ULL;
+    static constexpr uint64_t kAllSetMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) : ~0ULL;
+
+    // Stage 1 data caching disabled.
+    static constexpr const bool kDisabled = false;
+    // Stage 1 data caching enabled.
+    static constexpr const bool kEnabled = true;
+  };
+
+  struct I {
+    using DataType = bool;
+    static constexpr uint64_t kBitOffset = 12;
+    static constexpr uint64_t kBitWidth = 1;
+    static constexpr uint64_t kBitMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) << kBitOffset : ~0ULL;
+    static constexpr uint64_t kAllSetMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) : ~0ULL;
+
+    // Instruction caching disabled.
+    static constexpr const bool kDisabled = false;
+    // Instruction caching enabled.
+    static constexpr const bool kEnabled = true;
+  };
 };
 
 /**
