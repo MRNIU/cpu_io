@@ -113,10 +113,10 @@ inline void DisablePage() {
   detail::regs::system_reg::SCTLR_EL1::M::Clear();
   detail::regs::system_reg::SCTLR_EL1::C::Clear();
   detail::regs::system_reg::SCTLR_EL1::I::Clear();
-  
+
   // 指令同步屏障
   __asm__ volatile("isb");
-  
+
   // 清除 TLB
   __asm__ volatile("dsb sy");
   __asm__ volatile("tlbi vmalle1");
