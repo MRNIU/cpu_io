@@ -104,7 +104,7 @@ static constexpr uint64_t kAttrNormalWb = 3ULL << kAttrIndxOffset;
  *       - Attr2: 普通内存，写透缓存 (Normal, Write-through, Read-allocate)
  *       - Attr3: 普通内存，写回缓存 (Normal, Write-back, Read/Write-allocate)
  */
-inline void ConfigureMAIR() {
+static __always_inline void ConfigureMAIR() {
   namespace reg_info = detail::register_info::system_reg;
 
   // Attr0: Device-nGnRnE memory
@@ -144,7 +144,7 @@ inline void ConfigureMAIR() {
  *   - T1SZ=16 表示 TTBR1 管理 48 位地址空间 (0xFFFF_0000_0000_0000 -
  * 0xFFFF_FFFF_FFFF_FFFF)
  */
-inline void ConfigureTCR(uint8_t t0sz = 16, uint8_t t1sz = 16) {
+static __always_inline void ConfigureTCR(uint8_t t0sz = 16, uint8_t t1sz = 16) {
   namespace reg_info = detail::register_info::system_reg;
 
   // 配置 TTBR0_EL1 的地址空间大小
@@ -174,7 +174,7 @@ inline void ConfigureTCR(uint8_t t0sz = 16, uint8_t t1sz = 16) {
  * @brief 开启分页
  * @note 配置 MAIR_EL1 和 TCR_EL1，然后开启 MMU
  */
-inline void EnablePage() {
+static __always_inline void EnablePage() {
   // 配置内存属性
   ConfigureMAIR();
 
@@ -190,7 +190,7 @@ inline void EnablePage() {
  * @brief 关闭分页
  * @note 禁用 MMU、数据缓存和指令缓存，并清除 TLB
  */
-inline void DisablePage() {
+static __always_inline void DisablePage() {
   // 禁用 MMU、数据缓存和指令缓存
   detail::regs::system_reg::SCTLR_EL1::M::Clear();
   detail::regs::system_reg::SCTLR_EL1::C::Clear();
@@ -210,7 +210,7 @@ inline void DisablePage() {
  * @brief 设置页目录
  * @param pgd 要设置的页表物理地址
  */
-inline void SetPageDirectory(uint64_t pgd) {
+static __always_inline void SetPageDirectory(uint64_t pgd) {
   detail::regs::system_reg::TTBR1_EL1::Write(pgd);
   __asm__ volatile("isb");
 }
@@ -219,7 +219,7 @@ inline void SetPageDirectory(uint64_t pgd) {
  * @brief 获取页目录
  * @return uint64_t 页目录物理地址值
  */
-inline auto GetPageDirectory() -> uint64_t {
+static __always_inline auto GetPageDirectory() -> uint64_t {
   return detail::regs::system_reg::TTBR1_EL1::Read();
 }
 
@@ -474,24 +474,29 @@ static __always_inline auto GetPageCount(uint64_t start_addr, uint64_t end_addr)
  */
 static __always_inline auto GetKernelPagePermissions(
     [[maybe_unused]] bool readable = true, bool writable = true,
-    bool executable = false, bool global = true) -> uint64_t {
-  uint64_t flags = kValid | kAf;  // 基础标志：有效位和访问标志位
+    bool executable = true, bool global = true) -> uint64_t {
+  // 基础标志：有效位和访问标志位
+  uint64_t flags = kValid | kAf;
 
   // 设置访问权限（内核级别）
   if (writable) {
-    flags |= kApReadWrite;  // EL1 读写
+    // EL1 读写
+    flags |= kApReadWrite;
   } else {
-    flags |= kApReadOnly;  // EL1 只读
+    // EL1 只读
+    flags |= kApReadOnly;
   }
 
   // 设置执行权限
   if (!executable) {
-    flags |= kPxn;  // 特权禁止执行
+    // 特权禁止执行
+    flags |= kPxn;
   }
 
   // 设置全局标志
   if (!global) {
-    flags |= kNg;  // 非全局
+    // 非全局
+    flags |= kNg;
   }
 
   // 设置默认内存属性（普通内存，写回缓存，内部共享）
@@ -511,23 +516,28 @@ static __always_inline auto GetKernelPagePermissions(
 static __always_inline auto GetUserPagePermissions(
     [[maybe_unused]] bool readable = true, bool writable = false,
     bool executable = false, bool global = false) -> uint64_t {
-  uint64_t flags = kValid | kAf;  // 基础标志：有效位和访问标志位
+  // 基础标志：有效位和访问标志位
+  uint64_t flags = kValid | kAf;
 
   // 设置访问权限（用户级别）
   if (writable) {
-    flags |= kApUserReadWrite;  // EL0/EL1 读写
+    // EL0/EL1 读写
+    flags |= kApUserReadWrite;
   } else {
-    flags |= kApUserReadOnly;  // EL0/EL1 只读
+    // EL0/EL1 只读
+    flags |= kApUserReadOnly;
   }
 
   // 设置执行权限
   if (!executable) {
-    flags |= kUxn;  // 用户禁止执行
+    // 用户禁止执行
+    flags |= kUxn;
   }
 
   // 设置全局标志
   if (!global) {
-    flags |= kNg;  // 非全局（用户页面通常是非全局的）
+    // 非全局（用户页面通常是非全局的）
+    flags |= kNg;
   }
 
   // 设置默认内存属性（普通内存，写回缓存，内部共享）

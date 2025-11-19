@@ -314,7 +314,8 @@ static __always_inline auto GetUserPagePermissions(bool readable = true,
                                                    bool executable = false,
                                                    bool global = false)
     -> uint8_t {
-  uint8_t flags = kValid | kUser;  // 用户页面必须设置 USER 位
+  // 用户页面必须设置 USER 位
+  uint8_t flags = kValid | kUser;
   if (readable) {
     flags |= kRead;
   }
