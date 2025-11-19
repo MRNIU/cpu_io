@@ -280,7 +280,7 @@ static __always_inline auto GetPageCount(uint64_t start_addr, uint64_t end_addr)
  */
 static __always_inline auto GetKernelPagePermissions(bool readable = true,
                                                      bool writable = true,
-                                                     bool executable = false,
+                                                     bool executable = true,
                                                      bool global = true)
     -> uint8_t {
   uint8_t flags = kValid;
