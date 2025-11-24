@@ -212,6 +212,7 @@ static __always_inline void DisablePage() {
  */
 static __always_inline void SetPageDirectory(uint64_t pgd) {
   detail::regs::system_reg::TTBR1_EL1::Write(pgd);
+  detail::regs::system_reg::TTBR0_EL1::Write(pgd);
   __asm__ volatile("isb");
 }
 
@@ -346,7 +347,7 @@ static __always_inline auto CreatePageTableEntry(
     uint64_t physical_addr, [[maybe_unused]] bool readable = true,
     bool writable = false, bool executable = false,
     bool user_accessible = false, bool global = false) -> uint64_t {
-  uint64_t flags = kValid | kAf;  // AArch64需要设置访问标志位
+  uint64_t flags = kValid | kTable | kAf;
 
   // 设置访问权限
   if (user_accessible) {
@@ -475,8 +476,8 @@ static __always_inline auto GetPageCount(uint64_t start_addr, uint64_t end_addr)
 static __always_inline auto GetKernelPagePermissions(
     [[maybe_unused]] bool readable = true, bool writable = true,
     bool executable = true, bool global = true) -> uint64_t {
-  // 基础标志：有效位和访问标志位
-  uint64_t flags = kValid | kAf;
+  // 基础标志
+  uint64_t flags = kValid | kTable | kAf;
 
   // 设置访问权限（内核级别）
   if (writable) {
@@ -516,8 +517,8 @@ static __always_inline auto GetKernelPagePermissions(
 static __always_inline auto GetUserPagePermissions(
     [[maybe_unused]] bool readable = true, bool writable = false,
     bool executable = false, bool global = false) -> uint64_t {
-  // 基础标志：有效位和访问标志位
-  uint64_t flags = kValid | kAf;
+  // 基础标志
+  uint64_t flags = kValid | kTable | kAf;
 
   // 设置访问权限（用户级别）
   if (writable) {
