@@ -271,6 +271,15 @@ static __always_inline auto GetPageCount(uint64_t start_addr, uint64_t end_addr)
 }
 
 /**
+ * @brief 获取页表中间项权限
+ * @return uint8_t 页表中间项权限标志
+ */
+static __always_inline auto GetTableEntryPermissions() -> uint8_t {
+  // RISC-V 中间页表项必须 R=0, W=0, X=0
+  return kValid;
+}
+
+/**
  * @brief 获取内核页表权限
  * @param readable 可读标志
  * @param writable 可写标志

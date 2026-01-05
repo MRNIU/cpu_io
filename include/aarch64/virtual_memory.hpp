@@ -466,6 +466,17 @@ static __always_inline auto GetPageCount(uint64_t start_addr, uint64_t end_addr)
 }
 
 /**
+ * @brief 获取页表中间项权限
+ * @return uint64_t 页表中间项权限标志
+ */
+static __always_inline auto GetTableEntryPermissions() -> uint64_t {
+  // AArch64 中间页表项 (Table Descriptor)
+  // Bits 1:0 = 11 (Valid | Table)
+  // 其他属性位在 Table Descriptor 中通常被忽略或用于分层属性控制
+  return kValid | kTable;
+}
+
+/**
  * @brief 获取内核页表权限
  * @param readable 可读标志，aarch64 未使用
  * @param writable 可写标志
