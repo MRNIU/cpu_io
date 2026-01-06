@@ -12,11 +12,11 @@ namespace cpu_io {
 /**
  * @brief RISC-V 64 寄存器上下文结构体
  * 包含所有通用寄存器 (x1-x31)、必要的特权级 CSR 以及浮点寄存器
- * 用于中断/异常处理以及上下文切换
+ * 用于中断/异常处理 (保存完整现场)
  * 31 个通用寄存器(x1-x31) + 4 个 CSR + 32 个浮点寄存器(f0-f31) + 1 个 fcsr
  * 总计: 31 + 4 + 32 + 1 = 68 个 64 位寄存器，共 544 字节
  */
-struct Context {
+struct TrapContext {
   // x1: Return Address
   uint64_t ra;
   // x2: Stack Pointer (保存 Trap 发生时的 SP)
@@ -123,6 +123,40 @@ struct Context {
   uint64_t stval;
   // Supervisor Cause
   uint64_t scause;
+};
+
+/**
+ * @brief 线程切换上下文 (SwitchTo)
+ * 仅包含 Callee-saved 寄存器: ra, s0-s11, fs0-fs11
+ * 用于函数调用间的上下文切换 (Cooperative)
+ * 25 * 8 = 200 bytes.
+ */
+struct CalleeSavedContext {
+  uint64_t ra;
+  uint64_t s0;
+  uint64_t s1;
+  uint64_t s2;
+  uint64_t s3;
+  uint64_t s4;
+  uint64_t s5;
+  uint64_t s6;
+  uint64_t s7;
+  uint64_t s8;
+  uint64_t s9;
+  uint64_t s10;
+  uint64_t s11;
+  uint64_t fs0;
+  uint64_t fs1;
+  uint64_t fs2;
+  uint64_t fs3;
+  uint64_t fs4;
+  uint64_t fs5;
+  uint64_t fs6;
+  uint64_t fs7;
+  uint64_t fs8;
+  uint64_t fs9;
+  uint64_t fs10;
+  uint64_t fs11;
 };
 
 }  // namespace cpu_io
