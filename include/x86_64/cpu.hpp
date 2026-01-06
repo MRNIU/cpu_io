@@ -18,6 +18,7 @@
 #include "pit.hpp"
 #include "regs.hpp"
 #include "serial.hpp"
+#include "virtual_memory.hpp"
 
 /**
  * x86_64 cpu 相关定义
