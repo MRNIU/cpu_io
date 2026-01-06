@@ -10,6 +10,7 @@
 #include <type_traits>
 #include <typeinfo>
 
+#include "context.hpp"
 #include "regs.hpp"
 #include "virtual_memory.hpp"
 
