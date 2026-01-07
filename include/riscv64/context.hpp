@@ -127,12 +127,13 @@ struct TrapContext {
 
 /**
  * @brief 线程切换上下文 (SwitchTo)
- * 仅包含 Callee-saved 寄存器: ra, s0-s11, fs0-fs11
+ * 仅包含 Callee-saved 寄存器: ra, sp, s0-s11, fs0-fs11
  * 用于函数调用间的上下文切换 (Cooperative)
- * 25 * 8 = 200 bytes.
+ * (1 + 1 + 12 + 12) * 8 = 26 * 8 = 208 bytes.
  */
 struct CalleeSavedContext {
   uint64_t ra;
+  uint64_t sp;
   uint64_t s0;
   uint64_t s1;
   uint64_t s2;
