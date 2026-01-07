@@ -58,9 +58,14 @@ struct Stvec
       read_write::ReadWriteRegBase<register_info::csr::StvecInfo>,
       register_info::csr::StvecInfo::Mode>;
 
-  static __always_inline void SetDirect(uint64_t addr) {
+  static __always_inline bool SetDirect(uint64_t addr) {
+    // 地址需 4 字节对齐
+    if ((addr & 0x3) != 0) {
+      return false;
+    }
     Base::Write(addr);
     Mode::Write(register_info::csr::StvecInfo::kDirect);
+    return true;
   }
 };
 
