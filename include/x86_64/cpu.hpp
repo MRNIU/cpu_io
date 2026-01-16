@@ -96,6 +96,12 @@ static __always_inline auto GetCurrentCoreId() -> size_t {
   return cpuid::GetExtendedApicId();
 }
 
+/**
+ * @brief CPU 空转指令
+ * @note x86_64 pause 指令
+ */
+static __always_inline void Pause() { __asm__ volatile("pause" ::: "memory"); }
+
 }  // namespace cpu_io
 
 #endif  // CPU_IO_INCLUDE_X86_64_CPU_HPP_

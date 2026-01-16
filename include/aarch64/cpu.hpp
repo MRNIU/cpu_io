@@ -94,6 +94,12 @@ static __always_inline auto GetCurrentCoreId() -> size_t {
  */
 static __always_inline void SetupFpu() { CPACR_EL1::Fpen::Set(); }
 
+/**
+ * @brief CPU 空转指令
+ * @note AArch64 yield hint 指令
+ */
+static __always_inline void Pause() { __asm__ volatile("yield" ::: "memory"); }
+
 }  // namespace cpu_io
 
 #endif  // CPU_IO_INCLUDE_AARCH64_CPU_HPP_
