@@ -883,6 +883,97 @@ struct ICC_EOIR1_EL1Info : public RegInfoBase {
   };
 };
 
+/**
+ * @brief ICC_SGI1R_EL1 寄存器定义
+ * @see
+ * https://developer.arm.com/documentation/ddi0601/2024-12/AArch64-Registers/ICC-SGI1R-EL1--Interrupt-Controller-Software-Generated-Interrupt-Group-1-Register
+ */
+struct ICC_SGI1R_EL1Info : public RegInfoBase {
+  using DataType = uint64_t;
+  
+  /// [55:48] Aff3: Affinity level 3
+  struct Aff3 {
+    using DataType = uint64_t;
+    static constexpr uint64_t kBitOffset = 48;
+    static constexpr uint64_t kBitWidth = 8;
+    static constexpr uint64_t kBitMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) << kBitOffset : ~0ULL;
+    static constexpr uint64_t kAllSetMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) : ~0ULL;
+  };
+  
+  /// [47:44] RS: RangeSelector
+  struct RS {
+    using DataType = uint64_t;
+    static constexpr uint64_t kBitOffset = 44;
+    static constexpr uint64_t kBitWidth = 4;
+    static constexpr uint64_t kBitMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) << kBitOffset : ~0ULL;
+    static constexpr uint64_t kAllSetMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) : ~0ULL;
+  };
+  
+  /// [40] IRM: Interrupt Routing Mode
+  struct IRM {
+    using DataType = uint64_t;
+    static constexpr uint64_t kBitOffset = 40;
+    static constexpr uint64_t kBitWidth = 1;
+    static constexpr uint64_t kBitMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) << kBitOffset : ~0ULL;
+    static constexpr uint64_t kAllSetMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) : ~0ULL;
+    
+    /// Route to specific PEs
+    static constexpr const uint64_t kSpecific = 0;
+    /// Route to all PEs
+    static constexpr const uint64_t kAll = 1;
+  };
+  
+  /// [39:32] Aff2: Affinity level 2
+  struct Aff2 {
+    using DataType = uint64_t;
+    static constexpr uint64_t kBitOffset = 32;
+    static constexpr uint64_t kBitWidth = 8;
+    static constexpr uint64_t kBitMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) << kBitOffset : ~0ULL;
+    static constexpr uint64_t kAllSetMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) : ~0ULL;
+  };
+  
+  /// [27:24] INTID: Interrupt ID (SGI 0-15)
+  struct INTID {
+    using DataType = uint64_t;
+    static constexpr uint64_t kBitOffset = 24;
+    static constexpr uint64_t kBitWidth = 4;
+    static constexpr uint64_t kBitMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) << kBitOffset : ~0ULL;
+    static constexpr uint64_t kAllSetMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) : ~0ULL;
+  };
+  
+  /// [23:16] Aff1: Affinity level 1
+  struct Aff1 {
+    using DataType = uint64_t;
+    static constexpr uint64_t kBitOffset = 16;
+    static constexpr uint64_t kBitWidth = 8;
+    static constexpr uint64_t kBitMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) << kBitOffset : ~0ULL;
+    static constexpr uint64_t kAllSetMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) : ~0ULL;
+  };
+  
+  /// [15:0] TargetList: Target list
+  struct TargetList {
+    using DataType = uint64_t;
+    static constexpr uint64_t kBitOffset = 0;
+    static constexpr uint64_t kBitWidth = 16;
+    static constexpr uint64_t kBitMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) << kBitOffset : ~0ULL;
+    static constexpr uint64_t kAllSetMask =
+        (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) : ~0ULL;
+  };
+};
+
 }  // namespace system_reg
 
 }  // namespace register_info

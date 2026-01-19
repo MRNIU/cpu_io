@@ -49,6 +49,7 @@ using ICC_IGRPEN1_EL1 = detail::regs::system_reg::ICC_IGRPEN1_EL1;
 using ICC_SRE_EL1 = detail::regs::system_reg::ICC_SRE_EL1;
 using ICC_IAR1_EL1 = detail::regs::system_reg::ICC_IAR1_EL1;
 using ICC_EOIR1_EL1 = detail::regs::system_reg::ICC_EOIR1_EL1;
+using ICC_SGI1R_EL1 = detail::regs::system_reg::ICC_SGI1R_EL1;
 
 /**
  * @brief 允许中断

@@ -277,6 +277,44 @@ struct ICC_EOIR1_EL1 : public read_write::WriteOnlyRegBase<
       register_info::system_reg::ICC_EOIR1_EL1Info::INTID>;
 };
 
+struct ICC_SGI1R_EL1 : public read_write::WriteOnlyRegBase<
+                           register_info::system_reg::ICC_SGI1R_EL1Info> {
+  using Aff3 = read_write::WriteOnlyField<
+      read_write::WriteOnlyRegBase<
+          register_info::system_reg::ICC_SGI1R_EL1Info>,
+      register_info::system_reg::ICC_SGI1R_EL1Info::Aff3>;
+  
+  using RS = read_write::WriteOnlyField<
+      read_write::WriteOnlyRegBase<
+          register_info::system_reg::ICC_SGI1R_EL1Info>,
+      register_info::system_reg::ICC_SGI1R_EL1Info::RS>;
+  
+  using IRM = read_write::WriteOnlyField<
+      read_write::WriteOnlyRegBase<
+          register_info::system_reg::ICC_SGI1R_EL1Info>,
+      register_info::system_reg::ICC_SGI1R_EL1Info::IRM>;
+  
+  using Aff2 = read_write::WriteOnlyField<
+      read_write::WriteOnlyRegBase<
+          register_info::system_reg::ICC_SGI1R_EL1Info>,
+      register_info::system_reg::ICC_SGI1R_EL1Info::Aff2>;
+  
+  using INTID = read_write::WriteOnlyField<
+      read_write::WriteOnlyRegBase<
+          register_info::system_reg::ICC_SGI1R_EL1Info>,
+      register_info::system_reg::ICC_SGI1R_EL1Info::INTID>;
+  
+  using Aff1 = read_write::WriteOnlyField<
+      read_write::WriteOnlyRegBase<
+          register_info::system_reg::ICC_SGI1R_EL1Info>,
+      register_info::system_reg::ICC_SGI1R_EL1Info::Aff1>;
+  
+  using TargetList = read_write::WriteOnlyField<
+      read_write::WriteOnlyRegBase<
+          register_info::system_reg::ICC_SGI1R_EL1Info>,
+      register_info::system_reg::ICC_SGI1R_EL1Info::TargetList>;
+};
+
 struct TTBR0_EL1 : public read_write::ReadWriteRegBase<
                        register_info::system_reg::TTBR0_EL1Info> {
   using ASID = read_write::ReadWriteField<

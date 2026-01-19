@@ -254,6 +254,10 @@ class WriteOnlyRegBase {
                              RegInfo,
                              register_info::system_reg::ICC_EOIR1_EL1Info>) {
       __asm__ volatile("msr ICC_EOIR1_EL1, %0" : : "r"(value) :);
+    } else if constexpr (std::is_same_v<
+                             RegInfo,
+                             register_info::system_reg::ICC_SGI1R_EL1Info>) {
+      __asm__ volatile("msr ICC_SGI1R_EL1, %0" : : "r"(value) :);
     } else {
       static_assert(sizeof(RegInfo) == 0);
     }
