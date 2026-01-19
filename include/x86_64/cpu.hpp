@@ -11,6 +11,7 @@
 #include <type_traits>
 
 #include "apic.hpp"
+#include "context.hpp"
 #include "cpuid.hpp"
 #include "io.hpp"
 #include "msr.h"
