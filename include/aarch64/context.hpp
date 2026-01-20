@@ -13,10 +13,11 @@ namespace cpu_io {
  * @brief AArch64 寄存器上下文结构体
  * 包含所有通用寄存器 (x0-x30)、必要的特权级系统寄存器以及浮点/SIMD寄存器
  * 用于中断/异常处理 (保存完整现场)
- * 31 个通用寄存器(x0-x30) + 2 个特殊寄存器(sp, pc) + 32 个浮点寄存器(q0-q31) +
- * 3 个 状态寄存器
- * 总计: 31 + 2 + 32 + 3 = 68 个 64 位寄存器 (浮点寄存器是 128 位，计为 64 * 2) 
- * 共 264 * 8 = 2112 字节
+ * 31 个通用寄存器(x0-x30) + 2 个特殊寄存器(sp, pc) + 32
+ * 个浮点寄存器(q0-q31，每个 128 位用 2 个 uint64_t 存储，共 64 个 uint64_t) +
+ * 3 个状态寄存器(fpsr, fpcr, esr_elx)
+ * 总计: 31 + 2 + 64 + 3 = 100 个 uint64_t
+ * 共 100 * 8 = 800 字节
  */
 struct TrapContext {
   // General Purpose Registers
@@ -109,9 +110,10 @@ struct TrapContext {
 
 /**
  * @brief 线程切换上下文 (SwitchTo)
- * 仅包含 Callee-saved 寄存器: x19-x30, sp, pc, q8-q15 (callee-saved 浮点寄存器)
- * 用于函数调用间的上下文切换 (Cooperative)
- * (12 + 2 + 8 * 2) * 8 = 30 * 8 = 240 bytes.
+ * 仅包含 Callee-saved 寄存器: x19-x30 (12个), sp, pc, q8-q15 (8个，每个 128
+ * 位用 2 个 uint64_t 存储，共 16 个 uint64_t) 用于函数调用间的上下文切换
+ * (Cooperative) 总计: 12 + 2 + 16 = 30 个 uint64_t 
+ * 共 30 * 8 = 240 字节
  */
 struct CalleeSavedContext {
   // Callee-saved General Purpose Registers
