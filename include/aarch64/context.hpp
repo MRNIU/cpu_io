@@ -121,6 +121,11 @@ struct TrapContext {
   uint64_t sp_el1;
   // 内核线程指针 (当前任务 TCB)
   uint64_t tpidr_el1;
+
+  // 统一的跨架构访问器方法
+  __always_inline uint64_t& UserStackPointer() { return sp_el0; }
+  __always_inline uint64_t& ThreadPointer() { return tpidr_el0; }
+  __always_inline uint64_t& ReturnValue() { return x0; }
 };
 
 /**

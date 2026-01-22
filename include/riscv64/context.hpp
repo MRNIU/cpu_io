@@ -123,6 +123,11 @@ struct TrapContext {
   uint64_t stval;
   // Supervisor Cause
   uint64_t scause;
+
+  // 统一的跨架构访问器方法
+  __always_inline uint64_t& UserStackPointer() { return sp; }
+  __always_inline uint64_t& ThreadPointer() { return tp; }
+  __always_inline uint64_t& ReturnValue() { return a0; }
 };
 
 /**

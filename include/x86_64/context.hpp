@@ -11,6 +11,20 @@ namespace cpu_io {
 
 struct TrapContext {
   /// @todo
+
+  // 统一的跨架构访问器方法（占位实现）
+  __always_inline uint64_t& UserStackPointer() {
+    static uint64_t dummy = 0;
+    return dummy;
+  }
+  __always_inline uint64_t& ThreadPointer() {
+    static uint64_t dummy = 0;
+    return dummy;
+  }
+  __always_inline uint64_t& ReturnValue() {
+    static uint64_t dummy = 0;
+    return dummy;
+  }
 };
 
 struct CalleeSavedContext {
