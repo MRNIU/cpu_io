@@ -131,42 +131,42 @@ class Pic {
   uint8_t offset2_;
 
   /// Master (IRQs 0-7)
-  static constexpr const uint8_t kMaster = 0x20;
+  static constexpr uint8_t kMaster = 0x20;
   /// Slave  (IRQs 8-15)
-  static constexpr const uint8_t kSlave = 0xA0;
-  static constexpr const uint8_t kMasterCommandPort = kMaster;
-  static constexpr const uint8_t kMasterDataPort = kMaster + 1;
-  static constexpr const uint8_t kSlaveCommandPort = kSlave;
-  static constexpr const uint8_t kPic2DataPort = kSlave + 1;
+  static constexpr uint8_t kSlave = 0xA0;
+  static constexpr uint8_t kMasterCommandPort = kMaster;
+  static constexpr uint8_t kMasterDataPort = kMaster + 1;
+  static constexpr uint8_t kSlaveCommandPort = kSlave;
+  static constexpr uint8_t kPic2DataPort = kSlave + 1;
   /// End-of-interrupt command code
-  static constexpr const uint8_t kEoi = 0x20;
+  static constexpr uint8_t kEoi = 0x20;
 
   /// Indicates that ICW4 will be present
-  static constexpr const uint8_t kIcw1Icw4 = 0x01;
+  static constexpr uint8_t kIcw1Icw4 = 0x01;
   /// Single (cascade) mode
-  static constexpr const uint8_t kIcw1Single = 0x02;
+  static constexpr uint8_t kIcw1Single = 0x02;
   /// Call address interval 4 (8)
-  static constexpr const uint8_t kIcw1Interval4 = 0x04;
+  static constexpr uint8_t kIcw1Interval4 = 0x04;
   /// Level triggered (edge) mode
-  static constexpr const uint8_t kIcw1Level = 0x08;
+  static constexpr uint8_t kIcw1Level = 0x08;
   /// Initialization - required!
-  static constexpr const uint8_t kIcw1Init = 0x10;
+  static constexpr uint8_t kIcw1Init = 0x10;
 
   /// OCW3 irq ready next CMD read
-  static constexpr const uint8_t kOcw3ReadIrr = 0x0A;
+  static constexpr uint8_t kOcw3ReadIrr = 0x0A;
   /// OCW3 irq service next CMD read
-  static constexpr const uint8_t kOcw3ReadIsr = 0x0B;
+  static constexpr uint8_t kOcw3ReadIsr = 0x0B;
 
   /// 8086/88 (MCS-80/85) mode
-  static constexpr const uint8_t kIcw48086 = 0x01;
+  static constexpr uint8_t kIcw48086 = 0x01;
   /// Auto (normal) EOI
-  static constexpr const uint8_t kIcw4Auto = 0x02;
+  static constexpr uint8_t kIcw4Auto = 0x02;
   /// Buffered mode/slave
-  static constexpr const uint8_t kIcw4BufferSlave = 0x08;
+  static constexpr uint8_t kIcw4BufferSlave = 0x08;
   /// Buffered mode/master
-  static constexpr const uint8_t kIcw4BufferMaster = 0x0C;
+  static constexpr uint8_t kIcw4BufferMaster = 0x0C;
   /// Special fully nested (not)
-  static constexpr const uint8_t kIcw4Sfnm = 0x10;
+  static constexpr uint8_t kIcw4Sfnm = 0x10;
 
   /**
    * 获取中断请求寄存器的值

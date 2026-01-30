@@ -56,11 +56,11 @@ class Pit {
 
  private:
   /// 最大频率
-  static constexpr const size_t kMaxFrequency = 1193180;
+  static constexpr size_t kMaxFrequency = 1193180;
   /// 通道 0 数据端口
-  static constexpr const size_t kChannel0Data = 0x40;
+  static constexpr size_t kChannel0Data = 0x40;
   /// 模式/命令端口
-  static constexpr const size_t kCommand = 0x43;
+  static constexpr size_t kCommand = 0x43;
 
   /**
    * Bits         Usage

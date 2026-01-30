@@ -10,7 +10,7 @@
 namespace cpu_io {
 
 /// @name 端口
-static constexpr const uint32_t kCom1 = 0x3F8;
+static constexpr uint32_t kCom1 = 0x3F8;
 /**
  * 串口定义
  */

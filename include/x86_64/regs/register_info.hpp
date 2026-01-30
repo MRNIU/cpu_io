@@ -184,17 +184,17 @@ struct GdtrInfo : public RegInfoBase {
   };
 
   /// gdt 数量
-  static constexpr const uint16_t kMaxCount = 5;
+  static constexpr uint16_t kMaxCount = 5;
   /// 首个空描述符索引
-  static constexpr const uint16_t kNullIndex = 0;
+  static constexpr uint16_t kNullIndex = 0;
   /// 内核代码段描述符索引
-  static constexpr const uint16_t kKernelCodeIndex = 1;
+  static constexpr uint16_t kKernelCodeIndex = 1;
   /// 内核数据段描述符索引
-  static constexpr const uint16_t kKernelDataIndex = 2;
+  static constexpr uint16_t kKernelDataIndex = 2;
   /// 用户代码段描述符索引
-  static constexpr const uint16_t kUserCodeIndex = 3;
+  static constexpr uint16_t kUserCodeIndex = 3;
   /// 用户数据段描述符索引
-  static constexpr const uint16_t kUserDataIndex = 4;
+  static constexpr uint16_t kUserDataIndex = 4;
 
   struct Gdtr {
     /// 全局描述符表限长
@@ -239,7 +239,7 @@ struct LdtrInfo : public RegInfoBase {};
  */
 struct IdtrInfo : public RegInfoBase {
   /// 最大中断数
-  static constexpr const uint32_t kInterruptMaxCount = 256;
+  static constexpr uint32_t kInterruptMaxCount = 256;
 
   /// 中断号
   /// @see sdm.pdf#6.3.1

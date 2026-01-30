@@ -49,10 +49,10 @@ struct CPACR_EL1Info : public RegInfoBase {
  * https://developer.arm.com/documentation/ddi0601/2024-12/AArch64-Registers/CurrentEL--Current-Exception-Level
  */
 struct CurrentELInfo : public RegInfoBase {
-  static constexpr const uint8_t kEL0 = 0b00;
-  static constexpr const uint8_t kEL1 = 0b01;
-  static constexpr const uint8_t kEL2 = 0b10;
-  static constexpr const uint8_t kEL3 = 0b11;
+  static constexpr uint8_t kEL0 = 0b00;
+  static constexpr uint8_t kEL1 = 0b01;
+  static constexpr uint8_t kEL2 = 0b10;
+  static constexpr uint8_t kEL3 = 0b11;
 
   struct EL {
     using DataType = uint8_t;
@@ -71,8 +71,8 @@ struct CurrentELInfo : public RegInfoBase {
  * https://developer.arm.com/documentation/ddi0601/2024-12/AArch64-Registers/SPSel--Stack-Pointer-Select
  */
 struct SPSelInfo : public RegInfoBase {
-  static constexpr const bool kEL0 = false;
-  static constexpr const bool kELx = true;
+  static constexpr bool kEL0 = false;
+  static constexpr bool kELx = true;
 
   struct SP {
     using DataType = bool;
@@ -91,8 +91,8 @@ struct SPSelInfo : public RegInfoBase {
  * https://developer.arm.com/documentation/ddi0601/2024-12/AArch64-Registers/DAIF--Interrupt-Mask-Bits
  */
 struct DAIFInfo : public RegInfoBase {
-  static constexpr const bool kNotMasked = false;
-  static constexpr const bool kMasked = true;
+  static constexpr bool kNotMasked = false;
+  static constexpr bool kMasked = true;
 
   /// Process state D mask.
   /// Watchpoint, Breakpoint, and Software Step exceptions targeted at the
@@ -212,9 +212,9 @@ struct MPIDR_EL1Info : public RegInfoBase {
         (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) : ~0ULL;
 
     /// Processor is part of a uniprocessor system.
-    static constexpr const bool KUniProcessor = false;
+    static constexpr bool KUniProcessor = false;
     /// Processor is part of a multiprocessor system.
-    static constexpr const bool kMultiProssor = true;
+    static constexpr bool kMultiProssor = true;
   };
 
   struct MT {
@@ -228,11 +228,11 @@ struct MPIDR_EL1Info : public RegInfoBase {
 
     /// Performance of PEs with different affinity level 0 values, and the same
     /// values for affinity level 1 and higher, is largely independent.
-    static constexpr const bool KSingleThread = false;
+    static constexpr bool KSingleThread = false;
 
     /// Performance of PEs with different affinity level 0 values, and the same
     /// values for affinity level 1 and higher, is very interdependent.
-    static constexpr const bool KMultiThread = true;
+    static constexpr bool KMultiThread = true;
   };
 
   struct Aff2 {
@@ -302,9 +302,9 @@ struct TTBR0_EL1Info : public RegInfoBase {
         (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) : ~0ULL;
 
     /// No meaning to Common not Private.
-    static constexpr const bool kNotPrivate = false;
+    static constexpr bool kNotPrivate = false;
     /// Common not Private.
-    static constexpr const bool kCommon = true;
+    static constexpr bool kCommon = true;
   };
 };
 
@@ -344,9 +344,9 @@ struct TTBR1_EL1Info : public RegInfoBase {
         (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) : ~0ULL;
 
     /// No meaning to Common not Private.
-    static constexpr const bool kNotPrivate = false;
+    static constexpr bool kNotPrivate = false;
     /// Common not Private.
-    static constexpr const bool kCommon = true;
+    static constexpr bool kCommon = true;
   };
 };
 
@@ -358,35 +358,35 @@ struct TTBR1_EL1Info : public RegInfoBase {
 struct TCR_EL1Info : public RegInfoBase {
   // IPS (Intermediate Physical Address Size) 值常量
   /// 32 bits, 4GB
-  static constexpr const uint8_t kIPS_32Bits = 0b000;
+  static constexpr uint8_t kIPS_32Bits = 0b000;
   /// 36 bits, 64GB
-  static constexpr const uint8_t kIPS_36Bits = 0b001;
+  static constexpr uint8_t kIPS_36Bits = 0b001;
   /// 40 bits, 1TB
-  static constexpr const uint8_t kIPS_40Bits = 0b010;
+  static constexpr uint8_t kIPS_40Bits = 0b010;
   /// 42 bits, 4TB
-  static constexpr const uint8_t kIPS_42Bits = 0b011;
+  static constexpr uint8_t kIPS_42Bits = 0b011;
   /// 44 bits, 16TB
-  static constexpr const uint8_t kIPS_44Bits = 0b100;
+  static constexpr uint8_t kIPS_44Bits = 0b100;
   /// 48 bits, 256TB
-  static constexpr const uint8_t kIPS_48Bits = 0b101;
+  static constexpr uint8_t kIPS_48Bits = 0b101;
   /// 52 bits, 4PB
-  static constexpr const uint8_t kIPS_52Bits = 0b110;
+  static constexpr uint8_t kIPS_52Bits = 0b110;
 
   // TG0/TG1 (Granule size) 值常量
   /// 4KB granule
-  static constexpr const uint8_t kTG_4KB = 0b00;
+  static constexpr uint8_t kTG_4KB = 0b00;
   /// 16KB granule
-  static constexpr const uint8_t kTG_16KB = 0b10;
+  static constexpr uint8_t kTG_16KB = 0b10;
   /// 64KB granule
-  static constexpr const uint8_t kTG_64KB = 0b01;
+  static constexpr uint8_t kTG_64KB = 0b01;
 
   // TG1 特殊值（编码不同）
   /// 4KB granule for TTBR1_EL1
-  static constexpr const uint8_t kTG1_4KB = 0b10;
+  static constexpr uint8_t kTG1_4KB = 0b10;
   /// 16KB granule for TTBR1_EL1
-  static constexpr const uint8_t kTG1_16KB = 0b01;
+  static constexpr uint8_t kTG1_16KB = 0b01;
   /// 64KB granule for TTBR1_EL1
-  static constexpr const uint8_t kTG1_64KB = 0b11;
+  static constexpr uint8_t kTG1_64KB = 0b11;
 
   struct IPS {
     using DataType = uint8_t;
@@ -451,19 +451,19 @@ struct MAIR_EL1Info : public RegInfoBase {
   /// Device-nGnRnE memory (0x00 = 0b00000000)
   /// 最严格的设备内存：不可收集、不可重排序、不可提前确认写入
   /// 适用于 MMIO 设备寄存器
-  static constexpr const uint8_t kDeviceNGnRnE = 0x00;
+  static constexpr uint8_t kDeviceNGnRnE = 0x00;
 
   /// Device-nGnRE memory (0x04 = 0b00000100)
   /// 不可收集、不可重排序、可提前确认写入
-  static constexpr const uint8_t kDeviceNGnRE = 0x04;
+  static constexpr uint8_t kDeviceNGnRE = 0x04;
 
   /// Device-nGRE memory (0x08 = 0b00001000)
   /// 不可收集、可重排序、可提前确认写入
-  static constexpr const uint8_t kDeviceNGRE = 0x08;
+  static constexpr uint8_t kDeviceNGRE = 0x08;
 
   /// Device-GRE memory (0x0C = 0b00001100)
   /// 可收集、可重排序、可提前确认写入
-  static constexpr const uint8_t kDeviceGRE = 0x0C;
+  static constexpr uint8_t kDeviceGRE = 0x0C;
 
   // 普通内存类型常量
   // Normal memory: [7:4]=外部缓存属性, [3:0]=内部缓存属性
@@ -471,19 +471,19 @@ struct MAIR_EL1Info : public RegInfoBase {
 
   /// Normal memory, Non-cacheable (0x44 = 0b01000100)
   /// 外部和内部都不缓存，但允许内存访问重排序和合并
-  static constexpr const uint8_t kNormalNonCacheable = 0x44;
+  static constexpr uint8_t kNormalNonCacheable = 0x44;
 
   /// Normal memory, Write-through, No-allocate (0x44 = 0b01000100)
   /// 写透缓存，不分配缓存行
-  static constexpr const uint8_t kNormalWriteThroughNoAlloc = 0x44;
+  static constexpr uint8_t kNormalWriteThroughNoAlloc = 0x44;
 
   /// Normal memory, Write-through, Read-allocate (0xBB = 0b10111011)
   /// 写透缓存，读取时分配缓存行
-  static constexpr const uint8_t kNormalWriteThroughReadAlloc = 0xBB;
+  static constexpr uint8_t kNormalWriteThroughReadAlloc = 0xBB;
 
   /// Normal memory, Write-back, Read/Write-allocate (0xFF = 0b11111111)
   /// 写回缓存，读写时都分配缓存行，性能最优
-  static constexpr const uint8_t kNormalWriteBackReadWriteAlloc = 0xFF;
+  static constexpr uint8_t kNormalWriteBackReadWriteAlloc = 0xFF;
 
   struct Aff7 {
     using DataType = uint8_t;
@@ -582,9 +582,9 @@ struct SCTLR_EL1Info : public RegInfoBase {
         (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) : ~0ULL;
 
     // EL1&0 stage 1 address translation disabled.
-    static constexpr const bool KDisabled = false;
+    static constexpr bool KDisabled = false;
     // EL1&0 stage 1 address translation enabled.
-    static constexpr const bool kEnabled = true;
+    static constexpr bool kEnabled = true;
   };
 
   struct C {
@@ -597,9 +597,9 @@ struct SCTLR_EL1Info : public RegInfoBase {
         (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) : ~0ULL;
 
     // Stage 1 data caching disabled.
-    static constexpr const bool kDisabled = false;
+    static constexpr bool kDisabled = false;
     // Stage 1 data caching enabled.
-    static constexpr const bool kEnabled = true;
+    static constexpr bool kEnabled = true;
   };
 
   struct I {
@@ -612,9 +612,9 @@ struct SCTLR_EL1Info : public RegInfoBase {
         (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) : ~0ULL;
 
     // Instruction caching disabled.
-    static constexpr const bool kDisabled = false;
+    static constexpr bool kDisabled = false;
     // Instruction caching enabled.
-    static constexpr const bool kEnabled = true;
+    static constexpr bool kEnabled = true;
   };
 };
 
@@ -671,9 +671,9 @@ struct CNTV_CTL_EL0Info : public RegInfoBase {
         (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) : ~0ULL;
 
     /// Timer condition is not met.
-    static constexpr const bool KNotMet = false;
+    static constexpr bool KNotMet = false;
     /// Timer condition is met.
-    static constexpr const bool KMet = true;
+    static constexpr bool KMet = true;
   };
 
   struct IMASK {
@@ -686,9 +686,9 @@ struct CNTV_CTL_EL0Info : public RegInfoBase {
         (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) : ~0ULL;
 
     /// Timer interrupt is not masked by the IMASK bit.
-    static constexpr const bool KNotMasked = false;
+    static constexpr bool KNotMasked = false;
     /// Timer interrupt is masked by the IMASK bit.
-    static constexpr const bool KMasked = true;
+    static constexpr bool KMasked = true;
   };
 
   struct ENABLE {
@@ -701,9 +701,9 @@ struct CNTV_CTL_EL0Info : public RegInfoBase {
         (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) : ~0ULL;
 
     /// Timer disabled.
-    static constexpr const bool KDisable = false;
+    static constexpr bool KDisable = false;
     /// Timer enabled.
-    static constexpr const bool KEnable = true;
+    static constexpr bool KEnable = true;
   };
 };
 
@@ -780,10 +780,10 @@ struct ICC_IGRPEN1_EL1Info : public RegInfoBase {
         (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) : ~0ULL;
 
     /// Group 1 interrupts are disabled for the current Security state.
-    static constexpr const bool kDisabel = false;
+    static constexpr bool kDisabel = false;
 
     /// Group 1 interrupts are enabled for the current Security state.
-    static constexpr const bool kEnabel = true;
+    static constexpr bool kEnabel = true;
   };
 };
 
@@ -803,10 +803,10 @@ struct ICC_SRE_EL1Info : public RegInfoBase {
         (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) : ~0ULL;
 
     /// IRQ bypass enabled.
-    static constexpr const bool kEnabel = false;
+    static constexpr bool kEnabel = false;
 
     /// IRQ bypass disabled.
-    static constexpr const bool kDisabel = true;
+    static constexpr bool kDisabel = true;
   };
 
   struct DFB {
@@ -819,10 +819,10 @@ struct ICC_SRE_EL1Info : public RegInfoBase {
         (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) : ~0ULL;
 
     /// FIQ bypass enabled.
-    static constexpr const bool kEnabel = false;
+    static constexpr bool kEnabel = false;
 
     /// FIQ bypass disabled.
-    static constexpr const bool kDisabel = true;
+    static constexpr bool kDisabel = true;
   };
 
   struct SRE {
@@ -837,10 +837,10 @@ struct ICC_SRE_EL1Info : public RegInfoBase {
 
   /// The memory-mapped interface must be used. Access at EL1 to any ICC_*
   /// System register other than ICC_SRE_EL1 is trapped to EL1.
-  static constexpr const bool kDisabel = false;
+  static constexpr bool kDisabel = false;
 
   /// The System register interface for the current Security state is enabled.
-  static constexpr const bool kEnabel = true;
+  static constexpr bool kEnabel = true;
 };
 
 /**
@@ -876,10 +876,10 @@ struct ICC_EOIR1_EL1Info : public RegInfoBase {
         (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) : ~0ULL;
 
     /// Group 1 interrupts are disabled for the current Security state.
-    static constexpr const bool kDisabel = false;
+    static constexpr bool kDisabel = false;
 
     /// Group 1 interrupts are enabled for the current Security state.
-    static constexpr const bool kEnabel = true;
+    static constexpr bool kEnabel = true;
   };
 };
 
@@ -924,9 +924,9 @@ struct ICC_SGI1R_EL1Info : public RegInfoBase {
         (kBitWidth < 64) ? ((1ULL << kBitWidth) - 1) : ~0ULL;
     
     /// Route to specific PEs
-    static constexpr const uint64_t kSpecific = 0;
+    static constexpr uint64_t kSpecific = 0;
     /// Route to all PEs
-    static constexpr const uint64_t kAll = 1;
+    static constexpr uint64_t kAll = 1;
   };
   
   /// [39:32] Aff2: Affinity level 2

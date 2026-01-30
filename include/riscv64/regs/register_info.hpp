@@ -66,9 +66,9 @@ struct SstatusInfo : public RegInfoBase {
  */
 struct StvecInfo : public RegInfoBase {
   /// 中断模式 直接
-  static constexpr const uint64_t kDirect = 0x0;
+  static constexpr uint64_t kDirect = 0x0;
   /// 中断模式 向量
-  static constexpr const uint64_t kVectored = 0x1;
+  static constexpr uint64_t kVectored = 0x1;
 
   struct Mode {
     using DataType = uint8_t;
@@ -226,7 +226,7 @@ struct ScauseInfo : public RegInfoBase {
   };
 
   /// 最大中断数
-  static constexpr const uint32_t kInterruptMaxCount = 16;
+  static constexpr uint32_t kInterruptMaxCount = 16;
 
   /// 中断名
   static constexpr std::array<const char *, kInterruptMaxCount>
@@ -238,7 +238,7 @@ struct ScauseInfo : public RegInfoBase {
       };
 
   /// 最大异常数
-  static constexpr const uint32_t kExceptionMaxCount = 20;
+  static constexpr uint32_t kExceptionMaxCount = 20;
 
   /// 异常名
   static constexpr std::array<const char *, kExceptionMaxCount>
@@ -306,14 +306,14 @@ struct SatpInfo : public RegInfoBase {
   };
 
   /// 最大内存模式数
-  static constexpr const uint32_t kModeMaxCount = 16;
+  static constexpr uint32_t kModeMaxCount = 16;
 
   static constexpr std::array<const char *, kModeMaxCount> kModeNames = {
       "Bare",     "Reserved", "Reserved", "Reserved", "Reserved", "Reserved",
       "Reserved", "Reserved", "SV39",     "SV48",     "SV57",     "SV64",
   };
 
-  static constexpr const uint64_t kPpnOffset = 12;
+  static constexpr uint64_t kPpnOffset = 12;
 
   struct Ppn {
     using DataType = uint64_t;
