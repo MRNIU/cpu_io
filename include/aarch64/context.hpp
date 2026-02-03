@@ -169,6 +169,12 @@ struct CalleeSavedContext {
   uint64_t sp;
   // 恢复时的返回地址 (首次调度时为线程入口地址)
   uint64_t pc;
+
+  // 跨架构访问器方法
+  __always_inline uint64_t& ReturnAddress() { return pc; }
+  __always_inline uint64_t& EntryFunction() { return x19; }
+  __always_inline uint64_t& EntryArgument() { return x20; }
+  __always_inline uint64_t& StackPointer() { return sp; }
 };
 
 // 编译时验证结构体大小

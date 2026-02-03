@@ -28,7 +28,17 @@ struct TrapContext {
 };
 
 struct CalleeSavedContext {
-  /// @todo
+  /// @todo x86_64 实现待补充
+  uint64_t return_address;
+  uint64_t stack_pointer;
+  uint64_t entry_function;
+  uint64_t entry_argument;
+
+  // 跨架构访问器方法
+  __always_inline uint64_t& ReturnAddress() { return return_address; }
+  __always_inline uint64_t& EntryFunction() { return entry_function; }
+  __always_inline uint64_t& EntryArgument() { return entry_argument; }
+  __always_inline uint64_t& StackPointer() { return stack_pointer; }
 };
 
 }  // namespace cpu_io

@@ -163,7 +163,18 @@ struct CalleeSavedContext {
   uint64_t fs9;
   uint64_t fs10;
   uint64_t fs11;
+
+  // 跨架构访问器方法
+  __always_inline uint64_t& ReturnAddress() { return ra; }
+  __always_inline uint64_t& EntryFunction() { return s0; }
+  __always_inline uint64_t& EntryArgument() { return s1; }
+  __always_inline uint64_t& StackPointer() { return sp; }
 };
+
+// 编译时验证结构体大小
+static_assert(sizeof(TrapContext) == 544, "TrapContext size must be 544 bytes");
+static_assert(sizeof(CalleeSavedContext) == 208,
+              "CalleeSavedContext size must be 208 bytes");
 
 }  // namespace cpu_io
 
