@@ -52,6 +52,27 @@ using ICC_EOIR1_EL1 = detail::regs::system_reg::ICC_EOIR1_EL1;
 using ICC_SGI1R_EL1 = detail::regs::system_reg::ICC_SGI1R_EL1;
 
 /**
+ * @brief 内存屏障
+ */
+static __always_inline auto Mb() -> void {
+  __asm__ volatile("dmb ish" ::: "memory");
+}
+
+/**
+ * @brief 读内存屏障
+ */
+static __always_inline auto Rmb() -> void {
+  __asm__ volatile("dmb ishld" ::: "memory");
+}
+
+/**
+ * @brief 写内存屏障
+ */
+static __always_inline auto Wmb() -> void {
+  __asm__ volatile("dmb ishst" ::: "memory");
+}
+
+/**
  * @brief 允许中断
  * @todo
  */

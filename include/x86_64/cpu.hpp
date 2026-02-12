@@ -52,6 +52,28 @@ using Es = detail::regs::segment_register::Es;
 using Fs = detail::regs::segment_register::Fs;
 using Gs = detail::regs::segment_register::Gs;
 
+
+/**
+ * @brief 内存屏障
+ */
+static __always_inline auto Mb() -> void {
+  __asm__ volatile("mfence" ::: "memory");
+}
+
+/**
+ * @brief 读内存屏障
+ */
+static __always_inline auto Rmb() -> void {
+  __asm__ volatile("lfence" ::: "memory");
+}
+
+/**
+ * @brief 写内存屏障
+ */
+static __always_inline auto Wmb() -> void {
+  __asm__ volatile("sfence" ::: "memory");
+}
+
 /// 中断上下文，由 cpu 自动压入，无错误码
 struct InterruptContext {
   uint64_t rip;

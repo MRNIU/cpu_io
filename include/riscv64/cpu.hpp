@@ -33,6 +33,27 @@ using Satp = detail::regs::csr::Satp;
 using Stimecmp = detail::regs::csr::Stimecmp;
 
 /**
+ * @brief 内存屏障
+ */
+static __always_inline auto Mb() -> void {
+  __asm__ volatile("fence iorw, iorw" ::: "memory");
+}
+
+/**
+ * @brief 读内存屏障
+ */
+static __always_inline auto Rmb() -> void {
+  __asm__ volatile("fence ir, ir" ::: "memory");
+}
+
+/**
+ * @brief 写内存屏障
+ */
+static __always_inline auto Wmb() -> void {
+  __asm__ volatile("fence ow, ow" ::: "memory");
+}
+
+/**
  * @brief 允许中断
  */
 static __always_inline void EnableInterrupt() { Sstatus::Sie::Set(); }
@@ -60,9 +81,7 @@ static __always_inline auto GetCurrentCoreId() -> size_t { return Tp::Read(); }
  * @brief CPU 空转指令
  * @note RISC-V pause hint 指令
  */
-static __always_inline void Pause() {
-  __asm__ volatile("pause" ::: "memory");
-}
+static __always_inline void Pause() { __asm__ volatile("pause" ::: "memory"); }
 
 }  // namespace cpu_io
 
