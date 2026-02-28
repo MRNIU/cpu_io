@@ -15,7 +15,7 @@ namespace cpu_io {
  * @return uint8_t        读取到的数据
  */
 template <class T>
-static __always_inline auto In(const uint32_t port) -> T {
+static __always_inline auto In(const uint16_t port) -> T {
   T data;
   if constexpr (std::is_same_v<T, uint8_t>) {
     __asm__ volatile("inb %1, %0" : "=a"(data) : "dN"(port));
@@ -36,7 +36,7 @@ static __always_inline auto In(const uint32_t port) -> T {
  * @param  data           要写的数据
  */
 template <class T>
-static __always_inline void Out(const uint32_t port, const T data) {
+static __always_inline void Out(const uint16_t port, const T data) {
   if constexpr (std::is_same_v<T, uint8_t>) {
     __asm__ volatile("outb %1, %0" : : "dN"(port), "a"(data));
   } else if constexpr (std::is_same_v<T, uint16_t>) {
