@@ -142,6 +142,13 @@ struct Stimecmp
 }  // namespace regs
 
 }  // namespace detail
+// Public aliases — expose register_info types without the detail:: prefix
+using ScauseInfo = detail::register_info::csr::ScauseInfo;
+using SstatusInfo = detail::register_info::csr::SstatusInfo;
+using StvecInfo = detail::register_info::csr::StvecInfo;
+using SipInfo = detail::register_info::csr::SipInfo;
+using SieInfo = detail::register_info::csr::SieInfo;
+using SatpInfo = detail::register_info::csr::SatpInfo;
 
 }  // namespace cpu_io
 
