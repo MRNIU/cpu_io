@@ -32,6 +32,13 @@
  */
 namespace cpu_io {
 
+using GdtrInfo = detail::register_info::GdtrInfo;
+using IdtrInfo = detail::register_info::IdtrInfo;
+using Cr0Info = detail::register_info::cr::Cr0Info;
+using Cr3Info = detail::register_info::cr::Cr3Info;
+using Cr4Info = detail::register_info::cr::Cr4Info;
+using RflagsInfo = detail::register_info::RflagsInfo;
+
 using Rbp = detail::regs::Rbp;
 using Msr = detail::regs::Msr;
 using Rflags = detail::regs::Rflags;
@@ -51,7 +58,6 @@ using Ds = detail::regs::segment_register::Ds;
 using Es = detail::regs::segment_register::Es;
 using Fs = detail::regs::segment_register::Fs;
 using Gs = detail::regs::segment_register::Gs;
-
 
 /**
  * @brief 内存屏障

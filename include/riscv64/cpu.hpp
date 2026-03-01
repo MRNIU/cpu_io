@@ -16,6 +16,13 @@
 
 namespace cpu_io {
 
+using ScauseInfo = detail::register_info::csr::ScauseInfo;
+using SstatusInfo = detail::register_info::csr::SstatusInfo;
+using StvecInfo = detail::register_info::csr::StvecInfo;
+using SipInfo = detail::register_info::csr::SipInfo;
+using SieInfo = detail::register_info::csr::SieInfo;
+using SatpInfo = detail::register_info::csr::SatpInfo;
+
 using Fp = detail::regs::Fp;
 using Tp = detail::regs::Tp;
 using Sstatus = detail::regs::csr::Sstatus;
