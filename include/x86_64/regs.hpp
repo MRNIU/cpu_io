@@ -184,6 +184,13 @@ struct Gs : public read_write::ReadWriteRegBase<
 }  // namespace regs
 
 }  // namespace detail
+// Public aliases — expose register_info types without the detail:: prefix
+using GdtrInfo = detail::register_info::GdtrInfo;
+using IdtrInfo = detail::register_info::IdtrInfo;
+using Cr0Info = detail::register_info::cr::Cr0Info;
+using Cr3Info = detail::register_info::cr::Cr3Info;
+using Cr4Info = detail::register_info::cr::Cr4Info;
+using RflagsInfo = detail::register_info::RflagsInfo;
 
 }  // namespace cpu_io
 
