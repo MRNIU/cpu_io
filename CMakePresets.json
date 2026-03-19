@@ -62,6 +62,10 @@
         "COVERAGE_OUTPUT_DIR": {
           "type": "STRING",
           "value": "coverage"
+        },
+        "CPU_IO_ENABLE_FPU": {
+          "type": "BOOL",
+          "value": "OFF"
         }
       }
     },

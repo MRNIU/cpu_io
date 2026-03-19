@@ -11,10 +11,17 @@ namespace cpu_io {
 
 /**
  * @brief RISC-V 64 寄存器上下文结构体
- * 包含所有通用寄存器 (x1-x31)、必要的特权级 CSR 以及浮点寄存器
+ * 包含所有通用寄存器 (x1-x31)、必要的特权级 CSR
+ * 以及可选的浮点寄存器（由 CPU_IO_ENABLE_FPU 宏控制）
  * 用于中断/异常处理 (保存完整现场)
- * 31 个通用寄存器(x1-x31) + 4 个 CSR + 32 个浮点寄存器(f0-f31) + 1 个 fcsr
- * 总计: 31 + 4 + 32 + 1 = 68 个 64 位寄存器，共 544 字节
+ *
+ * 启用 FPU 时:
+ *   31 (x1-x31) + 32 (f0-f31) + 1 (fcsr) + 4 (CSR)
+ *   = 68 个 64 位寄存器，共 544 字节
+ *
+ * 未启用 FPU 时:
+ *   31 (x1-x31) + 4 (CSR) + 1 (_padding)
+ *   = 36 个 64 位寄存器，共 288 字节 (16 字节对齐)
  */
 struct TrapContext {
   // x1: Return Address
@@ -80,6 +87,7 @@ struct TrapContext {
   // x31: Temporary
   uint64_t t6;
 
+#ifdef CPU_IO_ENABLE_FPU
   // Floating Point Registers
   uint64_t f0;
   uint64_t f1;
@@ -114,6 +122,7 @@ struct TrapContext {
   uint64_t f30;
   uint64_t f31;
   uint64_t fcsr;
+#endif  // CPU_IO_ENABLE_FPU
 
   // Supervisor Status
   uint64_t sstatus;
@@ -124,6 +133,10 @@ struct TrapContext {
   // Supervisor Cause
   uint64_t scause;
 
+#ifndef CPU_IO_ENABLE_FPU
+  uint64_t _padding;
+#endif  // !CPU_IO_ENABLE_FPU
+
   // 统一的跨架构访问器方法
   __always_inline uint64_t& UserStackPointer() { return sp; }
   __always_inline uint64_t& ThreadPointer() { return tp; }
@@ -132,9 +145,12 @@ struct TrapContext {
 
 /**
  * @brief 线程切换上下文 (SwitchTo)
- * 仅包含 Callee-saved 寄存器: ra, sp, s0-s11, fs0-fs11
+ * 仅包含 Callee-saved 寄存器
+ *
+ * 启用 FPU 时: ra, sp, s0-s11, fs0-fs11 = 26 × 8 = 208 bytes
+ * 未启用 FPU 时: ra, sp, s0-s11 = 14 × 8 = 112 bytes
+ *
  * 用于函数调用间的上下文切换 (Cooperative)
- * (1 + 1 + 12 + 12) * 8 = 26 * 8 = 208 bytes.
  */
 struct CalleeSavedContext {
   uint64_t ra;
@@ -151,6 +167,8 @@ struct CalleeSavedContext {
   uint64_t s9;
   uint64_t s10;
   uint64_t s11;
+
+#ifdef CPU_IO_ENABLE_FPU
   uint64_t fs0;
   uint64_t fs1;
   uint64_t fs2;
@@ -163,6 +181,7 @@ struct CalleeSavedContext {
   uint64_t fs9;
   uint64_t fs10;
   uint64_t fs11;
+#endif  // CPU_IO_ENABLE_FPU
 
   // 跨架构访问器方法
   __always_inline uint64_t& ReturnAddress() { return ra; }
@@ -171,10 +190,15 @@ struct CalleeSavedContext {
   __always_inline uint64_t& StackPointer() { return sp; }
 };
 
-// 编译时验证结构体大小
+#ifdef CPU_IO_ENABLE_FPU
 static_assert(sizeof(TrapContext) == 544, "TrapContext size must be 544 bytes");
 static_assert(sizeof(CalleeSavedContext) == 208,
               "CalleeSavedContext size must be 208 bytes");
+#else
+static_assert(sizeof(TrapContext) == 288, "TrapContext size must be 288 bytes");
+static_assert(sizeof(CalleeSavedContext) == 112,
+              "CalleeSavedContext size must be 112 bytes");
+#endif
 
 }  // namespace cpu_io
 
