@@ -76,23 +76,13 @@ static __always_inline auto Wmb() -> void {
  * @brief 允许中断
  * @todo
  */
-static __always_inline void EnableInterrupt() {
-  DAIF::D::Clear();
-  DAIF::A::Clear();
-  DAIF::I::Clear();
-  DAIF::F::Clear();
-}
+static __always_inline void EnableInterrupt() { DAIF::ClearBitsImm(0xF); }
 
 /**
  * @brief 关闭中断
  * @todo
  */
-static __always_inline void DisableInterrupt() {
-  DAIF::D::Set();
-  DAIF::A::Set();
-  DAIF::I::Set();
-  DAIF::F::Set();
-}
+static __always_inline void DisableInterrupt() { DAIF::SetBitsImm(0xF); }
 
 /**
  * @brief 获取中断状态
