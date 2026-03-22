@@ -425,7 +425,7 @@ class WriteOnlyRegBase {
   static __always_inline void SetBitsImm(const uint8_t mask) {
     if constexpr (std::is_same_v<RegInfo,
                                  register_info::system_reg::DAIFInfo>) {
-      __asm__ volatile("msr DAIFSet, %0" : : "i"(mask) :);
+      __asm__ volatile("msr DAIFSet, %0" : : "i"(mask) : "memory");
     } else {
       static_assert(sizeof(RegInfo) == 0);
     }
@@ -439,7 +439,7 @@ class WriteOnlyRegBase {
   static __always_inline void ClearBitsImm(const uint8_t mask) {
     if constexpr (std::is_same_v<RegInfo,
                                  register_info::system_reg::DAIFInfo>) {
-      __asm__ volatile("msr DAIFClr, %0" : : "i"(mask) :);
+      __asm__ volatile("msr DAIFClr, %0" : : "i"(mask) : "memory");
     } else {
       static_assert(sizeof(RegInfo) == 0);
     }
