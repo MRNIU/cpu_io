@@ -258,29 +258,29 @@ class WriteOnlyRegBase {
    */
   static __always_inline void SetBitsImm(const uint8_t mask) {
     if constexpr (std::is_same_v<RegInfo, register_info::csr::SstatusInfo>) {
-      __asm__ volatile("csrrsi zero, sstatus, %0" : : "i"(mask) :);
+      __asm__ volatile("csrrsi zero, sstatus, %0" : : "i"(mask) : "memory");
     } else if constexpr (std::is_same_v<RegInfo,
                                         register_info::csr::StvecInfo>) {
-      __asm__ volatile("csrrsi zero, stvec, %0" : : "i"(mask) :);
+      __asm__ volatile("csrrsi zero, stvec, %0" : : "i"(mask) : "memory");
     } else if constexpr (std::is_same_v<RegInfo, register_info::csr::SipInfo>) {
-      __asm__ volatile("csrrsi zero, sip, %0" : : "i"(mask) :);
+      __asm__ volatile("csrrsi zero, sip, %0" : : "i"(mask) : "memory");
     } else if constexpr (std::is_same_v<RegInfo, register_info::csr::SieInfo>) {
-      __asm__ volatile("csrrsi zero, sie, %0" : : "i"(mask) :);
+      __asm__ volatile("csrrsi zero, sie, %0" : : "i"(mask) : "memory");
     } else if constexpr (std::is_same_v<RegInfo,
                                         register_info::csr::SscratchInfo>) {
-      __asm__ volatile("csrrsi zero, sscratch, %0" : : "i"(mask) :);
+      __asm__ volatile("csrrsi zero, sscratch, %0" : : "i"(mask) : "memory");
     } else if constexpr (std::is_same_v<RegInfo,
                                         register_info::csr::SepcInfo>) {
-      __asm__ volatile("csrrsi zero, sepc, %0" : : "i"(mask) :);
+      __asm__ volatile("csrrsi zero, sepc, %0" : : "i"(mask) : "memory");
     } else if constexpr (std::is_same_v<RegInfo,
                                         register_info::csr::ScauseInfo>) {
-      __asm__ volatile("csrrsi zero, scause, %0" : : "i"(mask) :);
+      __asm__ volatile("csrrsi zero, scause, %0" : : "i"(mask) : "memory");
     } else if constexpr (std::is_same_v<RegInfo,
                                         register_info::csr::StvalInfo>) {
-      __asm__ volatile("csrrsi zero, stval, %0" : : "i"(mask) :);
+      __asm__ volatile("csrrsi zero, stval, %0" : : "i"(mask) : "memory");
     } else if constexpr (std::is_same_v<RegInfo,
                                         register_info::csr::SatpInfo>) {
-      __asm__ volatile("csrrsi zero, satp, %0" : : "i"(mask) :);
+      __asm__ volatile("csrrsi zero, satp, %0" : : "i"(mask) : "memory");
     } else {
       static_assert(sizeof(RegInfo) == 0);
     }
@@ -293,29 +293,29 @@ class WriteOnlyRegBase {
    */
   static __always_inline void ClearBitsImm(const uint8_t mask) {
     if constexpr (std::is_same_v<RegInfo, register_info::csr::SstatusInfo>) {
-      __asm__ volatile("csrrci zero, sstatus, %0" : : "i"(mask) :);
+      __asm__ volatile("csrrci zero, sstatus, %0" : : "i"(mask) : "memory");
     } else if constexpr (std::is_same_v<RegInfo,
                                         register_info::csr::StvecInfo>) {
-      __asm__ volatile("csrrci zero, stvec, %0" : : "i"(mask) :);
+      __asm__ volatile("csrrci zero, stvec, %0" : : "i"(mask) : "memory");
     } else if constexpr (std::is_same_v<RegInfo, register_info::csr::SipInfo>) {
-      __asm__ volatile("csrrci zero, sip, %0" : : "i"(mask) :);
+      __asm__ volatile("csrrci zero, sip, %0" : : "i"(mask) : "memory");
     } else if constexpr (std::is_same_v<RegInfo, register_info::csr::SieInfo>) {
-      __asm__ volatile("csrrci zero, sie, %0" : : "i"(mask) :);
+      __asm__ volatile("csrrci zero, sie, %0" : : "i"(mask) : "memory");
     } else if constexpr (std::is_same_v<RegInfo,
                                         register_info::csr::SscratchInfo>) {
-      __asm__ volatile("csrrci zero, sscratch, %0" : : "i"(mask) :);
+      __asm__ volatile("csrrci zero, sscratch, %0" : : "i"(mask) : "memory");
     } else if constexpr (std::is_same_v<RegInfo,
                                         register_info::csr::SepcInfo>) {
-      __asm__ volatile("csrrci zero, sepc, %0" : : "i"(mask) :);
+      __asm__ volatile("csrrci zero, sepc, %0" : : "i"(mask) : "memory");
     } else if constexpr (std::is_same_v<RegInfo,
                                         register_info::csr::ScauseInfo>) {
-      __asm__ volatile("csrrci zero, scause, %0" : : "i"(mask) :);
+      __asm__ volatile("csrrci zero, scause, %0" : : "i"(mask) : "memory");
     } else if constexpr (std::is_same_v<RegInfo,
                                         register_info::csr::StvalInfo>) {
-      __asm__ volatile("csrrci zero, stval, %0" : : "i"(mask) :);
+      __asm__ volatile("csrrci zero, stval, %0" : : "i"(mask) : "memory");
     } else if constexpr (std::is_same_v<RegInfo,
                                         register_info::csr::SatpInfo>) {
-      __asm__ volatile("csrrci zero, satp, %0" : : "i"(mask) :);
+      __asm__ volatile("csrrci zero, satp, %0" : : "i"(mask) : "memory");
     } else {
       static_assert(sizeof(RegInfo) == 0);
     }
@@ -537,29 +537,56 @@ class ReadWriteRegBase : public ReadOnlyRegBase<RegInfo>,
       typename RegInfo::DataType {
     typename RegInfo::DataType value{};
     if constexpr (std::is_same_v<RegInfo, register_info::csr::SstatusInfo>) {
-      __asm__ volatile("csrrsi %0, sstatus, %1" : "=r"(value) : "i"(mask) :);
+      __asm__ volatile("csrrsi %0, sstatus, %1"
+                       : "=r"(value)
+                       : "i"(mask)
+                       : "memory");
     } else if constexpr (std::is_same_v<RegInfo,
                                         register_info::csr::StvecInfo>) {
-      __asm__ volatile("csrrsi %0, stvec, %1" : "=r"(value) : "i"(mask) :);
+      __asm__ volatile("csrrsi %0, stvec, %1"
+                       : "=r"(value)
+                       : "i"(mask)
+                       : "memory");
     } else if constexpr (std::is_same_v<RegInfo, register_info::csr::SipInfo>) {
-      __asm__ volatile("csrrsi %0, sip, %1" : "=r"(value) : "i"(mask) :);
+      __asm__ volatile("csrrsi %0, sip, %1"
+                       : "=r"(value)
+                       : "i"(mask)
+                       : "memory");
     } else if constexpr (std::is_same_v<RegInfo, register_info::csr::SieInfo>) {
-      __asm__ volatile("csrrsi %0, sie, %1" : "=r"(value) : "i"(mask) :);
+      __asm__ volatile("csrrsi %0, sie, %1"
+                       : "=r"(value)
+                       : "i"(mask)
+                       : "memory");
     } else if constexpr (std::is_same_v<RegInfo,
                                         register_info::csr::SscratchInfo>) {
-      __asm__ volatile("csrrsi %0, sscratch, %1" : "=r"(value) : "i"(mask) :);
+      __asm__ volatile("csrrsi %0, sscratch, %1"
+                       : "=r"(value)
+                       : "i"(mask)
+                       : "memory");
     } else if constexpr (std::is_same_v<RegInfo,
                                         register_info::csr::SepcInfo>) {
-      __asm__ volatile("csrrsi %0, sepc, %1" : "=r"(value) : "i"(mask) :);
+      __asm__ volatile("csrrsi %0, sepc, %1"
+                       : "=r"(value)
+                       : "i"(mask)
+                       : "memory");
     } else if constexpr (std::is_same_v<RegInfo,
                                         register_info::csr::ScauseInfo>) {
-      __asm__ volatile("csrrsi %0, scause, %1" : "=r"(value) : "i"(mask) :);
+      __asm__ volatile("csrrsi %0, scause, %1"
+                       : "=r"(value)
+                       : "i"(mask)
+                       : "memory");
     } else if constexpr (std::is_same_v<RegInfo,
                                         register_info::csr::StvalInfo>) {
-      __asm__ volatile("csrrsi %0, stval, %1" : "=r"(value) : "i"(mask) :);
+      __asm__ volatile("csrrsi %0, stval, %1"
+                       : "=r"(value)
+                       : "i"(mask)
+                       : "memory");
     } else if constexpr (std::is_same_v<RegInfo,
                                         register_info::csr::SatpInfo>) {
-      __asm__ volatile("csrrsi %0, satp, %1" : "=r"(value) : "i"(mask) :);
+      __asm__ volatile("csrrsi %0, satp, %1"
+                       : "=r"(value)
+                       : "i"(mask)
+                       : "memory");
     } else {
       static_assert(sizeof(RegInfo) == 0);
     }
@@ -627,29 +654,56 @@ class ReadWriteRegBase : public ReadOnlyRegBase<RegInfo>,
       typename RegInfo::DataType {
     typename RegInfo::DataType value{};
     if constexpr (std::is_same_v<RegInfo, register_info::csr::SstatusInfo>) {
-      __asm__ volatile("csrrci %0, sstatus, %1" : "=r"(value) : "i"(mask) :);
+      __asm__ volatile("csrrci %0, sstatus, %1"
+                       : "=r"(value)
+                       : "i"(mask)
+                       : "memory");
     } else if constexpr (std::is_same_v<RegInfo,
                                         register_info::csr::StvecInfo>) {
-      __asm__ volatile("csrrci %0, stvec, %1" : "=r"(value) : "i"(mask) :);
+      __asm__ volatile("csrrci %0, stvec, %1"
+                       : "=r"(value)
+                       : "i"(mask)
+                       : "memory");
     } else if constexpr (std::is_same_v<RegInfo, register_info::csr::SipInfo>) {
-      __asm__ volatile("csrrci %0, sip, %1" : "=r"(value) : "i"(mask) :);
+      __asm__ volatile("csrrci %0, sip, %1"
+                       : "=r"(value)
+                       : "i"(mask)
+                       : "memory");
     } else if constexpr (std::is_same_v<RegInfo, register_info::csr::SieInfo>) {
-      __asm__ volatile("csrrci %0, sie, %1" : "=r"(value) : "i"(mask) :);
+      __asm__ volatile("csrrci %0, sie, %1"
+                       : "=r"(value)
+                       : "i"(mask)
+                       : "memory");
     } else if constexpr (std::is_same_v<RegInfo,
                                         register_info::csr::SscratchInfo>) {
-      __asm__ volatile("csrrci %0, sscratch, %1" : "=r"(value) : "i"(mask) :);
+      __asm__ volatile("csrrci %0, sscratch, %1"
+                       : "=r"(value)
+                       : "i"(mask)
+                       : "memory");
     } else if constexpr (std::is_same_v<RegInfo,
                                         register_info::csr::SepcInfo>) {
-      __asm__ volatile("csrrci %0, sepc, %1" : "=r"(value) : "i"(mask) :);
+      __asm__ volatile("csrrci %0, sepc, %1"
+                       : "=r"(value)
+                       : "i"(mask)
+                       : "memory");
     } else if constexpr (std::is_same_v<RegInfo,
                                         register_info::csr::ScauseInfo>) {
-      __asm__ volatile("csrrci %0, scause, %1" : "=r"(value) : "i"(mask) :);
+      __asm__ volatile("csrrci %0, scause, %1"
+                       : "=r"(value)
+                       : "i"(mask)
+                       : "memory");
     } else if constexpr (std::is_same_v<RegInfo,
                                         register_info::csr::StvalInfo>) {
-      __asm__ volatile("csrrci %0, stval, %1" : "=r"(value) : "i"(mask) :);
+      __asm__ volatile("csrrci %0, stval, %1"
+                       : "=r"(value)
+                       : "i"(mask)
+                       : "memory");
     } else if constexpr (std::is_same_v<RegInfo,
                                         register_info::csr::SatpInfo>) {
-      __asm__ volatile("csrrci %0, satp, %1" : "=r"(value) : "i"(mask) :);
+      __asm__ volatile("csrrci %0, satp, %1"
+                       : "=r"(value)
+                       : "i"(mask)
+                       : "memory");
     } else {
       static_assert(sizeof(RegInfo) == 0);
     }
